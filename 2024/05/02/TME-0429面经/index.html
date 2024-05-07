@@ -20,18 +20,18 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="腾讯音乐4.29 客户端开发面经面试流程： 面试官介绍部门情况 自我介绍（面试官要求介绍项目什么的） 问答环节  问题： tcp建立连接是3次握手，断开连接是4次挥手，为什么会有这个差异？ 断开连接为什么要4次，而不是3次？  TCP连接为什么要三次握手？  原因： 客户端发出SYN，并收到ACK，这就是两次网络传输了。 同样服务器端也发出SYN，且等待对方回复，这也是两次网络传输。 加起来难道不">
+  <meta name="description" content="腾讯音乐4.29 客户端开发面经面试流程： 面试官介绍部门情况 自我介绍（面试官要求介绍项目什么的） 问答环节  问题：tcp建立连接是3次握手，断开连接是4次挥手，为什么会有这个差异？断开连接为什么要4次，而不是3次？  TCP连接为什么要三次握手？  原因： 客户端发出SYN，并收到ACK，这就是两次网络传输了。 同样服务器端也发出SYN，且等待对方回复，这也是两次网络传输。 加起来难道不是四">
 <meta property="og:type" content="article">
 <meta property="og:title" content="TME 0429面经">
 <meta property="og:url" content="http://example.com/2024/05/02/TME-0429%E9%9D%A2%E7%BB%8F/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="腾讯音乐4.29 客户端开发面经面试流程： 面试官介绍部门情况 自我介绍（面试官要求介绍项目什么的） 问答环节  问题： tcp建立连接是3次握手，断开连接是4次挥手，为什么会有这个差异？ 断开连接为什么要4次，而不是3次？  TCP连接为什么要三次握手？  原因： 客户端发出SYN，并收到ACK，这就是两次网络传输了。 同样服务器端也发出SYN，且等待对方回复，这也是两次网络传输。 加起来难道不">
+<meta property="og:description" content="腾讯音乐4.29 客户端开发面经面试流程： 面试官介绍部门情况 自我介绍（面试官要求介绍项目什么的） 问答环节  问题：tcp建立连接是3次握手，断开连接是4次挥手，为什么会有这个差异？断开连接为什么要4次，而不是3次？  TCP连接为什么要三次握手？  原因： 客户端发出SYN，并收到ACK，这就是两次网络传输了。 同样服务器端也发出SYN，且等待对方回复，这也是两次网络传输。 加起来难道不是四">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://example.com/2024/05/02/assets/TME-0429%E9%9D%A2%E7%BB%8F/image-20240502142938707.png">
 <meta property="og:image" content="http://example.com/2024/05/02/assets/TME-0429%E9%9D%A2%E7%BB%8F/image-20240505011615000.png">
 <meta property="og:image" content="http://example.com/2024/05/02/assets/TME-0429%E9%9D%A2%E7%BB%8F/image-20240505011755261.png">
 <meta property="article:published_time" content="2024-05-02T06:26:26.000Z">
-<meta property="article:modified_time" content="2024-05-04T17:31:17.883Z">
+<meta property="article:modified_time" content="2024-05-07T13:32:43.757Z">
 <meta property="article:author" content="yhcs">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://example.com/2024/05/02/assets/TME-0429%E9%9D%A2%E7%BB%8F/image-20240502142938707.png">
@@ -184,7 +184,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-05-05 01:31:17" itemprop="dateModified" datetime="2024-05-05T01:31:17+08:00">2024-05-05</time>
+                <time title="修改时间：2024-05-07 21:32:43" itemprop="dateModified" datetime="2024-05-07T21:32:43+08:00">2024-05-07</time>
               </span>
 
           
@@ -203,9 +203,7 @@
 <li>自我介绍（面试官要求介绍项目什么的）</li>
 <li>问答环节</li>
 </ol>
-<h5 id="问题："><a href="#问题：" class="headerlink" title="问题："></a>问题：</h5><ul>
-<li><p>tcp建立连接是3次握手，断开连接是4次挥手，为什么会有这个差异？</p>
-<p>断开连接为什么要4次，而不是3次？</p>
+<h5 id="问题："><a href="#问题：" class="headerlink" title="问题："></a>问题：</h5><h6 id="tcp建立连接是3次握手，断开连接是4次挥手，为什么会有这个差异？"><a href="#tcp建立连接是3次握手，断开连接是4次挥手，为什么会有这个差异？" class="headerlink" title="tcp建立连接是3次握手，断开连接是4次挥手，为什么会有这个差异？"></a>tcp建立连接是3次握手，断开连接是4次挥手，为什么会有这个差异？</h6><p>断开连接为什么要4次，而不是3次？</p>
 <ul>
 <li><p><strong>TCP连接为什么要三次握手</strong>？</p>
 <ol>
@@ -228,9 +226,7 @@
 </ol>
 </li>
 </ul>
-</li>
-<li><p>ping命令使用过吗？traceroute跟它其实差不多，但是那个traceroute为什么能够探索到服务器的各个节点。</p>
-<blockquote>
+<h6 id="ping命令使用过吗？traceroute跟它其实差不多，但是那个traceroute为什么能够探索到服务器的各个节点。"><a href="#ping命令使用过吗？traceroute跟它其实差不多，但是那个traceroute为什么能够探索到服务器的各个节点。" class="headerlink" title="ping命令使用过吗？traceroute跟它其实差不多，但是那个traceroute为什么能够探索到服务器的各个节点。"></a>ping命令使用过吗？traceroute跟它其实差不多，但是那个traceroute为什么能够探索到服务器的各个节点。</h6><blockquote>
 <p><code>traceroute</code>是linux&#x2F;unix系统中用于分析本地到目标网络地址间的路由转发路径的工具，也常用于诊断网络链路不通或异常的发生位置。windows下命令为<code>tracert www.baidu.com</code></p>
 </blockquote>
 <img src="../assets/TME-0429%E9%9D%A2%E7%BB%8F/image-20240502142938707.png" alt="image-20240502142938707" style="zoom:67%;" />
@@ -250,24 +246,14 @@
 <li>如果在request发出3秒（默认超时时间）后仍然没有收到任何回应，则这轮<strong>检测超时</strong>。但这并<u>不意味着目标IP不可达</u>，而很可能是因为第n跳到达的节点<u>不允许发送TTL exceeded报文</u>。因此traceroute会继续后面的探测过程。</li>
 <li>将TTL加1，回到第1步继续探测。</li>
 </ol>
-</li>
-<li><p>为什么https比http更安全？答：因为https在http的基础上使用了tls协议进行加密。</p>
-<ul>
+<h6 id="为什么https比http更安全？答：因为https在http的基础上使用了tls协议进行加密。"><a href="#为什么https比http更安全？答：因为https在http的基础上使用了tls协议进行加密。" class="headerlink" title="为什么https比http更安全？答：因为https在http的基础上使用了tls协议进行加密。"></a>为什么https比http更安全？答：因为https在http的基础上使用了tls协议进行加密。</h6><ul>
 <li>讲一讲整个加密过程</li>
 <li>所以密钥本身是对称加密的，还是那个非对称加密？</li>
 </ul>
-</li>
-<li><p>tcp三次握手成功以后，比方说给对方发1k的数据，对方会有什么下一步的动作？</p>
-<ul>
-<li><p>tcp报文头多少字节 20~60B</p>
-<blockquote>
+<h6 id="tcp三次握手成功以后，比方说给对方发1k的数据，对方会有什么下一步的动作？"><a href="#tcp三次握手成功以后，比方说给对方发1k的数据，对方会有什么下一步的动作？" class="headerlink" title="tcp三次握手成功以后，比方说给对方发1k的数据，对方会有什么下一步的动作？"></a>tcp三次握手成功以后，比方说给对方发1k的数据，对方会有什么下一步的动作？</h6><h6 id="tcp报文头多少字节-20-60B"><a href="#tcp报文头多少字节-20-60B" class="headerlink" title="tcp报文头多少字节 20~60B"></a>tcp报文头多少字节 20~60B</h6><blockquote>
 <p>udp报文头部为8B</p>
 </blockquote>
-</li>
-</ul>
-</li>
-<li><p>stl的vector是线程安全的吗？</p>
-<p>是，所有操作加了同步锁，不支持多线程操作</p>
+<h6 id="stl的vector是线程安全的吗？"><a href="#stl的vector是线程安全的吗？" class="headerlink" title="stl的vector是线程安全的吗？"></a>stl的vector是线程安全的吗？</h6><p>是，所有操作加了同步锁，不支持多线程操作</p>
 <blockquote>
 <p>vector特点：</p>
 <p>1.动态分配空间，当空间不足时，会执行分配新空间——复制元素——释放原空间；</p>
@@ -283,16 +269,7 @@
 <p>数组需要<strong>手动管理内存</strong>，包括分配和释放内存。<br>vector自动处理内存管理，会自动增加或减少内存以适应元素的数量。<br>5.功能差异：</p>
 <p>vector提供了许多方便的成员函数，如push_back()、pop_back()、insert()、erase()等，用于在尾部或指定位置添加、删除元素。<br>数组本身没有提供这些功能，需要手动编写代码来实现。</p>
 </blockquote>
-</li>
-<li><p>map底层的红黑树的实现原理</p>
-</li>
-<li><p>C++虚函数跟普通的函数有什么区别吗？</p>
-<ul>
-<li>虚函数表是在什么阶段，可以知道它自己的指针是多少。</li>
-</ul>
-</li>
-<li><p>utf16，包括utf32，讲一下他们的差异。</p>
-<ul>
+<h6 id="map底层的红黑树的实现原理"><a href="#map底层的红黑树的实现原理" class="headerlink" title="map底层的红黑树的实现原理"></a>map底层的红黑树的实现原理</h6><h6 id="C-虚函数跟普通的函数有什么区别吗？"><a href="#C-虚函数跟普通的函数有什么区别吗？" class="headerlink" title="C++虚函数跟普通的函数有什么区别吗？"></a>C++虚函数跟普通的函数有什么区别吗？</h6><h6 id="虚函数表是在什么阶段，可以知道它自己的指针是多少。"><a href="#虚函数表是在什么阶段，可以知道它自己的指针是多少。" class="headerlink" title="虚函数表是在什么阶段，可以知道它自己的指针是多少。"></a>虚函数表是在什么阶段，可以知道它自己的指针是多少。</h6><h6 id="utf16，包括utf32，讲一下他们的差异。"><a href="#utf16，包括utf32，讲一下他们的差异。" class="headerlink" title="utf16，包括utf32，讲一下他们的差异。"></a>utf16，包括utf32，讲一下他们的差异。</h6><ul>
 <li><p><strong>utf8</strong></p>
 <ol>
 <li><p>特点：使用<strong>变长字节数</strong></p>
@@ -351,9 +328,7 @@
 </ol>
 </li>
 </ul>
-</li>
-<li><p>空的class大小是多少？</p>
-<ol>
+<h6 id="空的class大小是多少？"><a href="#空的class大小是多少？" class="headerlink" title="空的class大小是多少？"></a>空的class大小是多少？</h6><ol>
 <li>空类大小&#x3D;1，因为编译器需要安插进去一个 <code>char</code>，使得这个 class 对象得以在内存中被配置独一无二的地址。</li>
 <li>某个类A继承该空类<ol>
 <li>如果A为空，<code>sizeof(A)=1</code></li>
@@ -381,39 +356,13 @@
 <blockquote>
 <p>计算类的大小，还要考虑字节对齐</p>
 </blockquote>
-</li>
-<li><p>定义一个结构体，里面可能有很多的数据类型。在不同的编译器，不同的系统下，结构体大小可能会有不同的大小。你觉得是因为什么？（字节对齐）</p>
-<ol>
+<h6 id="定义一个结构体，里面可能有很多的数据类型。在不同的编译器，不同的系统下，结构体大小可能会有不同的大小。你觉得是因为什么？（字节对齐）"><a href="#定义一个结构体，里面可能有很多的数据类型。在不同的编译器，不同的系统下，结构体大小可能会有不同的大小。你觉得是因为什么？（字节对齐）" class="headerlink" title="定义一个结构体，里面可能有很多的数据类型。在不同的编译器，不同的系统下，结构体大小可能会有不同的大小。你觉得是因为什么？（字节对齐）"></a>定义一个结构体，里面可能有很多的数据类型。在不同的编译器，不同的系统下，结构体大小可能会有不同的大小。你觉得是因为什么？（字节对齐）</h6><ol>
 <li>内存对齐（Padding）：<br>为了提高数据访问的效率，许多处理器和编译器会要求数据按照特定的边界对齐，不同的编译器可能会有不同的默认对齐设置或对齐策略。例如，某些处理器可能要求一个<code>int</code>类型的变量在4字节边界上对齐。如果结构体中的某个成员不满足这个对齐要求，编译器会在成员之间插入额外的空间（填充字节），以达到所需的对齐。这会导致结构体的大小在不同系统或编译器下有所不同。</li>
 <li>数据类型的大小：<br>虽然标准数据类型（如<code>int</code>、<code>long</code>等）在大多数系统上都有固定的大小，但在某些系统或编译器下，它们的大小可能会有所不同。</li>
 </ol>
-</li>
-<li><p>C++的加锁方式</p>
-</li>
-<li><p>C++子类跟基类的构造顺序和析构顺序，为什么？</p>
-</li>
-<li><p>局部变量在进程内存的哪一块里面</p>
-<p>一般全局变量存放在数据区，局部变量存放在栈区，<br>动态变量存放在堆区，函数代码放在代码区。</p>
-<ul>
-<li><p>函数的参数的压栈顺序：参数从右到左入栈</p>
-<p>例：<code>void func(int a,int b,int c)</code>，进栈顺序为：<code>c b a</code>.</p>
-</li>
-</ul>
-</li>
-<li><p>网络的多路复用？</p>
-</li>
-<li><p>线程切换怎么保证切回来的时候，还能够按照原来流程继续走下去。</p>
-</li>
-<li><p>算法问题：运营在线上搞了两个活动，回收数据的时候，a活动收了2千万的那个qq号，b活动他回收了那个5千万的qq号。求两个活动大概都参加的用户有多少。设计一个算法求a和b的交集。</p>
-</li>
-<li><p>如果编写组件，提供接口定义入参和出参，为什么入参尽可能使用C的数据类型，而不是使用C++</p>
-</li>
-<li><p>共享屏幕做算法：解析http报文，实现传入参数key返回value</p>
-</li>
-<li><p>共享屏幕做算法：快排</p>
-</li>
-</ul>
-
+<h6 id="C-的加锁方式"><a href="#C-的加锁方式" class="headerlink" title="C++的加锁方式"></a>C++的加锁方式</h6><h6 id="C-子类跟基类的构造顺序和析构顺序，为什么？"><a href="#C-子类跟基类的构造顺序和析构顺序，为什么？" class="headerlink" title="C++子类跟基类的构造顺序和析构顺序，为什么？"></a>C++子类跟基类的构造顺序和析构顺序，为什么？</h6><h6 id="局部变量在进程内存的哪一块里面"><a href="#局部变量在进程内存的哪一块里面" class="headerlink" title="局部变量在进程内存的哪一块里面"></a>局部变量在进程内存的哪一块里面</h6><p>一般全局变量存放在数据区，局部变量存放在栈区，<br>动态变量存放在堆区，函数代码放在代码区。</p>
+<h6 id="函数的参数的压栈顺序：参数从右到左入栈"><a href="#函数的参数的压栈顺序：参数从右到左入栈" class="headerlink" title="函数的参数的压栈顺序：参数从右到左入栈"></a>函数的参数的压栈顺序：参数从右到左入栈</h6><p>例：<code>void func(int a,int b,int c)</code>，进栈顺序为：<code>c b a</code>.</p>
+<h6 id="网络的多路复用？"><a href="#网络的多路复用？" class="headerlink" title="网络的多路复用？"></a>网络的多路复用？</h6><h6 id="线程切换怎么保证切回来的时候，还能够按照原来流程继续走下去。"><a href="#线程切换怎么保证切回来的时候，还能够按照原来流程继续走下去。" class="headerlink" title="线程切换怎么保证切回来的时候，还能够按照原来流程继续走下去。"></a>线程切换怎么保证切回来的时候，还能够按照原来流程继续走下去。</h6><h6 id="算法问题：运营在线上搞了两个活动，回收数据的时候，a活动收了2千万的那个qq号，b活动他回收了那个5千万的qq号。求两个活动大概都参加的用户有多少。设计一个算法求a和b的交集。"><a href="#算法问题：运营在线上搞了两个活动，回收数据的时候，a活动收了2千万的那个qq号，b活动他回收了那个5千万的qq号。求两个活动大概都参加的用户有多少。设计一个算法求a和b的交集。" class="headerlink" title="算法问题：运营在线上搞了两个活动，回收数据的时候，a活动收了2千万的那个qq号，b活动他回收了那个5千万的qq号。求两个活动大概都参加的用户有多少。设计一个算法求a和b的交集。"></a>算法问题：运营在线上搞了两个活动，回收数据的时候，a活动收了2千万的那个qq号，b活动他回收了那个5千万的qq号。求两个活动大概都参加的用户有多少。设计一个算法求a和b的交集。</h6><h6 id="如果编写组件，提供接口定义入参和出参，为什么入参尽可能使用C的数据类型，而不是使用C"><a href="#如果编写组件，提供接口定义入参和出参，为什么入参尽可能使用C的数据类型，而不是使用C" class="headerlink" title="如果编写组件，提供接口定义入参和出参，为什么入参尽可能使用C的数据类型，而不是使用C++"></a>如果编写组件，提供接口定义入参和出参，为什么入参尽可能使用C的数据类型，而不是使用C++</h6><h6 id="共享屏幕做算法：解析http报文，实现传入参数key返回value"><a href="#共享屏幕做算法：解析http报文，实现传入参数key返回value" class="headerlink" title="共享屏幕做算法：解析http报文，实现传入参数key返回value"></a>共享屏幕做算法：解析http报文，实现传入参数key返回value</h6><h6 id="共享屏幕做算法：快排"><a href="#共享屏幕做算法：快排" class="headerlink" title="共享屏幕做算法：快排"></a>共享屏幕做算法：快排</h6>
     </div>
 
     
@@ -493,7 +442,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%85%BE%E8%AE%AF%E9%9F%B3%E4%B9%904-29-%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%BC%80%E5%8F%91%E9%9D%A2%E7%BB%8F"><span class="nav-number">1.</span> <span class="nav-text">腾讯音乐4.29 客户端开发面经</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%9D%A2%E8%AF%95%E6%B5%81%E7%A8%8B%EF%BC%9A"><span class="nav-number">1.0.1.</span> <span class="nav-text">面试流程：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%EF%BC%9A"><span class="nav-number">1.0.2.</span> <span class="nav-text">问题：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#TCP%E6%96%AD%E5%BC%80%E8%BF%9E%E6%8E%A5%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81%E5%9B%9B%E6%AC%A1%E6%8C%A5%E6%89%8B%EF%BC%9F"><span class="nav-number">1.0.3.</span> <span class="nav-text">TCP断开连接为什么需要四次挥手？</span></a></li></ol></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%85%BE%E8%AE%AF%E9%9F%B3%E4%B9%904-29-%E5%AE%A2%E6%88%B7%E7%AB%AF%E5%BC%80%E5%8F%91%E9%9D%A2%E7%BB%8F"><span class="nav-number">1.</span> <span class="nav-text">腾讯音乐4.29 客户端开发面经</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%9D%A2%E8%AF%95%E6%B5%81%E7%A8%8B%EF%BC%9A"><span class="nav-number">1.0.1.</span> <span class="nav-text">面试流程：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%EF%BC%9A"><span class="nav-number">1.0.2.</span> <span class="nav-text">问题：</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#tcp%E5%BB%BA%E7%AB%8B%E8%BF%9E%E6%8E%A5%E6%98%AF3%E6%AC%A1%E6%8F%A1%E6%89%8B%EF%BC%8C%E6%96%AD%E5%BC%80%E8%BF%9E%E6%8E%A5%E6%98%AF4%E6%AC%A1%E6%8C%A5%E6%89%8B%EF%BC%8C%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BC%9A%E6%9C%89%E8%BF%99%E4%B8%AA%E5%B7%AE%E5%BC%82%EF%BC%9F"><span class="nav-number">1.0.2.1.</span> <span class="nav-text">tcp建立连接是3次握手，断开连接是4次挥手，为什么会有这个差异？</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#TCP%E6%96%AD%E5%BC%80%E8%BF%9E%E6%8E%A5%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81%E5%9B%9B%E6%AC%A1%E6%8C%A5%E6%89%8B%EF%BC%9F"><span class="nav-number">1.0.3.</span> <span class="nav-text">TCP断开连接为什么需要四次挥手？</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#ping%E5%91%BD%E4%BB%A4%E4%BD%BF%E7%94%A8%E8%BF%87%E5%90%97%EF%BC%9Ftraceroute%E8%B7%9F%E5%AE%83%E5%85%B6%E5%AE%9E%E5%B7%AE%E4%B8%8D%E5%A4%9A%EF%BC%8C%E4%BD%86%E6%98%AF%E9%82%A3%E4%B8%AAtraceroute%E4%B8%BA%E4%BB%80%E4%B9%88%E8%83%BD%E5%A4%9F%E6%8E%A2%E7%B4%A2%E5%88%B0%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%9A%84%E5%90%84%E4%B8%AA%E8%8A%82%E7%82%B9%E3%80%82"><span class="nav-number">1.0.3.1.</span> <span class="nav-text">ping命令使用过吗？traceroute跟它其实差不多，但是那个traceroute为什么能够探索到服务器的各个节点。</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88https%E6%AF%94http%E6%9B%B4%E5%AE%89%E5%85%A8%EF%BC%9F%E7%AD%94%EF%BC%9A%E5%9B%A0%E4%B8%BAhttps%E5%9C%A8http%E7%9A%84%E5%9F%BA%E7%A1%80%E4%B8%8A%E4%BD%BF%E7%94%A8%E4%BA%86tls%E5%8D%8F%E8%AE%AE%E8%BF%9B%E8%A1%8C%E5%8A%A0%E5%AF%86%E3%80%82"><span class="nav-number">1.0.3.2.</span> <span class="nav-text">为什么https比http更安全？答：因为https在http的基础上使用了tls协议进行加密。</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#tcp%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B%E6%88%90%E5%8A%9F%E4%BB%A5%E5%90%8E%EF%BC%8C%E6%AF%94%E6%96%B9%E8%AF%B4%E7%BB%99%E5%AF%B9%E6%96%B9%E5%8F%911k%E7%9A%84%E6%95%B0%E6%8D%AE%EF%BC%8C%E5%AF%B9%E6%96%B9%E4%BC%9A%E6%9C%89%E4%BB%80%E4%B9%88%E4%B8%8B%E4%B8%80%E6%AD%A5%E7%9A%84%E5%8A%A8%E4%BD%9C%EF%BC%9F"><span class="nav-number">1.0.3.3.</span> <span class="nav-text">tcp三次握手成功以后，比方说给对方发1k的数据，对方会有什么下一步的动作？</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#tcp%E6%8A%A5%E6%96%87%E5%A4%B4%E5%A4%9A%E5%B0%91%E5%AD%97%E8%8A%82-20-60B"><span class="nav-number">1.0.3.4.</span> <span class="nav-text">tcp报文头多少字节 20~60B</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#stl%E7%9A%84vector%E6%98%AF%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E7%9A%84%E5%90%97%EF%BC%9F"><span class="nav-number">1.0.3.5.</span> <span class="nav-text">stl的vector是线程安全的吗？</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#map%E5%BA%95%E5%B1%82%E7%9A%84%E7%BA%A2%E9%BB%91%E6%A0%91%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86"><span class="nav-number">1.0.3.6.</span> <span class="nav-text">map底层的红黑树的实现原理</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#C-%E8%99%9A%E5%87%BD%E6%95%B0%E8%B7%9F%E6%99%AE%E9%80%9A%E7%9A%84%E5%87%BD%E6%95%B0%E6%9C%89%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB%E5%90%97%EF%BC%9F"><span class="nav-number">1.0.3.7.</span> <span class="nav-text">C++虚函数跟普通的函数有什么区别吗？</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E8%99%9A%E5%87%BD%E6%95%B0%E8%A1%A8%E6%98%AF%E5%9C%A8%E4%BB%80%E4%B9%88%E9%98%B6%E6%AE%B5%EF%BC%8C%E5%8F%AF%E4%BB%A5%E7%9F%A5%E9%81%93%E5%AE%83%E8%87%AA%E5%B7%B1%E7%9A%84%E6%8C%87%E9%92%88%E6%98%AF%E5%A4%9A%E5%B0%91%E3%80%82"><span class="nav-number">1.0.3.8.</span> <span class="nav-text">虚函数表是在什么阶段，可以知道它自己的指针是多少。</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#utf16%EF%BC%8C%E5%8C%85%E6%8B%ACutf32%EF%BC%8C%E8%AE%B2%E4%B8%80%E4%B8%8B%E4%BB%96%E4%BB%AC%E7%9A%84%E5%B7%AE%E5%BC%82%E3%80%82"><span class="nav-number">1.0.3.9.</span> <span class="nav-text">utf16，包括utf32，讲一下他们的差异。</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E7%A9%BA%E7%9A%84class%E5%A4%A7%E5%B0%8F%E6%98%AF%E5%A4%9A%E5%B0%91%EF%BC%9F"><span class="nav-number">1.0.3.10.</span> <span class="nav-text">空的class大小是多少？</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89%E4%B8%80%E4%B8%AA%E7%BB%93%E6%9E%84%E4%BD%93%EF%BC%8C%E9%87%8C%E9%9D%A2%E5%8F%AF%E8%83%BD%E6%9C%89%E5%BE%88%E5%A4%9A%E7%9A%84%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E3%80%82%E5%9C%A8%E4%B8%8D%E5%90%8C%E7%9A%84%E7%BC%96%E8%AF%91%E5%99%A8%EF%BC%8C%E4%B8%8D%E5%90%8C%E7%9A%84%E7%B3%BB%E7%BB%9F%E4%B8%8B%EF%BC%8C%E7%BB%93%E6%9E%84%E4%BD%93%E5%A4%A7%E5%B0%8F%E5%8F%AF%E8%83%BD%E4%BC%9A%E6%9C%89%E4%B8%8D%E5%90%8C%E7%9A%84%E5%A4%A7%E5%B0%8F%E3%80%82%E4%BD%A0%E8%A7%89%E5%BE%97%E6%98%AF%E5%9B%A0%E4%B8%BA%E4%BB%80%E4%B9%88%EF%BC%9F%EF%BC%88%E5%AD%97%E8%8A%82%E5%AF%B9%E9%BD%90%EF%BC%89"><span class="nav-number">1.0.3.11.</span> <span class="nav-text">定义一个结构体，里面可能有很多的数据类型。在不同的编译器，不同的系统下，结构体大小可能会有不同的大小。你觉得是因为什么？（字节对齐）</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#C-%E7%9A%84%E5%8A%A0%E9%94%81%E6%96%B9%E5%BC%8F"><span class="nav-number">1.0.3.12.</span> <span class="nav-text">C++的加锁方式</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#C-%E5%AD%90%E7%B1%BB%E8%B7%9F%E5%9F%BA%E7%B1%BB%E7%9A%84%E6%9E%84%E9%80%A0%E9%A1%BA%E5%BA%8F%E5%92%8C%E6%9E%90%E6%9E%84%E9%A1%BA%E5%BA%8F%EF%BC%8C%E4%B8%BA%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="nav-number">1.0.3.13.</span> <span class="nav-text">C++子类跟基类的构造顺序和析构顺序，为什么？</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E5%B1%80%E9%83%A8%E5%8F%98%E9%87%8F%E5%9C%A8%E8%BF%9B%E7%A8%8B%E5%86%85%E5%AD%98%E7%9A%84%E5%93%AA%E4%B8%80%E5%9D%97%E9%87%8C%E9%9D%A2"><span class="nav-number">1.0.3.14.</span> <span class="nav-text">局部变量在进程内存的哪一块里面</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E5%87%BD%E6%95%B0%E7%9A%84%E5%8F%82%E6%95%B0%E7%9A%84%E5%8E%8B%E6%A0%88%E9%A1%BA%E5%BA%8F%EF%BC%9A%E5%8F%82%E6%95%B0%E4%BB%8E%E5%8F%B3%E5%88%B0%E5%B7%A6%E5%85%A5%E6%A0%88"><span class="nav-number">1.0.3.15.</span> <span class="nav-text">函数的参数的压栈顺序：参数从右到左入栈</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E7%9A%84%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8%EF%BC%9F"><span class="nav-number">1.0.3.16.</span> <span class="nav-text">网络的多路复用？</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B%E5%88%87%E6%8D%A2%E6%80%8E%E4%B9%88%E4%BF%9D%E8%AF%81%E5%88%87%E5%9B%9E%E6%9D%A5%E7%9A%84%E6%97%B6%E5%80%99%EF%BC%8C%E8%BF%98%E8%83%BD%E5%A4%9F%E6%8C%89%E7%85%A7%E5%8E%9F%E6%9D%A5%E6%B5%81%E7%A8%8B%E7%BB%A7%E7%BB%AD%E8%B5%B0%E4%B8%8B%E5%8E%BB%E3%80%82"><span class="nav-number">1.0.3.17.</span> <span class="nav-text">线程切换怎么保证切回来的时候，还能够按照原来流程继续走下去。</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E7%AE%97%E6%B3%95%E9%97%AE%E9%A2%98%EF%BC%9A%E8%BF%90%E8%90%A5%E5%9C%A8%E7%BA%BF%E4%B8%8A%E6%90%9E%E4%BA%86%E4%B8%A4%E4%B8%AA%E6%B4%BB%E5%8A%A8%EF%BC%8C%E5%9B%9E%E6%94%B6%E6%95%B0%E6%8D%AE%E7%9A%84%E6%97%B6%E5%80%99%EF%BC%8Ca%E6%B4%BB%E5%8A%A8%E6%94%B6%E4%BA%862%E5%8D%83%E4%B8%87%E7%9A%84%E9%82%A3%E4%B8%AAqq%E5%8F%B7%EF%BC%8Cb%E6%B4%BB%E5%8A%A8%E4%BB%96%E5%9B%9E%E6%94%B6%E4%BA%86%E9%82%A3%E4%B8%AA5%E5%8D%83%E4%B8%87%E7%9A%84qq%E5%8F%B7%E3%80%82%E6%B1%82%E4%B8%A4%E4%B8%AA%E6%B4%BB%E5%8A%A8%E5%A4%A7%E6%A6%82%E9%83%BD%E5%8F%82%E5%8A%A0%E7%9A%84%E7%94%A8%E6%88%B7%E6%9C%89%E5%A4%9A%E5%B0%91%E3%80%82%E8%AE%BE%E8%AE%A1%E4%B8%80%E4%B8%AA%E7%AE%97%E6%B3%95%E6%B1%82a%E5%92%8Cb%E7%9A%84%E4%BA%A4%E9%9B%86%E3%80%82"><span class="nav-number">1.0.3.18.</span> <span class="nav-text">算法问题：运营在线上搞了两个活动，回收数据的时候，a活动收了2千万的那个qq号，b活动他回收了那个5千万的qq号。求两个活动大概都参加的用户有多少。设计一个算法求a和b的交集。</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E5%A6%82%E6%9E%9C%E7%BC%96%E5%86%99%E7%BB%84%E4%BB%B6%EF%BC%8C%E6%8F%90%E4%BE%9B%E6%8E%A5%E5%8F%A3%E5%AE%9A%E4%B9%89%E5%85%A5%E5%8F%82%E5%92%8C%E5%87%BA%E5%8F%82%EF%BC%8C%E4%B8%BA%E4%BB%80%E4%B9%88%E5%85%A5%E5%8F%82%E5%B0%BD%E5%8F%AF%E8%83%BD%E4%BD%BF%E7%94%A8C%E7%9A%84%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%EF%BC%8C%E8%80%8C%E4%B8%8D%E6%98%AF%E4%BD%BF%E7%94%A8C"><span class="nav-number">1.0.3.19.</span> <span class="nav-text">如果编写组件，提供接口定义入参和出参，为什么入参尽可能使用C的数据类型，而不是使用C++</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E5%85%B1%E4%BA%AB%E5%B1%8F%E5%B9%95%E5%81%9A%E7%AE%97%E6%B3%95%EF%BC%9A%E8%A7%A3%E6%9E%90http%E6%8A%A5%E6%96%87%EF%BC%8C%E5%AE%9E%E7%8E%B0%E4%BC%A0%E5%85%A5%E5%8F%82%E6%95%B0key%E8%BF%94%E5%9B%9Evalue"><span class="nav-number">1.0.3.20.</span> <span class="nav-text">共享屏幕做算法：解析http报文，实现传入参数key返回value</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#%E5%85%B1%E4%BA%AB%E5%B1%8F%E5%B9%95%E5%81%9A%E7%AE%97%E6%B3%95%EF%BC%9A%E5%BF%AB%E6%8E%92"><span class="nav-number">1.0.3.21.</span> <span class="nav-text">共享屏幕做算法：快排</span></a></li></ol></li></ol></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
