@@ -397,7 +397,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-05-07 21:32:43" itemprop="dateModified" datetime="2024-05-07T21:32:43+08:00">2024-05-07</time>
+                <time title="修改时间：2024-05-07 21:35:28" itemprop="dateModified" datetime="2024-05-07T21:35:28+08:00">2024-05-07</time>
               </span>
 
           
@@ -418,8 +418,7 @@
 </ol>
 <h5 id="问题："><a href="#问题：" class="headerlink" title="问题："></a>问题：</h5><h6 id="tcp建立连接是3次握手，断开连接是4次挥手，为什么会有这个差异？"><a href="#tcp建立连接是3次握手，断开连接是4次挥手，为什么会有这个差异？" class="headerlink" title="tcp建立连接是3次握手，断开连接是4次挥手，为什么会有这个差异？"></a>tcp建立连接是3次握手，断开连接是4次挥手，为什么会有这个差异？</h6><p>断开连接为什么要4次，而不是3次？</p>
 <ul>
-<li><p><strong>TCP连接为什么要三次握手</strong>？</p>
-<ol>
+<li><strong>TCP连接为什么要三次握手</strong>？<ol>
 <li>原因：<ol>
 <li>客户端发出SYN，并收到ACK，这就是两次网络传输了。</li>
 <li>同样服务器端也发出SYN，且等待对方回复，这也是两次网络传输。</li>
@@ -429,7 +428,7 @@
 <li>举例：已失效的连接请求报文</li>
 </ol>
 </li>
-<li><h5 id="TCP断开连接为什么需要四次挥手？"><a href="#TCP断开连接为什么需要四次挥手？" class="headerlink" title="TCP断开连接为什么需要四次挥手？"></a>TCP断开连接为什么需要四次挥手？</h5><ol>
+<li><strong>TCP断开连接为什么需要四次挥手？</strong><ol>
 <li>原因：<ol>
 <li>发起断开方发出FIN，并收到ACK，这就是两次网络传输了。</li>
 <li>同样被断开方也发出FIN，且等待对方回复，这也是两次网络传输。</li>
