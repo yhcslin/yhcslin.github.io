@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="单继承1.继承的写法和权限问题class 子类：继承方法 父类  继承方法：父类中的属性在子类中的最低权限 权限由低到高：public protected private eg:class boy:public woman——woman类的属性在boy类的最低权限为public  父类的私有属性对于子类来说是不可访问的    类的访问权限有三种：  public 公共权限： 可以被该类中的函数、子">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C++:继承">
+<meta property="og:url" content="http://example.com/2024/05/10/C++_%E7%BB%A7%E6%89%BF/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="单继承1.继承的写法和权限问题class 子类：继承方法 父类  继承方法：父类中的属性在子类中的最低权限 权限由低到高：public protected private eg:class boy:public woman——woman类的属性在boy类的最低权限为public  父类的私有属性对于子类来说是不可访问的    类的访问权限有三种：  public 公共权限： 可以被该类中的函数、子">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/assets/C-plus-plus-%E7%BB%A7%E6%89%BF/image-20240510131814280.png">
+<meta property="og:image" content="http://example.com/assets/C-plus-plus-%E7%BB%A7%E6%89%BF/image-20240510145208543.png">
+<meta property="og:image" content="http://example.com/assets/C-plus-plus-%E7%BB%A7%E6%89%BF/%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE%202024-05-10%20145254.png">
+<meta property="og:image" content="http://example.com/assets/C-plus-plus-%E7%BB%A7%E6%89%BF/image-20240510150049091.png">
+<meta property="og:image" content="http://example.com/assets/C-plus-plus-%E7%BB%A7%E6%89%BF/image-20240510150104291.png">
+<meta property="og:image" content="http://example.com/assets/C-plus-plus-%E7%BB%A7%E6%89%BF/image-20240510150956262.png">
+<meta property="og:image" content="http://example.com/assets/C-plus-plus-%E7%BB%A7%E6%89%BF/image-20240510151251920.png">
+<meta property="og:image" content="http://example.com/assets/C-plus-plus-%E7%BB%A7%E6%89%BF/image-20240510151908866.png">
+<meta property="og:image" content="http://example.com/assets/C-plus-plus-%E7%BB%A7%E6%89%BF/image-20240510152117958.png">
+<meta property="article:published_time" content="2024-05-10T07:29:26.000Z">
+<meta property="article:modified_time" content="2024-05-10T07:30:23.648Z">
+<meta property="article:author" content="yhcs">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/assets/C-plus-plus-%E7%BB%A7%E6%89%BF/image-20240510131814280.png">
+
+<link rel="canonical" href="http://example.com/2024/05/10/C++_%E7%BB%A7%E6%89%BF/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>C++:继承 | Hexo</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Hexo</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/05/10/C++_%E7%BB%A7%E6%89%BF/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="yhcs">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          C++:继承
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2024-05-10 15:29:26 / 修改时间：15:30:23" itemprop="dateCreated datePublished" datetime="2024-05-10T15:29:26+08:00">2024-05-10</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/C-%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">C++学习</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="单继承"><a href="#单继承" class="headerlink" title="单继承"></a>单继承</h3><h4 id="1-继承的写法和权限问题"><a href="#1-继承的写法和权限问题" class="headerlink" title="1.继承的写法和权限问题"></a>1.继承的写法和权限问题</h4><p><code>class 子类：继承方法 父类</code></p>
+<ol>
+<li><p>继承方法：父类中的属性在子类中的最低权限</p>
+<p>权限由低到高：<code>public</code> <code>protected</code> <code>private</code></p>
+<p>eg:<code>class boy:public woman</code>——woman类的属性在boy类的最低权限为public</p>
+</li>
+<li><p>父类的私有属性对于子类来说是不可访问的</p>
+</li>
+</ol>
+<blockquote>
+<p>类的访问权限有三种：</p>
+<ol>
+<li>public 公共权限： 可以被该类中的函数、子类的函数、其友元函数访问,也可以由该类的对象访问</li>
+<li>protected 保护权限： 可以<strong>被该类中的函数、子类的函数、以及其友元函数</strong>访问,但不能被该类的对象访问</li>
+<li>private 私有权限：只能由<strong>该类中的函数、其友元函数</strong>访问,不能被任何其他访问，该类的对象也不能访问。</li>
+</ol>
+<p>三种权限的区别：</p>
+<p>public:可以被任意实体访问<br>protected:只允许本类及子类的成员函数访问<br>private:只允许本类的成员函数访问</p>
+</blockquote>
+<h4 id="2-继承中构造函数的写法"><a href="#2-继承中构造函数的写法" class="headerlink" title="2.继承中构造函数的写法"></a>2.继承中构造函数的写法</h4><p>子类的构造函数<strong>必须</strong>调用父类的构造函数</p>
+<p>不想写的时候，习惯在父类中增加一个无参构造函数</p>
+<p>如：直接<code>Boy boy；</code>——报错，显示是已删除的构造函数</p>
+<p>​		解决方法：在woman类中新增无参构造函数<code>Woman()&#123;&#125;</code></p>
+<p>测试代码：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Woman</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">Woman</span>(string name,<span class="type">int</span> age):<span class="built_in">name</span>(name),<span class="built_in">age</span>(age)&#123;</span><br><span class="line">        cout&lt;&lt;<span class="string">&quot;调用基类带参构造函数&quot;</span>&lt;&lt;endl;</span><br><span class="line">    &#125;<span class="comment">//初始化参数列表</span></span><br><span class="line">    <span class="built_in">Woman</span>()&#123;</span><br><span class="line">        cout&lt;&lt;<span class="string">&quot;调用基类无参构造函数&quot;</span>&lt;&lt;endl;</span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">print</span><span class="params">()</span></span>&#123;</span><br><span class="line">        cout&lt;&lt;<span class="string">&quot;Woman &quot;</span>&lt;&lt;name&lt;&lt;<span class="string">&quot; &quot;</span>&lt;&lt;age&lt;&lt;endl;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="keyword">protected</span>:</span><br><span class="line">    string name;</span><br><span class="line">    <span class="type">int</span> age;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Boy</span>:<span class="keyword">protected</span> Woman<span class="comment">//Woman类的属性在boy类的最低权限是protected</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">Boy</span>()&#123;</span><br><span class="line">        cout&lt;&lt;<span class="string">&quot;调用子类无参构造函数&quot;</span>&lt;&lt;endl;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//采用初始化列表的方式调用父类的构造函数</span></span><br><span class="line">    <span class="built_in">Boy</span>(string name,<span class="type">int</span> age):<span class="built_in">Woman</span>(name,age)&#123;</span><br><span class="line">        cout&lt;&lt;<span class="string">&quot;调用子类带参构造函数&quot;</span>&lt;&lt;endl;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">print</span><span class="params">()</span></span>&#123;</span><br><span class="line">        cout&lt;&lt;<span class="string">&quot;Boy &quot;</span>&lt;&lt;name&lt;&lt;<span class="string">&quot; &quot;</span>&lt;&lt;age&lt;&lt;endl;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="keyword">protected</span>:</span><br><span class="line">    <span class="comment">//子类隐含有以下属性</span></span><br><span class="line">    <span class="comment">//void print();</span></span><br><span class="line">    <span class="comment">//string name;</span></span><br><span class="line">    <span class="comment">//int age;</span></span><br><span class="line">&#125;;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    Woman woman1;</span><br><span class="line">    cout&lt;&lt;<span class="string">&quot;============================&quot;</span>&lt;&lt;endl;</span><br><span class="line">    <span class="function">Woman <span class="title">woman2</span><span class="params">(<span class="string">&quot;Amy&quot;</span>,<span class="number">40</span>)</span></span>;</span><br><span class="line">    cout&lt;&lt;<span class="string">&quot;============================&quot;</span>&lt;&lt;endl;</span><br><span class="line">    Boy boy1;</span><br><span class="line">    cout&lt;&lt;<span class="string">&quot;============================&quot;</span>&lt;&lt;endl;</span><br><span class="line">    <span class="function">Boy <span class="title">boy2</span><span class="params">(<span class="string">&quot;Jack&quot;</span>,<span class="number">10</span>)</span></span>;</span><br><span class="line">    cout&lt;&lt;<span class="string">&quot;============================&quot;</span>&lt;&lt;endl;</span><br><span class="line">    woman2.<span class="built_in">print</span>();</span><br><span class="line">    boy2.<span class="built_in">print</span>();</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>结果：</p>
+<p><img src="/../assets/C-plus-plus-%E7%BB%A7%E6%89%BF/image-20240510131814280.png" alt="image-20240510131814280"></p>
+<p><strong>总结：子类构造函数一定会调用对应的父类构造函数</strong></p>
+<h3 id="构造顺序和析构顺序"><a href="#构造顺序和析构顺序" class="headerlink" title="构造顺序和析构顺序"></a>构造顺序和析构顺序</h3><p>正常情况下，构造函数和析构函数顺序相反</p>
+<p>测试代码：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">A</span>&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">A</span>()&#123;</span><br><span class="line">        cout&lt;&lt;<span class="string">&quot;A&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    ~<span class="built_in">A</span>()&#123;</span><br><span class="line">        cout&lt;&lt;<span class="string">&quot;~A&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">B</span>:<span class="keyword">public</span> A&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">B</span>()&#123;</span><br><span class="line">        cout&lt;&lt;<span class="string">&quot;B&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    ~<span class="built_in">B</span>()&#123;</span><br><span class="line">        cout&lt;&lt;<span class="string">&quot;~B&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    A a;<span class="comment">//A</span></span><br><span class="line">    B b;<span class="comment">//AB</span></span><br><span class="line">    <span class="comment">//~B~A~A</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>结果：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">AAB~B~A~A</span><br></pre></td></tr></table></figure>
+
+<p>注意：有<code>delete</code>的时候</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">B *p=<span class="keyword">new</span> B;</span><br><span class="line">B b;</span><br><span class="line"><span class="keyword">delete</span> p;</span><br></pre></td></tr></table></figure>
+
+<p>结果：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ABAB~B~A~B~A</span><br><span class="line"><span class="comment">//第一个~B~A是对象p的，什么delete就结束对象的生命周期</span></span><br><span class="line"><span class="comment">//b的析构是因为程序结束，生命周期结束自动调用析构函数    </span></span><br></pre></td></tr></table></figure>
+
+<h3 id="类的继承的遗传性"><a href="#类的继承的遗传性" class="headerlink" title="类的继承的遗传性"></a>类的继承的遗传性</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">A</span>&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="type">int</span> a;</span><br><span class="line">    <span class="built_in">A</span>(<span class="type">int</span> a):<span class="built_in">a</span>(a)&#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">B</span>&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="comment">//int a;</span></span><br><span class="line">    <span class="type">int</span> b;</span><br><span class="line">    <span class="built_in">B</span>(<span class="type">int</span> a,<span class="type">int</span> b):<span class="built_in">A</span>(a),<span class="built_in">b</span>(b)&#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">C</span>&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="comment">//int a;</span></span><br><span class="line">    <span class="comment">//int b;</span></span><br><span class="line">    <span class="type">int</span> c;</span><br><span class="line">    <span class="built_in">C</span>(<span class="type">int</span> a,<span class="type">int</span> b,<span class="type">int</span> c):<span class="built_in">B</span>(a,b),<span class="built_in">c</span>(c)&#123;&#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>B继承A，C继承B——则C不仅包含B的属性，也包含A的属性</li>
+<li>构造函数的写法：初始化参数列表—调用直接父类的构造函数+初始化其他属性</li>
+</ol>
+<h3 id="继承中的同名问题"><a href="#继承中的同名问题" class="headerlink" title="继承中的同名问题"></a>继承中的同名问题</h3><p>父类和子类同名问题：</p>
+<ol>
+<li>数据成员同名</li>
+<li>成员函数同名</li>
+</ol>
+<p>通常情况为<strong>就近原则</strong>，优先调用本类的</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Woman</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">Woman</span>(string name,<span class="type">int</span> age):<span class="built_in">name</span>(name),<span class="built_in">age</span>(age)&#123;&#125;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">print</span><span class="params">()</span></span>&#123;</span><br><span class="line">        cout&lt;&lt;<span class="string">&quot;Woman &quot;</span>&lt;&lt;name&lt;&lt;<span class="string">&quot; &quot;</span>&lt;&lt;age&lt;&lt;endl;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="keyword">protected</span>:</span><br><span class="line">    string name;</span><br><span class="line">    <span class="type">int</span> age;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Boy</span>:<span class="keyword">public</span> Woman</span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:   </span><br><span class="line">    <span class="built_in">Boy</span>(string name,<span class="type">int</span> age,string mmName,<span class="type">int</span> mmAge):<span class="built_in">name</span>(name),<span class="built_in">age</span>(age),<span class="built_in">Woman</span>(mmName,mmAge)&#123;&#125;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">print</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="comment">//1.通常都是就近原则，调用本类的</span></span><br><span class="line">        cout&lt;&lt;<span class="string">&quot;Boy &quot;</span>&lt;&lt;name&lt;&lt;<span class="string">&quot; &quot;</span>&lt;&lt;age&lt;&lt;endl;</span><br><span class="line">        <span class="comment">//2.用类名限定，调用对应类的属性</span></span><br><span class="line">        cout&lt;&lt;<span class="string">&quot;类名限定 &quot;</span>&lt;&lt;Woman::name&lt;&lt;<span class="string">&quot; &quot;</span>&lt;&lt; Woman::age&lt;&lt;endl;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="keyword">protected</span>:</span><br><span class="line">    string name;</span><br><span class="line">    <span class="type">int</span> age;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="function">Boy <span class="title">coolboy</span><span class="params">(<span class="string">&quot;boy&quot;</span>,<span class="number">18</span>,<span class="string">&quot;woman&quot;</span>,<span class="number">40</span>)</span></span>;</span><br><span class="line">    coolboy.<span class="built_in">print</span>();<span class="comment">//Boy boy 18 类名限定 woman 40</span></span><br><span class="line">    coolboy.Woman.<span class="built_in">print</span>();<span class="comment">//Woman woman 40</span></span><br><span class="line">    Woman *p=<span class="keyword">new</span> <span class="built_in">Boy</span>(<span class="string">&quot;Woman_Boy&quot;</span>,<span class="number">19</span>,<span class="string">&quot;Woman&quot;</span>,<span class="number">41</span>);</span><br><span class="line">    p-&gt;<span class="built_in">print</span>();<span class="comment">//Woman WomanPtr 41</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>结果：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Boy boy 18</span><br><span class="line">类名限定 woman 40</span><br><span class="line">Woman woman 40</span><br><span class="line">Woman WomanPtr 41</span><br></pre></td></tr></table></figure>
+
+<p>总结：</p>
+<ol>
+<li><p>通常情况下，都是就近原则，优先调用本类的数据和方法</p>
+</li>
+<li><p>如果加上类名限定，则调用对应类的数据和方法</p>
+</li>
+<li><p>如果是指针，没有<code>virtual</code>的情况下，也是就近原则</p>
+</li>
+<li><p>特殊情况：父类指针被子类对象初始化，没有<code>virtual</code>的情况看类型，有<code>virtual</code>的情况看对象</p>
+<p><code>Woman *p=new Boy(&quot;Woman_Boy&quot;,19,&quot;Woman&quot;,41);p-&gt;print();</code></p>
+<p>所以调用的<code>p</code>对应的类型<code>Woman</code>的函数</p>
+<p>注意：不允许子类指针被父类对象初始化&#x2F;&#x2F;除非进行指针类型转换</p>
+</li>
+</ol>
+<h3 id="多继承"><a href="#多继承" class="headerlink" title="多继承"></a>多继承</h3><ol>
+<li>多继承——存在两个及以上的父类</li>
+<li>权限问题：跟单继承情况一样</li>
+<li>构造函数写法：跟单继承也是一样的</li>
+</ol>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Woman</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">Woman</span>(string WomanFName,string WomanSName):<span class="built_in">WomanFName</span>(WomanFName),<span class="built_in">WomanSName</span>(WomanSName)&#123;&#125;</span><br><span class="line"><span class="keyword">protected</span>:</span><br><span class="line">    string WomanFName;<span class="comment">//姓</span></span><br><span class="line">    string WomanSName;<span class="comment">//名</span></span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Man</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:   </span><br><span class="line">    <span class="built_in">Man</span>(string ManFName,string ManSName):<span class="built_in">ManFName</span>(ManFName),<span class="built_in">ManSName</span>(ManSName)&#123;&#125;</span><br><span class="line"><span class="keyword">protected</span>:</span><br><span class="line">    string ManFName;</span><br><span class="line">    string ManSName;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">//多继承</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Son</span>:<span class="keyword">public</span> Woman,<span class="keyword">public</span> Man</span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="comment">//多继承要调用多个父类的构造函数</span></span><br><span class="line">    <span class="built_in">Son</span>(string ManFName,string ManSName,string WomanFName,string WomanSName,string SonSName)</span><br><span class="line">        :<span class="built_in">Man</span>(ManFName,ManSName),<span class="built_in">Woman</span>(WomanFName,WomanSName),<span class="built_in">SonFName</span>(ManFName+WomanFName),<span class="built_in">SonSName</span>(SonSName)&#123;&#125;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">print</span><span class="params">()</span></span>&#123;</span><br><span class="line">        cout&lt;&lt;<span class="string">&quot;mother:&quot;</span>&lt;&lt;WomanFName+WomanSName&lt;&lt;endl;</span><br><span class="line">        cout&lt;&lt;<span class="string">&quot;father:&quot;</span>&lt;&lt;ManFName+ManSName&lt;&lt;endl;</span><br><span class="line">        cout&lt;&lt;<span class="string">&quot;Son:&quot;</span>&lt;&lt;SonFName+SonSName&lt;&lt;endl;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="keyword">protected</span>:</span><br><span class="line">    string SonFName;</span><br><span class="line">    string SonSName;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="function">Son <span class="title">son</span><span class="params">(<span class="string">&quot;欧&quot;</span>,<span class="string">&quot;明明&quot;</span>,<span class="string">&quot;阳&quot;</span>,<span class="string">&quot;丽丽&quot;</span>,<span class="string">&quot;修&quot;</span>)</span></span>;</span><br><span class="line">    son.<span class="built_in">print</span>();</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mother:阳丽丽</span><br><span class="line">father:欧明明</span><br><span class="line">Son:欧阳修</span><br></pre></td></tr></table></figure>
+
+<h3 id="虚继承"><a href="#虚继承" class="headerlink" title="虚继承"></a>虚继承</h3><p>菱形继承：B、C继承A，D继承B、C</p>
+<p>存在二义性：例如<code>A-int a;B-//int a;C-//int a;D-//int a;</code>二义性：D的a来自谁</p>
+<p><img src="/../assets/C-plus-plus-%E7%BB%A7%E6%89%BF/image-20240510145208543.png" alt="image-20240510145208543"></p>
+<p>解决方法一：加上类型限定</p>
+<p><img src="/../assets/C-plus-plus-%E7%BB%A7%E6%89%BF/%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE%202024-05-10%20145254.png" alt="屏幕截图 2024-05-10 145254"></p>
+<p>解决方法二：使用虚继承</p>
+<p><img src="/../assets/C-plus-plus-%E7%BB%A7%E6%89%BF/image-20240510150049091.png" alt="image-20240510150049091"></p>
+<p><img src="/../assets/C-plus-plus-%E7%BB%A7%E6%89%BF/image-20240510150104291.png" alt="image-20240510150104291"></p>
+<p>PS：几个类共享一份数据</p>
+<h3 id="虚函数"><a href="#虚函数" class="headerlink" title="虚函数"></a>虚函数</h3><p>虚函数——用<code>virtual</code>修饰的函数</p>
+<p>注意：构造函数不能为虚函数</p>
+<h4 id="1-虚函数对类的内存的影响"><a href="#1-虚函数对类的内存的影响" class="headerlink" title="1.虚函数对类的内存的影响"></a>1.虚函数对类的内存的影响</h4><p><img src="/../assets/C-plus-plus-%E7%BB%A7%E6%89%BF/image-20240510150956262.png" alt="image-20240510150956262"></p>
+<h4 id="2-纯虚函数"><a href="#2-纯虚函数" class="headerlink" title="2.纯虚函数"></a>2.纯虚函数</h4><p>抽象类：具有纯虚函数的类</p>
+<p>特性：不能创建对象，但可以创建对象类型指针</p>
+<p><img src="/../assets/C-plus-plus-%E7%BB%A7%E6%89%BF/image-20240510151251920.png" alt="image-20240510151251920"></p>
+<p>子类继承抽象类，必须实现所有的纯虚函数才能实例化。</p>
+<h4 id="3-虚析构函数"><a href="#3-虚析构函数" class="headerlink" title="3.虚析构函数"></a>3.虚析构函数</h4><p><img src="/../assets/C-plus-plus-%E7%BB%A7%E6%89%BF/image-20240510151908866.png" alt="image-20240510151908866"></p>
+<p>结果：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">父类构造函数</span><br><span class="line">子类构造函数</span><br><span class="line">父类析构函数</span><br><span class="line"><span class="comment">//发现没有调用子类的析构函数</span></span><br></pre></td></tr></table></figure>
+
+<p>解决方法：使用虚析构函数</p>
+<p>——注意：虚函数一旦被继承，不管被继承多少次，永远为虚函数</p>
+<p><img src="/../assets/C-plus-plus-%E7%BB%A7%E6%89%BF/image-20240510152117958.png" alt="image-20240510152117958"></p>
+<p>结果：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">父类构造函数</span><br><span class="line">子类构造函数</span><br><span class="line">子类析构函数</span><br><span class="line">父类析构函数</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2024/05/08/const%E5%92%8C-define%E7%9A%84%E5%8C%BA%E5%88%AB/" rel="prev" title="const和#define的区别">
+      <i class="fa fa-chevron-left"></i> const和#define的区别
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%95%E7%BB%A7%E6%89%BF"><span class="nav-number">1.</span> <span class="nav-text">单继承</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E7%BB%A7%E6%89%BF%E7%9A%84%E5%86%99%E6%B3%95%E5%92%8C%E6%9D%83%E9%99%90%E9%97%AE%E9%A2%98"><span class="nav-number">1.1.</span> <span class="nav-text">1.继承的写法和权限问题</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E7%BB%A7%E6%89%BF%E4%B8%AD%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0%E7%9A%84%E5%86%99%E6%B3%95"><span class="nav-number">1.2.</span> <span class="nav-text">2.继承中构造函数的写法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%84%E9%80%A0%E9%A1%BA%E5%BA%8F%E5%92%8C%E6%9E%90%E6%9E%84%E9%A1%BA%E5%BA%8F"><span class="nav-number">2.</span> <span class="nav-text">构造顺序和析构顺序</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B1%BB%E7%9A%84%E7%BB%A7%E6%89%BF%E7%9A%84%E9%81%97%E4%BC%A0%E6%80%A7"><span class="nav-number">3.</span> <span class="nav-text">类的继承的遗传性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%A7%E6%89%BF%E4%B8%AD%E7%9A%84%E5%90%8C%E5%90%8D%E9%97%AE%E9%A2%98"><span class="nav-number">4.</span> <span class="nav-text">继承中的同名问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%9A%E7%BB%A7%E6%89%BF"><span class="nav-number">5.</span> <span class="nav-text">多继承</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%99%9A%E7%BB%A7%E6%89%BF"><span class="nav-number">6.</span> <span class="nav-text">虚继承</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%99%9A%E5%87%BD%E6%95%B0"><span class="nav-number">7.</span> <span class="nav-text">虚函数</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E8%99%9A%E5%87%BD%E6%95%B0%E5%AF%B9%E7%B1%BB%E7%9A%84%E5%86%85%E5%AD%98%E7%9A%84%E5%BD%B1%E5%93%8D"><span class="nav-number">7.1.</span> <span class="nav-text">1.虚函数对类的内存的影响</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E7%BA%AF%E8%99%9A%E5%87%BD%E6%95%B0"><span class="nav-number">7.2.</span> <span class="nav-text">2.纯虚函数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-%E8%99%9A%E6%9E%90%E6%9E%84%E5%87%BD%E6%95%B0"><span class="nav-number">7.3.</span> <span class="nav-text">3.虚析构函数</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">yhcs</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">8</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">yhcs</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
