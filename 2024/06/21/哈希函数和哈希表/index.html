@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="哈希函数和哈希表哈希函数的特点 一般情况下，输入域无穷，输出域有限  相同的输入参数，一定会返回相同的值（内部不随机）  因为输出域可能小于输入域，所以不同输入可能有相同输出（def：哈希碰撞）  离散性：即便输入参数有一点点不一样，输出的值也有可能不一样 均匀性：假设输出域为S，很多个输入，映射到输出域，在输出域内任意选择一块区域，选中的输出点个数几乎一样  假设输入：in1,in2,in3……">
+<meta property="og:type" content="article">
+<meta property="og:title" content="哈希函数和哈希表">
+<meta property="og:url" content="http://example.com/2024/06/21/%E5%93%88%E5%B8%8C%E5%87%BD%E6%95%B0%E5%92%8C%E5%93%88%E5%B8%8C%E8%A1%A8/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="哈希函数和哈希表哈希函数的特点 一般情况下，输入域无穷，输出域有限  相同的输入参数，一定会返回相同的值（内部不随机）  因为输出域可能小于输入域，所以不同输入可能有相同输出（def：哈希碰撞）  离散性：即便输入参数有一点点不一样，输出的值也有可能不一样 均匀性：假设输出域为S，很多个输入，映射到输出域，在输出域内任意选择一块区域，选中的输出点个数几乎一样  假设输入：in1,in2,in3……">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/assets/%E5%93%88%E5%B8%8C%E5%87%BD%E6%95%B0%E5%92%8C%E5%93%88%E5%B8%8C%E8%A1%A8/image-20240621170814015.png">
+<meta property="article:published_time" content="2024-06-21T09:19:30.000Z">
+<meta property="article:modified_time" content="2024-06-21T09:21:10.433Z">
+<meta property="article:author" content="yhcs">
+<meta property="article:tag" content="算法学习">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/assets/%E5%93%88%E5%B8%8C%E5%87%BD%E6%95%B0%E5%92%8C%E5%93%88%E5%B8%8C%E8%A1%A8/image-20240621170814015.png">
+
+<link rel="canonical" href="http://example.com/2024/06/21/%E5%93%88%E5%B8%8C%E5%87%BD%E6%95%B0%E5%92%8C%E5%93%88%E5%B8%8C%E8%A1%A8/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>哈希函数和哈希表 | Hexo</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Hexo</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/06/21/%E5%93%88%E5%B8%8C%E5%87%BD%E6%95%B0%E5%92%8C%E5%93%88%E5%B8%8C%E8%A1%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="yhcs">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          哈希函数和哈希表
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2024-06-21 17:19:30 / 修改时间：17:21:10" itemprop="dateCreated datePublished" datetime="2024-06-21T17:19:30+08:00">2024-06-21</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="哈希函数和哈希表"><a href="#哈希函数和哈希表" class="headerlink" title="哈希函数和哈希表"></a>哈希函数和哈希表</h2><h3 id="哈希函数的特点"><a href="#哈希函数的特点" class="headerlink" title="哈希函数的特点"></a>哈希函数的特点</h3><ol>
+<li><p>一般情况下，输入域无穷，输出域有限</p>
+</li>
+<li><p>相同的输入参数，一定会返回相同的值（内部不随机）</p>
+</li>
+<li><p>因为输出域可能小于输入域，所以不同输入可能有相同输出（def：哈希碰撞）</p>
+</li>
+<li><p>离散性：即便输入参数有一点点不一样，输出的值也有可能不一样</p>
+<p>均匀性：假设输出域为S，很多个输入，映射到输出域，在输出域内任意选择一块区域，选中的输出点个数几乎一样</p>
+<blockquote>
+<p>假设输入：in1,in2,in3……</p>
+<p>输出为：out1,out2,ou3……</p>
+<p>如果输出为均匀的，那么将输出值%m之后，结果在0~m-1上也是均匀的</p>
+</blockquote>
+</li>
+</ol>
+<p><strong>例1：小内存返回大文件中出现次数最多的</strong></p>
+<p>一个文件存放无符号整数，总共有40亿个，只有1G内存，返回出现次数最大的数</p>
+<p>Q：使用简单的哈希，有可能出现内存不足</p>
+<p>​		因为一条记录&lt;int,int&gt;至少占用8字节，则40亿数的哈希表至少占32G</p>
+<p>解法：</p>
+<p>40亿数—&gt;<strong>哈希函数</strong>—&gt;<strong>%100</strong>—&gt;0~99	（哈希函数的作用：使数据均匀分布）</p>
+<p>相当于把一个40亿的大文件划分为100个小文件，由于哈希函数的均匀性，所以哈希值再取模以后一定是均匀分布在0~99</p>
+<p>再依次读取小文件，建立每个小文件的哈希表，因为是均匀分布的，所以一个小文件的哈希表大小&#x3D;32G&#x2F;100</p>
+<blockquote>
+<p><strong>哈希碰撞的解决方案：</strong></p>
+<ol>
+<li><p>链表式解决</p>
+</li>
+<li><p>开放寻址法</p>
+<ol>
+<li><p>线性探测法：碰撞发生时，元素存储位置+1直到找到未占用位置</p>
+<p>——&gt;问题：导致“二次聚集”：不同基地址的元素争夺同一个位置</p>
+</li>
+<li><p>平方探测法：为了避免上述问题，重新寻址时，位置+1，+4……+(冲突次数)^2</p>
+</li>
+</ol>
+</li>
+<li><p>再哈希法</p>
+<p>遇到位置被占用，对该位置进行再次哈希，循环直到找到未占用的位置</p>
+<p>注意：控制再哈希的次数阈值，不然可能出现无限循环的情况，导致查找元素时无法确定边界，即不知道进行几次哈希才算找不到元素</p>
+</li>
+</ol>
+</blockquote>
+<h3 id="哈希表的实现"><a href="#哈希表的实现" class="headerlink" title="哈希表的实现"></a>哈希表的实现</h3><p>先进行哈希，再模一个数确定放在哪个桶里</p>
+<p>当单向链表过于长时，影响查找效率，对哈希表进行扩容——&gt;哈希表大小变为原来两倍，则单向链表长度变为原来一半（哈希函数的均匀性）</p>
+<h3 id="布隆过滤器"><a href="#布隆过滤器" class="headerlink" title="布隆过滤器"></a>布隆过滤器</h3><p><strong>问题：黑名单问题</strong></p>
+<p>要求一个集合：增加和查询，不需要删除操作，且允许一定失误率（这种失误指的是把白误报成黑，不会出现把黑误报成白）——宁可错杀，不可放过</p>
+<p>布隆过滤器：减少内存空间，但带来了一定的失误率</p>
+<h4 id="位图"><a href="#位图" class="headerlink" title="位图"></a>位图</h4><p>——bit类型的数组	</p>
+<p>实现方式：拿基础类型拼</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> *arr = <span class="keyword">new</span> <span class="type">int</span>[<span class="number">10</span>];<span class="comment">//4*8*10=320bits</span></span><br><span class="line"><span class="comment">//arr[0]——int[]0~31</span></span><br><span class="line"><span class="comment">//arr[1]——int[]32~63</span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> i = <span class="number">178</span>;<span class="comment">//取得178bit的信息：0/1</span></span><br><span class="line"><span class="comment">//定位</span></span><br><span class="line"><span class="type">int</span> numIdx = i / <span class="number">32</span>;</span><br><span class="line"><span class="type">int</span> bitIdx = i % <span class="number">32</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//取得i位置的信息</span></span><br><span class="line"><span class="comment">//为什么是32，因为1个int是32bit</span></span><br><span class="line"><span class="type">int</span> status = ((arr[numIdx] &gt;&gt; bitIdx) &amp; <span class="number">1</span>);</span><br><span class="line"><span class="type">int</span> bit = (arr[i / <span class="number">32</span>] &gt;&gt; (i % <span class="number">32</span>)) &amp; <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//将状态改为1</span></span><br><span class="line">arr[numIdx] = arr[numIdx] | (<span class="number">1</span> &lt;&lt; bitIdx);</span><br><span class="line"></span><br><span class="line"><span class="comment">//将状态改为0</span></span><br><span class="line">arr[numIdx] = arr[numIdx] &amp; (~(<span class="number">1</span> &lt;&lt; bitIdx));</span><br></pre></td></tr></table></figure>
+
+<h4 id="布隆过滤器的实现"><a href="#布隆过滤器的实现" class="headerlink" title="布隆过滤器的实现"></a>布隆过滤器的实现</h4><h5 id="（1）黑名单的建立"><a href="#（1）黑名单的建立" class="headerlink" title="（1）黑名单的建立"></a>（1）黑名单的建立</h5><p>准备一个大的位图长为m，k个哈希函数</p>
+<p>url1—f1—&gt;m1	m1位置涂黑</p>
+<p>​		—f2—&gt;m2	……	—fk—&gt;mk 	&#x3D;&#x3D;&#x3D;&gt;m1,m2,……mk位置涂黑</p>
+<p>……	……	……</p>
+<p>urln&#x3D;&#x3D;&#x3D;&gt;k个位置涂黑</p>
+<p>ps：白的描黑，黑的别管</p>
+<p>黑名单建立完毕</p>
+<h5 id="（2）黑名单的查找"><a href="#（2）黑名单的查找" class="headerlink" title="（2）黑名单的查找"></a>（2）黑名单的查找</h5><p>比如说要查找urlx	&#x3D;&#x3D;&#x3D;》 经过k个哈希函数再%m得到k个位置</p>
+<p>如果这k个位置都为黑，则输出urlx属于黑名单</p>
+<blockquote>
+<p>为什么黑不会报为白？只要urlx是黑的，则k个位置一定是黑的，报为黑名单</p>
+<p>有可能白报为黑？例如m值很小，有可能位图全黑，误报率增加</p>
+</blockquote>
+<h5 id="（3）失误率的决定因素"><a href="#（3）失误率的决定因素" class="headerlink" title="（3）失误率的决定因素"></a>（3）失误率的决定因素</h5><ol>
+<li><p>主要因素：m值</p>
+<p>m太小，导致黑名单建立过程中都被涂黑了，失误率提高</p>
+</li>
+<li><p>第二个因素：k值</p>
+<p>相当于一个样本采k个特征点，所以一定程度上，k值越大，误报率越低</p>
+<p>但如果k值太大，同样会导致位图上涂黑的地方过多，提高误报率</p>
+<p>所以，先选取合适的m值，再根据m值选取合适的k值来降低误报率</p>
+</li>
+</ol>
+<h5 id="（4）布隆过滤器参数选择"><a href="#（4）布隆过滤器参数选择" class="headerlink" title="（4）布隆过滤器参数选择"></a>（4）布隆过滤器参数选择</h5><ol>
+<li><p>确定模型：是不是类似于黑名单问题，只需要添加和查询，不需要删除操作</p>
+</li>
+<li><p>确定是否允许失误率</p>
+</li>
+<li><p>布隆过滤器的设计只跟两个因素有关：n&#x3D;样本量，p&#x3D;失误率</p>
+<p>注意：跟单样本的大小没关系，因为放到布隆过滤器的值是哈希之后再模的，所以只需要保证单样本的大小属于哈希函数的输入范围</p>
+<p>结果都向上取整<br>$$<br>m&#x3D;-\frac {n<em>\ln p} {(\ln 2)^2}\<br>k&#x3D;\ln 2</em>\frac {m}{n}\approx0.7*\frac {m}{n}<br>$$<br>上述取到的是理论值。</p>
+<p>由实际的m，k值可得到实际的失误率p<br>$$<br>p&#x3D;(1-e^{-\frac {(n*k)}{m}})^k<br>$$</p>
+</li>
+</ol>
+<h3 id="一致性哈希"><a href="#一致性哈希" class="headerlink" title="一致性哈希"></a>一致性哈希</h3><p>分布式服务器</p>
+<p>假设有三台数据库服务器m1	m2	m3</p>
+<p>data1——哈希	%3——m1		数据1放在m1里</p>
+<p>…… 	……	……</p>
+<p><strong>负载问题：</strong>如果有的数据高频，有的数据低频，导致服务器负载不均衡</p>
+<h4 id="哈希key的选择"><a href="#哈希key的选择" class="headerlink" title="哈希key的选择"></a>哈希key的选择</h4><p>&#x3D;&#x3D;&#x3D;》题外话：哈希key的选择</p>
+<p>​	可以：身份证、人名</p>
+<p>​	不可以：国家名、性别</p>
+<p>——》高频、中频、低频都有数量——》三台服务器负载均衡</p>
+<p>例：以性别为哈希key会导致两台服务器在工作，另一台服务器负载为0</p>
+<h4 id="一致性哈希-1"><a href="#一致性哈希-1" class="headerlink" title="一致性哈希"></a>一致性哈希</h4><p>下一个问题：</p>
+<p>这种服务器选择方式——data&#x3D;&#x3D;》哈希&#x3D;&#x3D;》%服务器数量&#x3D;&#x3D;》数据存放位置</p>
+<p>带来问题：当增加服务器或者减少服务器，数据迁移是全量的，也就是说所有数据都要重新计算哈希值再模运算</p>
+<p>解决&#x3D;&#x3D;&#x3D;&#x3D;》一致性哈希</p>
+<p>例：某种哈希算法得到的哈希值取值范围形成一个环0~x，数据得到的哈希值打在环上</p>
+<p><strong>计算机器的哈希值</strong>：m1	m2	m3	m4</p>
+<p><img src="/../assets/%E5%93%88%E5%B8%8C%E5%87%BD%E6%95%B0%E5%92%8C%E5%93%88%E5%B8%8C%E8%A1%A8/image-20240621170814015.png" alt="image-20240621170814015"></p>
+<p>数据存储：数据&#x3D;&#x3D;哈希&#x3D;&#x3D;》data	——》插在环上，顺时针最近的就是数据存储的数据库，例如：data1放在m2上</p>
+<p>所以在逻辑服务器上：m1 [c , 0]	m2 [0 , a]	m3 [a , b]	m4 [b , c]</p>
+<p>所以在逻辑服务器上存储：0 a b c，插入数据data&#x3D;》计算哈希值datam&#x3D;》通过二分查找找到&gt;datam最左边的数&#x3D;&#x3D;》找到存储位置</p>
+<ul>
+<li>数据库增加，例如：增加m4，原来[b , 0]归m1管，现在分一部分[b , c]给m4管，所以只需要重新计算m1上的数据的哈希值</li>
+<li>数据库减少，例如：减少m4，只需要把m4上的数据放到m1上就行</li>
+</ul>
+<p>&#x3D;&#x3D;&#x3D;》<strong>问题：</strong>当机器数量较少时，服务器分布是不均匀的也会导致负载不均衡的情况</p>
+<h4 id="虚拟结点"><a href="#虚拟结点" class="headerlink" title="虚拟结点"></a>虚拟结点</h4><p>解决办法：<strong>虚拟结点</strong></p>
+<p>m1：a1,a2……a1000</p>
+<p>m2：b1,b2……b1000</p>
+<p>m3：c1,c2……c1000</p>
+<p>实际上去抢环的是虚拟结点，数量多&#x3D;&#x3D;》环上有3000个点&#x3D;&#x3D;》数据分布均衡</p>
+<p>数据选择存放在哪个点——》存放在哪台服务器上</p>
+<p>并且，这种方式还可以管理负载：比如，实际服务器a性能号，b性能差&#x3D;&#x3D;&#x3D;&gt;给a分配2000个虚拟结点，b分配500个虚拟结点</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%AE%97%E6%B3%95%E5%AD%A6%E4%B9%A0/" rel="tag"># 算法学习</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2024/06/04/C-TCP%E5%8D%8F%E8%AE%AE%E5%AE%9E%E7%8E%B0%E7%BD%91%E7%BB%9C%E9%80%9A%E8%AE%AF/" rel="prev" title="[C]TCP协议实现网络通讯">
+      <i class="fa fa-chevron-left"></i> [C]TCP协议实现网络通讯
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%93%88%E5%B8%8C%E5%87%BD%E6%95%B0%E5%92%8C%E5%93%88%E5%B8%8C%E8%A1%A8"><span class="nav-number">1.</span> <span class="nav-text">哈希函数和哈希表</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%93%88%E5%B8%8C%E5%87%BD%E6%95%B0%E7%9A%84%E7%89%B9%E7%82%B9"><span class="nav-number">1.1.</span> <span class="nav-text">哈希函数的特点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%93%88%E5%B8%8C%E8%A1%A8%E7%9A%84%E5%AE%9E%E7%8E%B0"><span class="nav-number">1.2.</span> <span class="nav-text">哈希表的实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8"><span class="nav-number">1.3.</span> <span class="nav-text">布隆过滤器</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BD%8D%E5%9B%BE"><span class="nav-number">1.3.1.</span> <span class="nav-text">位图</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8%E7%9A%84%E5%AE%9E%E7%8E%B0"><span class="nav-number">1.3.2.</span> <span class="nav-text">布隆过滤器的实现</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%EF%BC%881%EF%BC%89%E9%BB%91%E5%90%8D%E5%8D%95%E7%9A%84%E5%BB%BA%E7%AB%8B"><span class="nav-number">1.3.2.1.</span> <span class="nav-text">（1）黑名单的建立</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%EF%BC%882%EF%BC%89%E9%BB%91%E5%90%8D%E5%8D%95%E7%9A%84%E6%9F%A5%E6%89%BE"><span class="nav-number">1.3.2.2.</span> <span class="nav-text">（2）黑名单的查找</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%EF%BC%883%EF%BC%89%E5%A4%B1%E8%AF%AF%E7%8E%87%E7%9A%84%E5%86%B3%E5%AE%9A%E5%9B%A0%E7%B4%A0"><span class="nav-number">1.3.2.3.</span> <span class="nav-text">（3）失误率的决定因素</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%EF%BC%884%EF%BC%89%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8%E5%8F%82%E6%95%B0%E9%80%89%E6%8B%A9"><span class="nav-number">1.3.2.4.</span> <span class="nav-text">（4）布隆过滤器参数选择</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%80%E8%87%B4%E6%80%A7%E5%93%88%E5%B8%8C"><span class="nav-number">1.4.</span> <span class="nav-text">一致性哈希</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%93%88%E5%B8%8Ckey%E7%9A%84%E9%80%89%E6%8B%A9"><span class="nav-number">1.4.1.</span> <span class="nav-text">哈希key的选择</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%80%E8%87%B4%E6%80%A7%E5%93%88%E5%B8%8C-1"><span class="nav-number">1.4.2.</span> <span class="nav-text">一致性哈希</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%99%9A%E6%8B%9F%E7%BB%93%E7%82%B9"><span class="nav-number">1.4.3.</span> <span class="nav-text">虚拟结点</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">yhcs</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">10</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">yhcs</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
