@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="KMP算法KMP算法：查找连续子串，返回值：str1中str2开始的位置&#x2F;-1 例：str1：ABCD1234de ​		str2：1234 	返回值：4 ​		str3：1234e	返回值：-1 暴力解法：遍历str1，看每个开头能否配出str2 时间复杂度：O（mn） KMP算法基础：next数组 ——str2中每个字符对应一个信息：最长公共前后缀（该字符前面的字符串相等前缀和后缀的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="算法：KMP">
+<meta property="og:url" content="http://example.com/2024/06/24/KMP%E7%AE%97%E6%B3%95/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="KMP算法KMP算法：查找连续子串，返回值：str1中str2开始的位置&#x2F;-1 例：str1：ABCD1234de ​		str2：1234 	返回值：4 ​		str3：1234e	返回值：-1 暴力解法：遍历str1，看每个开头能否配出str2 时间复杂度：O（mn） KMP算法基础：next数组 ——str2中每个字符对应一个信息：最长公共前后缀（该字符前面的字符串相等前缀和后缀的">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/assets/KMP%E7%AE%97%E6%B3%95/image-20240624223723044.png">
+<meta property="article:published_time" content="2024-06-24T15:43:31.000Z">
+<meta property="article:modified_time" content="2024-06-24T15:44:39.890Z">
+<meta property="article:author" content="yhcs">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/assets/KMP%E7%AE%97%E6%B3%95/image-20240624223723044.png">
+
+<link rel="canonical" href="http://example.com/2024/06/24/KMP%E7%AE%97%E6%B3%95/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>算法：KMP | Hexo</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Hexo</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/06/24/KMP%E7%AE%97%E6%B3%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="yhcs">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          算法：KMP
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2024-06-24 23:43:31 / 修改时间：23:44:39" itemprop="dateCreated datePublished" datetime="2024-06-24T23:43:31+08:00">2024-06-24</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%AE%97%E6%B3%95%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">算法学习</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="KMP算法"><a href="#KMP算法" class="headerlink" title="KMP算法"></a>KMP算法</h2><p><strong>KMP算法：</strong>查找连续子串，返回值：str1中str2开始的位置&#x2F;-1</p>
+<p>例：str1：ABCD1234de</p>
+<p>​		str2：1234 	返回值：4</p>
+<p>​		str3：1234e	返回值：-1</p>
+<p><u>暴力解法：</u>遍历str1，看每个开头能否配出str2</p>
+<p>时间复杂度：O（mn）</p>
+<p><strong>KMP算法基础：</strong>next数组</p>
+<p>——str2中每个字符对应一个信息：最长公共前后缀（该字符前面的字符串相等前缀和后缀的最大长度，并且不能取到整体）</p>
+<p>例：abbabb k	k&#x3D;&#x3D;&gt;3</p>
+<table>
+<thead>
+<tr>
+<th>长度</th>
+<th>1</th>
+<th>2</th>
+<th>3</th>
+<th>4</th>
+<th>5</th>
+<th>6</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>前缀</td>
+<td>a</td>
+<td>ab</td>
+<td>abb</td>
+<td>abba</td>
+<td>abbab</td>
+<td>不讨论</td>
+</tr>
+<tr>
+<td>后缀</td>
+<td>b</td>
+<td>bb</td>
+<td>abb</td>
+<td>babb</td>
+<td>bbabb</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>!&#x3D;</td>
+<td>!&#x3D;</td>
+<td>&#x3D;&#x3D;</td>
+<td>!&#x3D;</td>
+<td>!&#x3D;</td>
+<td></td>
+</tr>
+</tbody></table>
+<p>所以str2对应一个<code>next arr</code>&#x3D;&#x3D;》用来加速匹配过程</p>
+<p>例：str2&#x3D;{a,a,b,a,a,b,s}</p>
+<p>next&#x3D;{-1,0,1,0,1,2,3}	ps：<strong>next[0]&#x3D;-1</strong>(人为规定)，next[1]&#x3D;0</p>
+<p><strong>KMP算法实现原理</strong></p>
+<p>——目的：让i跳的尽可能快（经典：i&#x3D;i+1）</p>
+<p><img src="/../assets/KMP%E7%AE%97%E6%B3%95/image-20240624223723044.png" alt="image-20240624223723044"></p>
+<blockquote>
+<p>（2）的证明通过反证法：设k在i~j之间，k开始能配出str2……推出跟最长公共前后缀矛盾</p>
+</blockquote>
+<p><strong>next数组的求法</strong></p>
+<p>求next[i]</p>
+<p>找next[i-1]&#x3D;&#x3D;》前缀的下一位？&#x3D;next[i-1]</p>
+<p>相等：next[i]&#x3D;next[i-1]+1</p>
+<p>不相等：cur再往前跳，来到cur对应前缀的下一位（next[cur]），判断跟str[i-1]是否相等</p>
+<p><strong>完整代码</strong></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;cstring&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="comment">//O(M)</span></span><br><span class="line"><span class="function">vector&lt;<span class="type">int</span>&gt; <span class="title">getNextArray</span><span class="params">(string str)</span> </span>&#123;</span><br><span class="line">	<span class="type">int</span> size = str.<span class="built_in">size</span>();</span><br><span class="line">	<span class="keyword">if</span> (size == <span class="number">1</span>) &#123;</span><br><span class="line">		<span class="keyword">return</span> &#123; <span class="number">-1</span> &#125;;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function">vector&lt;<span class="type">int</span>&gt; <span class="title">next</span><span class="params">(size)</span></span>;</span><br><span class="line">	next[<span class="number">0</span>] = <span class="number">-1</span>;</span><br><span class="line">	next[<span class="number">1</span>] = <span class="number">0</span>;</span><br><span class="line">	<span class="type">int</span> i = <span class="number">2</span>;<span class="comment">//当前要求next数组位置</span></span><br><span class="line">	<span class="type">int</span> cur = <span class="number">0</span>;<span class="comment">//跟i位置比较的位置，0：next[1]=0(cur=next[i-1])</span></span><br><span class="line">	<span class="keyword">while</span> (i &lt; size) &#123;</span><br><span class="line">		<span class="keyword">if</span> (str[i - <span class="number">1</span>] == str[cur]) &#123;</span><br><span class="line">			<span class="comment">//next[i] = cur + 1;//next[i-1]+1</span></span><br><span class="line">			<span class="comment">//i++;</span></span><br><span class="line">			<span class="comment">//cur = cur + 1;</span></span><br><span class="line">			next[i++] = ++cur;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span> (cur &gt; <span class="number">0</span>) &#123;</span><br><span class="line">			cur = next[cur];</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span> &#123;</span><br><span class="line">			next[i++] = <span class="number">0</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> next;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//str1长N，str2长M,N&gt;=M</span></span><br><span class="line"><span class="comment">//时间复杂度：O（N）</span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">KMP</span><span class="params">(string str1, string str2)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (str1.<span class="built_in">empty</span>() || str2.<span class="built_in">empty</span>() || str1.<span class="built_in">size</span>() &lt; str2.<span class="built_in">size</span>()) &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	vector&lt;<span class="type">int</span>&gt; next = <span class="built_in">getNextArray</span>(str2);<span class="comment">//O(M)</span></span><br><span class="line">	<span class="type">int</span> ptr1 = <span class="number">0</span>, ptr2 = <span class="number">0</span>;</span><br><span class="line">	<span class="comment">//O(N)</span></span><br><span class="line">	<span class="keyword">while</span> (ptr1 &lt; str1.<span class="built_in">size</span>() &amp;&amp; ptr2 &lt; str2.<span class="built_in">size</span>()) &#123;</span><br><span class="line">		<span class="keyword">if</span> (str1[ptr1] == str2[ptr2]) &#123;</span><br><span class="line">			ptr1++;</span><br><span class="line">			ptr2++;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span> (ptr2 == <span class="number">0</span>) &#123;<span class="comment">//相当于next[ptr2]=-1</span></span><br><span class="line">			<span class="comment">//str2[ptr2]!=str1[ptr1],str1第一个都不匹配</span></span><br><span class="line">			ptr1++;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span> &#123;</span><br><span class="line">			ptr2 = next[ptr2];</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">//ptr1越界—-1，ptr2越界—匹配完成</span></span><br><span class="line">	<span class="keyword">return</span> ptr2 == str2.<span class="built_in">size</span>() ? ptr1 - ptr2 : <span class="number">-1</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	string str1 = <span class="string">&quot;abcd1234&quot;</span>;</span><br><span class="line">	string str2 = <span class="string">&quot;1234&quot;</span>;</span><br><span class="line">	string str3 = <span class="string">&quot;1234e&quot;</span>;</span><br><span class="line">	cout &lt;&lt; <span class="built_in">KMP</span>(str1, str2) &lt;&lt; endl;</span><br><span class="line">	cout &lt;&lt; <span class="built_in">KMP</span>(str1, str3);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2024/06/21/%E5%93%88%E5%B8%8C%E5%87%BD%E6%95%B0%E5%92%8C%E5%93%88%E5%B8%8C%E8%A1%A8/" rel="prev" title="算法：哈希函数和哈希表">
+      <i class="fa fa-chevron-left"></i> 算法：哈希函数和哈希表
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#KMP%E7%AE%97%E6%B3%95"><span class="nav-number">1.</span> <span class="nav-text">KMP算法</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">yhcs</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">12</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">yhcs</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
