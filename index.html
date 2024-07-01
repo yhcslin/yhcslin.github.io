@@ -289,7 +289,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2024-07-01 22:12:10 / 修改时间：22:20:17" itemprop="dateCreated datePublished" datetime="2024-07-01T22:12:10+08:00">2024-07-01</time>
+              <time title="创建时间：2024-07-01 22:12:10 / 修改时间：23:02:58" itemprop="dateCreated datePublished" datetime="2024-07-01T22:12:10+08:00">2024-07-01</time>
             </span>
 
           
@@ -310,9 +310,17 @@
 <p>描述：独立于软件和硬件的信息传输工具</p>
 <p><strong>python对xml的解析：</strong></p>
 <ol>
-<li>DOM</li>
-<li>SAX</li>
-<li>ElementTree</li>
+<li>SAX：事件驱动模型，通过在解析XML的过程中触发一个个的事件并调用用户定义的回调函数来处理XML文件</li>
+<li>DOM：将 XML 数据在内存中解析成一个树，通过对树的操作来操作XML</li>
+<li>ElementTree：轻量级的DOM</li>
+</ol>
+<blockquote>
+<p>对比：DOM需要将XML数据映射到内存中的树，一是比较慢，二是比较耗内存，而SAX流式读取XML文件，比较快，占用内存少，但需要用户实现回调函数（handler）</p>
+</blockquote>
+<h3 id="python使用SAX解析xml"><a href="#python使用SAX解析xml" class="headerlink" title="python使用SAX解析xml"></a>python使用SAX解析xml</h3><p>SAX是一种基于事件驱动的 API，牵涉到两个部分: <strong>解析器</strong>和<strong>事件处理器</strong>。</p>
+<ol>
+<li>解析器：读取XML文档，并向事件处理器发送事件，如元素开始跟元素结束事件。</li>
+<li>事件处理器：负责对事件作出响应，对传递的XML数据进行处理。</li>
 </ol>
 
       
