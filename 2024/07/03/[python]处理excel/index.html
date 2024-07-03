@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="安装pip install openpyxl需要在文件中包含图片：pip install pillow 打开保存创建工作簿并保存 123456789from openpyxl import Workbook# 创建工作簿，包含一张默认工作表wb &#x3D; Workbook()# active默认值为0，默认的工作表ws &#x3D; wb.activeprint(ws.title) #...Sheet# 保存工作">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[python]处理excel">
+<meta property="og:url" content="http://example.com/2024/07/03/[python]%E5%A4%84%E7%90%86excel/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="安装pip install openpyxl需要在文件中包含图片：pip install pillow 打开保存创建工作簿并保存 123456789from openpyxl import Workbook# 创建工作簿，包含一张默认工作表wb &#x3D; Workbook()# active默认值为0，默认的工作表ws &#x3D; wb.activeprint(ws.title) #...Sheet# 保存工作">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-07-03T11:30:16.000Z">
+<meta property="article:modified_time" content="2024-07-03T11:31:35.512Z">
+<meta property="article:author" content="yhcs">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/2024/07/03/[python]%E5%A4%84%E7%90%86excel/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>[python]处理excel | Hexo</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Hexo</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/07/03/[python]%E5%A4%84%E7%90%86excel/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="yhcs">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          [python]处理excel
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2024-07-03 19:30:16 / 修改时间：19:31:35" itemprop="dateCreated datePublished" datetime="2024-07-03T19:30:16+08:00">2024-07-03</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><p><code>pip install openpyxl</code><br>需要在文件中包含图片：<code>pip install pillow</code></p>
+<h3 id="打开保存"><a href="#打开保存" class="headerlink" title="打开保存"></a>打开保存</h3><p>创建工作簿并保存</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> openpyxl <span class="keyword">import</span> Workbook</span><br><span class="line"><span class="comment"># 创建工作簿，包含一张默认工作表</span></span><br><span class="line">wb = Workbook()</span><br><span class="line"><span class="comment"># active默认值为0，默认的工作表</span></span><br><span class="line">ws = wb.active</span><br><span class="line"><span class="built_in">print</span>(ws.title) <span class="comment">#...Sheet</span></span><br><span class="line"><span class="comment"># 保存工作簿，参数：路径</span></span><br><span class="line">wb.save(<span class="string">&quot;test.xlsx&quot;</span>)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>加载已有的工作簿</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> openpyxl <span class="keyword">import</span> Workbook, load_workbook</span><br><span class="line"><span class="comment"># load_workbook加载工作簿</span></span><br><span class="line">wb = load_workbook(<span class="string">&quot;test.xlsx&quot;</span>)</span><br><span class="line">ws = wb.active</span><br><span class="line"><span class="built_in">print</span>(ws.title)</span><br></pre></td></tr></table></figure>
+<h3 id="操作工作表"><a href="#操作工作表" class="headerlink" title="操作工作表"></a>操作工作表</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> openpyxl <span class="keyword">import</span> Workbook, load_workbook</span><br><span class="line"></span><br><span class="line">wb = Workbook()</span><br><span class="line">ws = wb.active</span><br><span class="line"></span><br><span class="line"><span class="comment"># Workbook.create_sheet创建新的工作簿</span></span><br><span class="line">ws1 = wb.create_sheet(<span class="string">&quot;test1&quot;</span>)  <span class="comment"># 默认在最后生成</span></span><br><span class="line">ws2 = wb.create_sheet(<span class="string">&quot;test2&quot;</span>, <span class="number">0</span>)  <span class="comment"># 在第一个位置生成</span></span><br><span class="line">ws3 = wb.create_sheet(<span class="string">&quot;test3&quot;</span>, -<span class="number">1</span>)  <span class="comment"># 在倒数第二个生成</span></span><br><span class="line"><span class="comment"># 工作簿自动生成名字Sheeti，还可以通过title属性命名</span></span><br><span class="line">ws.title = <span class="string">&quot;New Title&quot;</span></span><br><span class="line"><span class="comment"># 标题选项卡背景默认白色，可更改颜色</span></span><br><span class="line">ws.sheet_properties.tabColor = <span class="string">&quot;1072BA&quot;</span></span><br><span class="line"><span class="comment"># 名字可以作为工作表的键，获取已有的表</span></span><br><span class="line">ws4 = wb[<span class="string">&quot;test1&quot;</span>]</span><br><span class="line"><span class="comment"># wb.sheetnames获取所有表格</span></span><br><span class="line"><span class="built_in">print</span>(wb.sheetnames)</span><br><span class="line"><span class="comment"># 遍历工作表</span></span><br><span class="line"><span class="keyword">for</span> sheet <span class="keyword">in</span> wb:</span><br><span class="line">    <span class="built_in">print</span>(sheet.title)</span><br><span class="line"><span class="comment"># 改变位置</span></span><br><span class="line"><span class="comment"># 参数：工作表，偏移量（原地为0，向前为负，向后为正）</span></span><br><span class="line">wb.move_sheet(ws3, -<span class="number">1</span>)</span><br><span class="line"><span class="comment"># 删除</span></span><br><span class="line"><span class="keyword">del</span> wb[<span class="string">&quot;New Title&quot;</span>]</span><br><span class="line"><span class="comment"># 复制工作表</span></span><br><span class="line">cp_sheet = wb.copy_worksheet(ws1)</span><br><span class="line"><span class="built_in">print</span>(cp_sheet.title)  <span class="comment"># ...test1 Copy</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="访问单元格"><a href="#访问单元格" class="headerlink" title="访问单元格"></a>访问单元格</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> openpyxl <span class="keyword">import</span> Workbook</span><br><span class="line"></span><br><span class="line">wb = Workbook()</span><br><span class="line">ws = wb.active</span><br><span class="line"><span class="comment"># 单元格赋值</span></span><br><span class="line">ws[<span class="string">&quot;a1&quot;</span>] = <span class="string">&quot;test&quot;</span></span><br><span class="line">cell = ws.cell(<span class="number">6</span>, <span class="number">1</span>, <span class="string">&quot;test&quot;</span>)  <span class="comment"># cell（行，列）获取对应单元格、cell（行，列，值）修改对应单元格的值</span></span><br><span class="line">cell.value = <span class="string">&quot;test1&quot;</span>  <span class="comment"># 单元格的value属性——&gt;访问/修改</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(cell.value)</span><br><span class="line"><span class="built_in">print</span>(cell.coordinate)   <span class="comment"># 单元格坐标</span></span><br><span class="line"><span class="built_in">print</span>(cell.row)  		 <span class="comment"># 行</span></span><br><span class="line"><span class="built_in">print</span>(cell.column)  	 <span class="comment"># 列</span></span><br><span class="line"><span class="built_in">print</span>(cell.col_idx)</span><br><span class="line"><span class="built_in">print</span>(cell.column_letter)<span class="comment"># 字母形式的列</span></span><br><span class="line"></span><br><span class="line">x = <span class="number">1</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, <span class="number">11</span>):   <span class="comment"># range左闭右开，1~10</span></span><br><span class="line">    <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, <span class="number">6</span>):<span class="comment"># 1~5</span></span><br><span class="line">        ws.cell(i, j, x) <span class="comment"># 单元格赋值</span></span><br><span class="line">        x += <span class="number">1</span></span><br><span class="line"><span class="comment"># a到c列</span></span><br><span class="line"><span class="built_in">print</span>(ws[<span class="string">&quot;a:c&quot;</span>]) </span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;元组套元组的形式</span></span><br><span class="line"><span class="string">((&lt;Cell &#x27;Sheet&#x27;.A1&gt;，....&lt;Cell &#x27;Sheet&#x27;.A10&gt;),</span></span><br><span class="line"><span class="string"> (&lt;Cell &#x27;Sheet&#x27;.B1&gt;，....&lt;Cell &#x27;Sheet&#x27;.B10&gt;),</span></span><br><span class="line"><span class="string"> (&lt;Cell &#x27;Sheet&#x27;.C1&gt;，....&lt;Cell &#x27;Sheet&#x27;.C10&gt;))</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="comment">#1~5行</span></span><br><span class="line"><span class="built_in">print</span>(ws[<span class="number">1</span>:<span class="number">5</span>])</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">((&lt;Cell &#x27;Sheet&#x27;.A1&gt;, &lt;Cell &#x27;Sheet&#x27;.B1&gt;, &lt;Cell &#x27;Sheet&#x27;.C1&gt;, &lt;Cell &#x27;Sheet&#x27;.D1&gt;, &lt;Cell &#x27;Sheet&#x27;.E1&gt;),</span></span><br><span class="line"><span class="string">......</span></span><br><span class="line"><span class="string">(&lt;Cell &#x27;Sheet&#x27;.A5&gt;, &lt;Cell &#x27;Sheet&#x27;.B5&gt;, &lt;Cell &#x27;Sheet&#x27;.C5&gt;, &lt;Cell &#x27;Sheet&#x27;.D5&gt;, &lt;Cell &#x27;Sheet&#x27;.E5&gt;))</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="built_in">print</span>(ws[<span class="string">&quot;a1:c4&quot;</span>])</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">((&lt;Cell &#x27;Sheet&#x27;.A1&gt;, &lt;Cell &#x27;Sheet&#x27;.B1&gt;, &lt;Cell &#x27;Sheet&#x27;.C1&gt;), </span></span><br><span class="line"><span class="string"> (&lt;Cell &#x27;Sheet&#x27;.A2&gt;, &lt;Cell &#x27;Sheet&#x27;.B2&gt;, &lt;Cell &#x27;Sheet&#x27;.C2&gt;), </span></span><br><span class="line"><span class="string"> (&lt;Cell &#x27;Sheet&#x27;.A3&gt;, &lt;Cell &#x27;Sheet&#x27;.B3&gt;, &lt;Cell &#x27;Sheet&#x27;.C3&gt;), </span></span><br><span class="line"><span class="string"> (&lt;Cell &#x27;Sheet&#x27;.A4&gt;, &lt;Cell &#x27;Sheet&#x27;.B4&gt;, &lt;Cell &#x27;Sheet&#x27;.C4&gt;))</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="built_in">print</span>(ws[<span class="string">&quot;b&quot;</span>])  <span class="comment"># 第b列</span></span><br><span class="line"><span class="comment"># 遍历：ws[&quot;a1:c4&quot;]结果是元组的元组</span></span><br><span class="line"><span class="keyword">for</span> cells <span class="keyword">in</span> ws[<span class="string">&quot;a1:c4&quot;</span>]:</span><br><span class="line">    <span class="keyword">for</span> cell <span class="keyword">in</span> cells:</span><br><span class="line">        <span class="built_in">print</span>(cell.value)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="操作单元格"><a href="#操作单元格" class="headerlink" title="操作单元格"></a>操作单元格</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> openpyxl <span class="keyword">import</span> Workbook</span><br><span class="line"></span><br><span class="line">wb = Workbook()</span><br><span class="line">ws = wb.active</span><br><span class="line"></span><br><span class="line">x = <span class="number">1</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, <span class="number">11</span>):  <span class="comment"># 1~10</span></span><br><span class="line">    <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, <span class="number">11</span>):</span><br><span class="line">        ws.cell(i, j, x)</span><br><span class="line">        x += <span class="number">1</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 合并：只保留左上角的值</span></span><br><span class="line">ws.merge_cells(<span class="string">&quot;b2:d4&quot;</span>)</span><br><span class="line"><span class="comment"># 取消合并</span></span><br><span class="line">ws.unmerge_cells(<span class="string">&quot;b2:d4&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 插入</span></span><br><span class="line">ws.insert_cols(<span class="number">2</span>, <span class="number">3</span>)  <span class="comment"># 从第二列开始插入三列</span></span><br><span class="line">ws.insert_rows(<span class="number">1</span>, <span class="number">2</span>)  <span class="comment"># 从第一行开始插入两行</span></span><br><span class="line"><span class="comment"># 删除</span></span><br><span class="line">ws.delete_cols(<span class="number">2</span>, <span class="number">3</span>)  <span class="comment"># 从第二列开始删除三列</span></span><br><span class="line">ws.delete_rows(<span class="number">2</span>, <span class="number">3</span>)  <span class="comment"># 从第二行开始删除三行</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 移动</span></span><br><span class="line">ws.move_range(<span class="string">&quot;c4:d5&quot;</span>, <span class="number">2</span>, -<span class="number">2</span>)  <span class="comment"># 向下移动两行，向左移动两列，下、右：正数，上、左：负数</span></span><br><span class="line">wb.save(<span class="string">&quot;test5.xlsx&quot;</span>)</span><br></pre></td></tr></table></figure>
+<h3 id="使用公式"><a href="#使用公式" class="headerlink" title="使用公式"></a>使用公式</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> openpyxl <span class="keyword">import</span> Workbook</span><br><span class="line"><span class="keyword">from</span> openpyxl.utils <span class="keyword">import</span> FORMULAE</span><br><span class="line"><span class="keyword">from</span> openpyxl.formula.translate <span class="keyword">import</span> Translator</span><br><span class="line"></span><br><span class="line">wb = Workbook()</span><br><span class="line">ws = wb.active</span><br><span class="line"></span><br><span class="line"><span class="comment"># 添加一行，参数：可迭代的对象</span></span><br><span class="line">ws.append([<span class="string">&quot;price1&quot;</span>, <span class="string">&quot;price2&quot;</span>, <span class="string">&quot;sum&quot;</span>, <span class="string">&quot;average&quot;</span>])</span><br><span class="line">ws.append([<span class="number">54</span>, <span class="number">21</span>])</span><br><span class="line">ws.append([<span class="number">12</span>, <span class="number">45</span>])</span><br><span class="line">ws.append([<span class="number">45</span>, <span class="number">78</span>])</span><br><span class="line"><span class="comment"># 直接使用公式</span></span><br><span class="line">ws[<span class="string">&quot;c2&quot;</span>] = <span class="string">&quot;=SUM(a2:b2)&quot;</span></span><br><span class="line">ws[<span class="string">&quot;d2&quot;</span>] = <span class="string">&quot;=AVERAGE(a2:b2)&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 翻译源单元格的行为，参数：Translator（公式，复制源）.(目标单元格)</span></span><br><span class="line">ws[<span class="string">&quot;c3&quot;</span>] = Translator(formula=<span class="string">&quot;=SUM(a2:b2)&quot;</span>, origin=<span class="string">&quot;c2&quot;</span>).translate_formula(<span class="string">&quot;c3&quot;</span>)</span><br><span class="line">ws[<span class="string">&quot;c4&quot;</span>] = Translator(formula=<span class="string">&quot;=SUM(a2:b2)&quot;</span>, origin=<span class="string">&quot;c2&quot;</span>).translate_formula(<span class="string">&quot;c4&quot;</span>)</span><br><span class="line">ws[<span class="string">&quot;d3&quot;</span>] = Translator(formula=<span class="string">&quot;=AVERAGE(a2:b2)&quot;</span>, origin=<span class="string">&quot;d2&quot;</span>).translate_formula(<span class="string">&quot;d3&quot;</span>)</span><br><span class="line">ws[<span class="string">&quot;d4&quot;</span>] = Translator(formula=<span class="string">&quot;=AVERAGE(a2:b2)&quot;</span>, origin=<span class="string">&quot;d2&quot;</span>).translate_formula(<span class="string">&quot;d4&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 通过遍历翻译单元格的行为</span></span><br><span class="line"><span class="keyword">for</span> cell <span class="keyword">in</span> ws[<span class="string">&quot;c3:d4&quot;</span>]:</span><br><span class="line">    cell[<span class="number">0</span>].value = Translator(formula=<span class="string">&quot;=SUM(a2:b2)&quot;</span>, origin=<span class="string">&quot;c2&quot;</span>).translate_formula(cell[<span class="number">0</span>].coordinate)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> cell <span class="keyword">in</span> ws[<span class="string">&quot;d3:d4&quot;</span>]:</span><br><span class="line">    cell[<span class="number">0</span>].value = Translator(formula=<span class="string">&quot;=AVERAGE(a2:b2)&quot;</span>, origin=<span class="string">&quot;d2&quot;</span>).translate_formula(cell[<span class="number">0</span>].coordinate)</span><br><span class="line"></span><br><span class="line">wb.save(<span class="string">&quot;test6.xlsx&quot;</span>)</span><br></pre></td></tr></table></figure>
+<h3 id="排序"><a href="#排序" class="headerlink" title="排序"></a>排序</h3><p>使用<code>pandas</code>库<br><code>pip install pandas</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"></span><br><span class="line"><span class="comment"># 获取工作簿的工作表</span></span><br><span class="line">df = pd.read_excel(<span class="string">&quot;test7.xlsx&quot;</span>, sheet_name=<span class="string">&quot;Sheet&quot;</span>)</span><br><span class="line"><span class="comment"># 参数：排序依据（先按桃子排，桃子一样再按西瓜排），升序/降序</span></span><br><span class="line">df_value = df.sort_values(by=[<span class="string">&quot;桃子&quot;</span>, <span class="string">&quot;西瓜&quot;</span>], ascending=<span class="literal">False</span>)</span><br><span class="line"><span class="comment"># 保存</span></span><br><span class="line">writer = pd.ExcelWriter(<span class="string">&quot;test7_sort.xlsx&quot;</span>)</span><br><span class="line">df_value.to_excel(writer, sheet_name=<span class="string">&quot;Sheet_sort&quot;</span>, index=<span class="literal">False</span>)</span><br><span class="line">writer._save()</span><br></pre></td></tr></table></figure>
+<h3 id="插入图表"><a href="#插入图表" class="headerlink" title="插入图表"></a>插入图表</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> openpyxl <span class="keyword">import</span> Workbook</span><br><span class="line"><span class="keyword">from</span> openpyxl.chart <span class="keyword">import</span> Reference, LineChart</span><br><span class="line"></span><br><span class="line">wb = Workbook()</span><br><span class="line">ws = wb.active</span><br><span class="line"></span><br><span class="line">rows = [</span><br><span class="line">    [<span class="string">&#x27;月份&#x27;</span>, <span class="string">&#x27;桃子&#x27;</span>, <span class="string">&#x27;西瓜&#x27;</span>, <span class="string">&#x27;龙眼&#x27;</span>],</span><br><span class="line">    [<span class="number">1</span>, <span class="number">23</span>, <span class="number">23</span>, <span class="number">56</span>],</span><br><span class="line">    [<span class="number">2</span>, <span class="number">56</span>, <span class="number">56</span>, <span class="number">28</span>],</span><br><span class="line">    [<span class="number">3</span>, <span class="number">58</span>, <span class="number">45</span>, <span class="number">74</span>],</span><br><span class="line">    [<span class="number">4</span>, <span class="number">23</span>, <span class="number">23</span>, <span class="number">56</span>],</span><br><span class="line">    [<span class="number">5</span>, <span class="number">56</span>, <span class="number">56</span>, <span class="number">28</span>],</span><br><span class="line">    [<span class="number">6</span>, <span class="number">58</span>, <span class="number">45</span>, <span class="number">74</span>],</span><br><span class="line">]</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> row <span class="keyword">in</span> rows:</span><br><span class="line">    ws.append(row)</span><br><span class="line"></span><br><span class="line">c1 = LineChart()  <span class="comment"># 实例化</span></span><br><span class="line">c1.title = <span class="string">&quot;水果销量折线图&quot;</span></span><br><span class="line">c1.style = <span class="number">13</span></span><br><span class="line">c1.y_axis.title = <span class="string">&quot;销量&quot;</span></span><br><span class="line">c1.x_axis.title = <span class="string">&quot;月份&quot;</span></span><br><span class="line"></span><br><span class="line">data = Reference(ws, min_row=<span class="number">1</span>, max_row=<span class="number">7</span>, min_col=<span class="number">2</span>, max_col=<span class="number">4</span>)  <span class="comment"># data范围</span></span><br><span class="line">c1.add_data(data, titles_from_data=<span class="literal">True</span>)  <span class="comment"># true：范围表示包括title</span></span><br><span class="line"></span><br><span class="line">s0 = c1.series[<span class="number">0</span>]</span><br><span class="line"><span class="comment"># 样式</span></span><br><span class="line">s0.marker.symbol = <span class="string">&quot;triangle&quot;</span></span><br><span class="line">s0.marker.graphicalProperties.solidFill = <span class="string">&quot;FF0000&quot;</span></span><br><span class="line">s0.marker.graphicalProperties.line.solidFill = <span class="string">&quot;0000FF&quot;</span></span><br><span class="line"></span><br><span class="line">s1 = c1.series[<span class="number">1</span>]</span><br><span class="line">s2 = c1.series[<span class="number">2</span>]</span><br><span class="line">s2.smooth = <span class="literal">True</span>  <span class="comment"># 线条平滑</span></span><br><span class="line">ws.add_chart(c1, <span class="string">&quot;A8&quot;</span>)</span><br><span class="line">wb.save(<span class="string">&quot;test8.xlsx&quot;</span>)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="只读只写"><a href="#只读只写" class="headerlink" title="只读只写"></a>只读只写</h3><p>把excel读到内存当中，大小是原来的50倍左右</p>
+<h4 id="只读模式"><a href="#只读模式" class="headerlink" title="只读模式"></a>只读模式</h4><p>只读模式，如果需要读取很大的Excel文件，但是又不改变和保存，例如只读取数值用于其他数据分析，可以使用只读模式提供性能</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> openpyxl <span class="keyword">import</span> load_workbook</span><br><span class="line"></span><br><span class="line"><span class="comment"># 加载Excel文件时使用read_only指定只读模式</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">load_workbook参数说明：</span></span><br><span class="line"><span class="string">定义：</span></span><br><span class="line"><span class="string">def load_workbook(filename, read_only=False, keep_vba=KEEP_VBA, data_only=False, keep_links=True)</span></span><br><span class="line"><span class="string">参数：</span></span><br><span class="line"><span class="string">read_only:是否只读，默认False</span></span><br><span class="line"><span class="string">keep_vba：是否使用VBA编程，默认False</span></span><br><span class="line"><span class="string">data_only：是否只加载数据值，即丢弃公式、排序等操作，默认False</span></span><br><span class="line"><span class="string">keep_links：是否保留超链接，默认True</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line">wb = load_workbook(filename=<span class="string">&#x27;large_file.xlsx&#x27;</span>, read_only=<span class="literal">True</span>)</span><br><span class="line">ws = wb[<span class="string">&#x27;big_data&#x27;</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 可以正常读取值</span></span><br><span class="line"><span class="keyword">for</span> row <span class="keyword">in</span> ws.rows:</span><br><span class="line">    <span class="keyword">for</span> cell <span class="keyword">in</span> row:</span><br><span class="line">        <span class="built_in">print</span>(cell.value)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 注意：读取完之后需要手动关闭避免内存泄露</span></span><br><span class="line">wb.close()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h4 id="只写模式"><a href="#只写模式" class="headerlink" title="只写模式"></a>只写模式</h4><p>如果文件是以写为主，可以在创建工作簿的时候指定为只写模式以便提高性能，不管文件有多大，都可以把内存保持在10M以下</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> openpyxl <span class="keyword">import</span> Workbook</span><br><span class="line"><span class="keyword">from</span> openpyxl.cell <span class="keyword">import</span> WriteOnlyCell</span><br><span class="line"><span class="keyword">from</span> openpyxl.comments <span class="keyword">import</span> Comment</span><br><span class="line"><span class="keyword">from</span> openpyxl.styles <span class="keyword">import</span> Font</span><br><span class="line"></span><br><span class="line">wb = Workbook(write_only=<span class="literal">True</span>)  <span class="comment"># 创建工作簿时指定只写模式</span></span><br><span class="line">ws = wb.create_sheet()  <span class="comment"># 需要通过create_sheet创建一个sheet</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 可以正常保存数据</span></span><br><span class="line"><span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">100</span>):</span><br><span class="line">    ws.append([i <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">200</span>)])  <span class="comment"># 只能通过append写</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 如果需要保留公式、注释等操作，可以使用WriteOnlyCell</span></span><br><span class="line">cell = WriteOnlyCell(ws, value=<span class="string">&quot;test&quot;</span>)</span><br><span class="line">cell.font = Font(name=<span class="string">&#x27;黑体&#x27;</span>, size=<span class="number">15</span>)</span><br><span class="line">cell.comment = Comment(text=<span class="string">&quot;这是注释&quot;</span>, author=<span class="string">&quot;pan&quot;</span>)</span><br><span class="line"></span><br><span class="line">ws.append([cell])</span><br><span class="line"></span><br><span class="line">wb.save(<span class="string">&#x27;openpyxl/test.xlsx&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<p>只写模式注意点：</p>
+<ol>
+<li>需要通过<code>create_sheet()</code>创建表</li>
+<li>只能通过<code>append()</code>增加数据，不能通过<code>cell或iter_rows()</code></li>
+<li><code>wb.save()</code>之后不能再修改，否则抛出WorkbookAlreadySaved异常</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2024/06/30/%E8%BF%9B%E7%A8%8B%E7%AE%A1%E7%90%86(%E4%B8%80)%E8%BF%9B%E7%A8%8B%E5%92%8C%E7%BA%BF%E7%A8%8B/" rel="prev" title="进程管理(一)：进程和线程">
+      <i class="fa fa-chevron-left"></i> 进程管理(一)：进程和线程
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2024/07/03/%5Bpython%5D%E5%A4%84%E7%90%86csv/" rel="next" title="[python]处理csv">
+      [python]处理csv <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85"><span class="nav-number">1.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%93%E5%BC%80%E4%BF%9D%E5%AD%98"><span class="nav-number">2.</span> <span class="nav-text">打开保存</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%93%8D%E4%BD%9C%E5%B7%A5%E4%BD%9C%E8%A1%A8"><span class="nav-number">3.</span> <span class="nav-text">操作工作表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%BF%E9%97%AE%E5%8D%95%E5%85%83%E6%A0%BC"><span class="nav-number">4.</span> <span class="nav-text">访问单元格</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%93%8D%E4%BD%9C%E5%8D%95%E5%85%83%E6%A0%BC"><span class="nav-number">5.</span> <span class="nav-text">操作单元格</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E5%85%AC%E5%BC%8F"><span class="nav-number">6.</span> <span class="nav-text">使用公式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8E%92%E5%BA%8F"><span class="nav-number">7.</span> <span class="nav-text">排序</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8F%92%E5%85%A5%E5%9B%BE%E8%A1%A8"><span class="nav-number">8.</span> <span class="nav-text">插入图表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%AA%E8%AF%BB%E5%8F%AA%E5%86%99"><span class="nav-number">9.</span> <span class="nav-text">只读只写</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%AA%E8%AF%BB%E6%A8%A1%E5%BC%8F"><span class="nav-number">9.1.</span> <span class="nav-text">只读模式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%AA%E5%86%99%E6%A8%A1%E5%BC%8F"><span class="nav-number">9.2.</span> <span class="nav-text">只写模式</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">yhcs</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">15</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">yhcs</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
