@@ -150,6 +150,116 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/04/30/Linux_Linux%E5%86%85%E6%A0%B8%E7%BA%A7%E5%AE%89%E5%85%A8%E5%BC%80%E5%8F%91%E5%9F%BA%E7%A1%80(1)Linux%E7%9A%84%E5%8A%A8%E6%80%81%E5%86%85%E6%A0%B8%E6%A8%A1%E5%9D%97%E6%9C%BA%E5%88%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="yhcs">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/04/30/Linux_Linux%E5%86%85%E6%A0%B8%E7%BA%A7%E5%AE%89%E5%85%A8%E5%BC%80%E5%8F%91%E5%9F%BA%E7%A1%80(1)Linux%E7%9A%84%E5%8A%A8%E6%80%81%E5%86%85%E6%A0%B8%E6%A8%A1%E5%9D%97%E6%9C%BA%E5%88%B6/" class="post-title-link" itemprop="url">Linux：Linux内核级安全开发基础(1)Linux的动态内核模块机制</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2024-04-30 00:29:28" itemprop="dateCreated datePublished" datetime="2024-04-30T00:29:28+08:00">2024-04-30</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-07-04 23:04:41" itemprop="dateModified" datetime="2024-07-04T23:04:41+08:00">2024-07-04</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="Linux内核级安全开发基础"><a href="#Linux内核级安全开发基础" class="headerlink" title="Linux内核级安全开发基础"></a>Linux内核级安全开发基础</h3><h4 id="1-1-Linux的动态内核模块机制"><a href="#1-1-Linux的动态内核模块机制" class="headerlink" title="1.1 Linux的动态内核模块机制"></a>1.1 Linux的动态内核模块机制</h4><h5 id="1-动态内核模块机制概述"><a href="#1-动态内核模块机制概述" class="headerlink" title="1.动态内核模块机制概述"></a><strong>1.动态内核模块机制概述</strong></h5><p>Linux内核：宏内核</p>
+<p>缺点：系统功能扩展性差，设计之初实现了较多冗余功能，影响操作系统的运行效率和系统稳定性</p>
+<p>解决办法：引入<strong>内核模块动态加载机制</strong>——通过内核模块的扩展和动态加载实现操作系统功能的扩充，当一些内核模块不再使用时可以卸载该模块，以保证操作系统的运行效率和系统稳定性。</p>
+<blockquote>
+<p>Linux内核&#x3D;基本内核+一系列内核模块</p>
+</blockquote>
+<p>​		系统启动——加载基本内核——用户按照需要动态加载系统内核模块——不需要时再从内核卸载</p>
+<p>​		<strong>好处：</strong>a.让内核保持很小的尺寸，同时又非常灵活；b.可以不通过重构内核并频繁重启的方式来尝试运行新内核代码，便于新设备驱动程序的编写和调试</p>
+<h5 id="2-linux内核模块的加载和卸载"><a href="#2-linux内核模块的加载和卸载" class="headerlink" title="2.linux内核模块的加载和卸载"></a><strong>2.linux内核模块的加载和卸载</strong></h5><p><strong>内核模块的加载方式</strong>有两种：</p>
+<ul>
+<li>使用<code>insmod</code>命令手工加载模块</li>
+<li>在需要时加载模块，即请求加载</li>
+</ul>
+<p><strong>符号表：</strong>所有能够被内核模块使用的资源（基本内核中定义的资源和新加载模块中定义的资源），被操作系统以内核输出符号表的形式统一管理。</p>
+<p><strong>内核模块加载过程：</strong></p>
+<ol>
+<li>在内核输出符号表中找到本模块用到的外部符号<ol>
+<li>找不到定义的外部符号，或者找到外部符号但是与所定义的类型不一致，系统拒绝加载该模块</li>
+</ol>
+</li>
+<li>加载成功——&gt;将本模块输出的符号添加到内核输出符号表中</li>
+</ol>
+<blockquote>
+<p>模块A输出的符号被模块B使用，则称模块B依赖于模块A，或者模块A被模块B引用</p>
+</blockquote>
+<p><strong>引用计数：</strong>新模块加载到内核过程中，内核会检查该模块使用的外部符号，增加这些外部符号所在模块的引用技术。可通过<code>lsmod</code>命令查看系统已加载的内核模块以及模块的引用计数。</p>
+<p><img src="/../assets/%E4%B8%80%E3%80%81Linux%E5%86%85%E6%A0%B8%E7%BA%A7%E5%AE%89%E5%85%A8%E5%BC%80%E5%8F%91%E5%9F%BA%E7%A1%80/image-20240430002656528.png" alt="image-20240430002656528"></p>
+<p><strong>内核模块的卸载：</strong>通过使用<code>rmmod</code>命令来卸载</p>
+<ul>
+<li>如果要卸载的内核模块正在被其他模块引用，即引用计数不为零，linux系统会拒绝卸载该模块</li>
+<li>一旦内核模块被成功卸载<ul>
+<li>linux从内核符号输出表中删除在该模块中定义的外部符号</li>
+<li>检查模块曾引用的外部符号所在的模块，引用计数减1</li>
+</ul>
+</li>
+</ul>
+<p>内核模块除了可以手动卸载以外，还支持自动卸载——内核模块的自动卸载工作由后台进程<code>kerneld</code>完成，<code>keneld</code>在相应定时器到期时检查，卸载不用的模块</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/2024/04/27/How-to-build-a-personal-blog-on-GitHub/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -499,7 +609,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">22</span>
+          <span class="site-state-item-count">23</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
