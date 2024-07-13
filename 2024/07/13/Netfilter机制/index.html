@@ -20,19 +20,19 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub. Quick">
+  <meta name="description" content="防火墙实现基础：Netfilter机制Netfilter机制的核心是一个开放式的IP数据包处理框架，对外提供了处理IP数据包的统一接口，编程人员可以利用该接口实现对IP数据包的控制和其他新的处理方式 1.Netfilter机制的运行原理核心思想：在网络IP协议层的IP数据包处理流程中，总结出几个关键点（即钩子点），提供了多种可能的IP数据包处理方式和开放接口。安全管理员不仅可以配置Netfilte">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Hello World">
-<meta property="og:url" content="http://example.com/2024/04/27/hello-world/index.html">
+<meta property="og:title" content="Netfilter机制">
+<meta property="og:url" content="http://example.com/2024/07/13/Netfilter%E6%9C%BA%E5%88%B6/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub. Quick">
+<meta property="og:description" content="防火墙实现基础：Netfilter机制Netfilter机制的核心是一个开放式的IP数据包处理框架，对外提供了处理IP数据包的统一接口，编程人员可以利用该接口实现对IP数据包的控制和其他新的处理方式 1.Netfilter机制的运行原理核心思想：在网络IP协议层的IP数据包处理流程中，总结出几个关键点（即钩子点），提供了多种可能的IP数据包处理方式和开放接口。安全管理员不仅可以配置Netfilte">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2024-04-27T09:25:29.301Z">
-<meta property="article:modified_time" content="2024-04-27T09:25:29.302Z">
+<meta property="article:published_time" content="2024-07-13T08:52:11.000Z">
+<meta property="article:modified_time" content="2024-07-13T08:52:31.881Z">
 <meta property="article:author" content="yhcs">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://example.com/2024/04/27/hello-world/">
+<link rel="canonical" href="http://example.com/2024/07/13/Netfilter%E6%9C%BA%E5%88%B6/">
 
 
 <script id="page-configurations">
@@ -45,7 +45,7 @@
   };
 </script>
 
-  <title>Hello World | Hexo</title>
+  <title>Netfilter机制 | Hexo</title>
   
 
 
@@ -155,7 +155,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/04/27/hello-world/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/07/13/Netfilter%E6%9C%BA%E5%88%B6/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -168,7 +168,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Hello World
+          Netfilter机制
         </h1>
 
         <div class="post-meta">
@@ -177,8 +177,18 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
+              
 
-              <time title="创建时间：2024-04-27 17:25:29" itemprop="dateCreated datePublished" datetime="2024-04-27T17:25:29+08:00">2024-04-27</time>
+              <time title="创建时间：2024-07-13 16:52:11 / 修改时间：16:52:31" itemprop="dateCreated datePublished" datetime="2024-07-13T16:52:11+08:00">2024-07-13</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+                </span>
             </span>
 
           
@@ -192,19 +202,33 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>Welcome to <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a target="_blank" rel="noopener" href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a target="_blank" rel="noopener" href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a target="_blank" rel="noopener" href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
+        <h1 id="防火墙实现基础：Netfilter机制"><a href="#防火墙实现基础：Netfilter机制" class="headerlink" title="防火墙实现基础：Netfilter机制"></a>防火墙实现基础：Netfilter机制</h1><p><code>Netfilter</code>机制的核心是一个开放式的IP数据包处理框架，对外提供了处理IP数据包的统一接口，编程人员可以利用该接口实现对IP数据包的控制和其他新的处理方式</p>
+<h3 id="1-Netfilter机制的运行原理"><a href="#1-Netfilter机制的运行原理" class="headerlink" title="1.Netfilter机制的运行原理"></a>1.Netfilter机制的运行原理</h3><p>核心思想：在网络IP协议层的IP数据包处理流程中，总结出几个关键点（即钩子点），提供了多种可能的IP数据包处理方式和开放接口。安全管理员不仅可以配置Netfilter以不同的处理方式处理IP数据包，也可以利用Netfilter所提供的开放接口在IP数据包的协议处理流程中实现新的IP数据包处理方式<br>在Netfilter机制中有五个钩子点：</p>
+<ol>
+<li><code>IP_PRE_ROUTING</code>:ip数据包刚刚从网络接口接收到</li>
+<li><code>IP_FORWARD</code>:ip数据包已经进行了路由处理，需要转发到下一跳但还没有进行转发</li>
+<li><code>IP_LOCAL_IN</code>:从网络接收的需要发往本机的数据包</li>
+<li><code>IP_LOCAL_OUT</code>:刚刚从本机发出还未进行路由处理的ip数据包</li>
+<li><code>IP_POST_ROUTING</code>:ip数据包将要离开本机发往下一跳之前</li>
+</ol>
+<h3 id="2-Netfilter功能种类"><a href="#2-Netfilter功能种类" class="headerlink" title="2.Netfilter功能种类"></a>2.Netfilter功能种类</h3><p>Netfilter在这些钩子点上所支持的不同报文处理方式可以分为两种：<br>1.内嵌处理方式：不用自己编写程序，通过配置Netfilter就可以实现相应的报文处理方式</p>
+<ul>
+<li>报文过滤方式</li>
+<li>报文重定向<br>2.开放处理方式：在Netfilter基础上自己开发新的报文处理，Netfilter将数据包的处理权交给新开发的报文处理</li>
+<li>钩子函数方式：在流过某钩子点时，注册在该钩子点的钩子函数将会被调用<ul>
+<li>内核模块可以在这些钩子点上注册钩子函数，将自定义的IP数据包处理函数挂接在相应的钩子上。</li>
+<li>当数据包经过Netfilter框架的某个钩子点时，内核会检测是否有内核模块对该钩子点进行了钩子函数注册。如果有注册，就调用相应的钩子函数，从而有机会检查和修改数据包，并返回处理结果给Netfilter框架。</li>
+<li>Netfilter根据钩子函数的返回结果来处理IP数据包，如丢弃数据包或按常规处理数据包。</li>
+<li>多个内核模块可以在同一个钩子点注册它们的钩子函数，Netfilter会按照优先级调用这些钩子函数。</li>
+</ul>
+</li>
+<li>队列输出方式：钩子函数方式需要进行复杂的Linux内核编程，对于安全管理员来说具有挑战性。<ul>
+<li>Netfilter提供了队列输出功能，使得经过的IP数据包可以直接交给应用层处理。</li>
+<li>安全管理员可以在应用层开发应用软件，对数据包进行自主处理，如丢弃或修改。</li>
+<li>处理后的数据包可以再通过Netfilter的队列输出功能发送给IP协议层进行后续协议处理。</li>
+</ul>
+</li>
+</ul>
 
     </div>
 
@@ -219,10 +243,13 @@
 
         
     <div class="post-nav">
-      <div class="post-nav-item"></div>
       <div class="post-nav-item">
-    <a href="/2024/04/27/How-to-build-a-personal-blog-on-GitHub/" rel="next" title="使用GitHub搭建个人博客">
-      使用GitHub搭建个人博客 <i class="fa fa-chevron-right"></i>
+    <a href="/2024/07/13/%E7%BD%91%E7%BB%9C%E9%98%B2%E7%81%AB%E5%A2%99%E5%8A%9F%E8%83%BD%E4%B8%8E%E7%BB%93%E6%9E%84%E8%A7%A3%E6%9E%90/" rel="prev" title="网络防火墙功能与结构解析">
+      <i class="fa fa-chevron-left"></i> 网络防火墙功能与结构解析
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2024/07/13/HTTP-1-1/" rel="next" title="HTTP/1.1">
+      HTTP/1.1 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -282,7 +309,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Quick-Start"><span class="nav-number">1.</span> <span class="nav-text">Quick Start</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Create-a-new-post"><span class="nav-number">1.1.</span> <span class="nav-text">Create a new post</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Run-server"><span class="nav-number">1.2.</span> <span class="nav-text">Run server</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Generate-static-files"><span class="nav-number">1.3.</span> <span class="nav-text">Generate static files</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Deploy-to-remote-sites"><span class="nav-number">1.4.</span> <span class="nav-text">Deploy to remote sites</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%98%B2%E7%81%AB%E5%A2%99%E5%AE%9E%E7%8E%B0%E5%9F%BA%E7%A1%80%EF%BC%9ANetfilter%E6%9C%BA%E5%88%B6"><span class="nav-number">1.</span> <span class="nav-text">防火墙实现基础：Netfilter机制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-Netfilter%E6%9C%BA%E5%88%B6%E7%9A%84%E8%BF%90%E8%A1%8C%E5%8E%9F%E7%90%86"><span class="nav-number">1.0.1.</span> <span class="nav-text">1.Netfilter机制的运行原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-Netfilter%E5%8A%9F%E8%83%BD%E7%A7%8D%E7%B1%BB"><span class="nav-number">1.0.2.</span> <span class="nav-text">2.Netfilter功能种类</span></a></li></ol></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
