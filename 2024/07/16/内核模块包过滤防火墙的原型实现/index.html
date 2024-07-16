@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="内核模块包过滤防火墙的原型实现1.原型系统的总体设计分为两部分独立实现  运行在应用层的过滤规则配置程序，用来设置和启用包过滤规则和配置相应的规则参数，包括要控制的协议类型、IP地址、端口等 实现IP报文过滤的内核模块，通过在Netfilter框架中注册钩子函数的方式来实现对IP数据包的过滤和控制   内核模块不能直接访问规则配置程序中的过滤规则，所以通过注册设备文件结点的方式实现应用程序和内核之">
+<meta property="og:type" content="article">
+<meta property="og:title" content="内核模块包过滤防火墙的原型实现">
+<meta property="og:url" content="http://example.com/2024/07/16/%E5%86%85%E6%A0%B8%E6%A8%A1%E5%9D%97%E5%8C%85%E8%BF%87%E6%BB%A4%E9%98%B2%E7%81%AB%E5%A2%99%E7%9A%84%E5%8E%9F%E5%9E%8B%E5%AE%9E%E7%8E%B0/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="内核模块包过滤防火墙的原型实现1.原型系统的总体设计分为两部分独立实现  运行在应用层的过滤规则配置程序，用来设置和启用包过滤规则和配置相应的规则参数，包括要控制的协议类型、IP地址、端口等 实现IP报文过滤的内核模块，通过在Netfilter框架中注册钩子函数的方式来实现对IP数据包的过滤和控制   内核模块不能直接访问规则配置程序中的过滤规则，所以通过注册设备文件结点的方式实现应用程序和内核之">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-07-16T10:00:04.000Z">
+<meta property="article:modified_time" content="2024-07-16T10:07:39.293Z">
+<meta property="article:author" content="yhcs">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/2024/07/16/%E5%86%85%E6%A0%B8%E6%A8%A1%E5%9D%97%E5%8C%85%E8%BF%87%E6%BB%A4%E9%98%B2%E7%81%AB%E5%A2%99%E7%9A%84%E5%8E%9F%E5%9E%8B%E5%AE%9E%E7%8E%B0/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>内核模块包过滤防火墙的原型实现 | Hexo</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Hexo</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/07/16/%E5%86%85%E6%A0%B8%E6%A8%A1%E5%9D%97%E5%8C%85%E8%BF%87%E6%BB%A4%E9%98%B2%E7%81%AB%E5%A2%99%E7%9A%84%E5%8E%9F%E5%9E%8B%E5%AE%9E%E7%8E%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="yhcs">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          内核模块包过滤防火墙的原型实现
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2024-07-16 18:00:04 / 修改时间：18:07:39" itemprop="dateCreated datePublished" datetime="2024-07-16T18:00:04+08:00">2024-07-16</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="内核模块包过滤防火墙的原型实现"><a href="#内核模块包过滤防火墙的原型实现" class="headerlink" title="内核模块包过滤防火墙的原型实现"></a>内核模块包过滤防火墙的原型实现</h1><h3 id="1-原型系统的总体设计"><a href="#1-原型系统的总体设计" class="headerlink" title="1.原型系统的总体设计"></a>1.原型系统的总体设计</h3><p>分为两部分独立实现</p>
+<ol>
+<li>运行在应用层的过滤规则配置程序，用来设置和启用包过滤规则和配置相应的规则参数，包括要控制的协议类型、IP地址、端口等</li>
+<li>实现IP报文过滤的内核模块，通过在Netfilter框架中注册钩子函数的方式来实现对IP数据包的过滤和控制</li>
+</ol>
+<ul>
+<li>内核模块不能直接访问规则配置程序中的过滤规则，所以通过注册设备文件结点的方式实现应用程序和内核之间的通信，传递所配置的过滤规则和参数</li>
+</ul>
+<h3 id="2-规则配置程序的设计"><a href="#2-规则配置程序的设计" class="headerlink" title="2.规则配置程序的设计"></a>2.规则配置程序的设计</h3><p>主要完成两方面的工作：</p>
+<ol>
+<li>从用户的输入命令中解析出报文过滤规则</li>
+<li>创建一个新的设备文件，通过写该设备文件，将所设置的过滤规则传递给Linux内核模块</li>
+</ol>
+<h3 id="3-内核模块的设计"><a href="#3-内核模块的设计" class="headerlink" title="3.内核模块的设计"></a>3.内核模块的设计</h3><p>主要功能是对收到的数据包进行过滤，即依据所配置的过滤规则，丢弃与所配置报文信息特征相匹配的数据包，包括四个部分</p>
+<ol>
+<li>新设备文件的驱动：目的是获取规则配置程序向内核模块发送的过滤规则，也就是接收从规则配置程序写入设备文件的内容，将该内容保存到内核模块的变量中</li>
+<li>报文过滤控制函数：包括一个总入口函数和一组具体规则判断函数。该函数在模块初始化阶段会被注册到Netfilter框架的相应钩子点上，当报文经过时，该函数将会被自动调用，根据过滤规则，对是否过滤该IP报文进行逻辑判断，将判断结果作为函数返回值，Netfilter根据函数的返回值进行报文过滤，放行还是阻止</li>
+<li>内核模块的初始化函数：该函数在内核模块加载时被Linux自动调用，主要包括两方面的初始化工作：<ol>
+<li>注册新设备文件的驱动</li>
+<li>将报文过滤控制函数注册到Netfilter框架的相应钩子点上，本系统是挂在<code>IP_POST_ROUTING</code>，即在对收到的报文做路由处理后执行包过滤，注册完成后，每次报文在路由处理后执行包过滤</li>
+</ol>
+</li>
+<li>内核模块的注销函数：该函数在内核模块注销时被Linux自动调用，主要完成设备文件驱动的注销，以及从Netfilter框架中注销钩子函数</li>
+</ol>
+<h3 id="4-测试"><a href="#4-测试" class="headerlink" title="4.测试"></a>4.测试</h3><ol>
+<li>ping功能测试<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ping 10.160.101.243</span><br></pre></td></tr></table></figure>
+此时可以ping通，打开防火墙<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./configure -p ping -y 10.160.101.243</span><br></pre></td></tr></table></figure>
+再次ping该ip，无响应<br>使用<code>dmesg | tail</code>查看控制信息<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[12103.702553] input info: p=1, x=0 y=-211443702 m=0 n=0</span><br><span class="line">[12212.302296] An ICMP packet is denied!</span><br><span class="line">[12213.304010] An ICMP packet is denied!</span><br><span class="line">[12214.327981] An ICMP packet is denied!</span><br></pre></td></tr></table></figure></li>
+<li>udp报文过滤测试<br>查看本地DNS服务器<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat /etc/resolv.conf</span><br></pre></td></tr></table></figure>
+配置这条信息后，不能以域名形式访问外网服务器，但能够以IP地址的形式访问外网服务器<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./configure -p udp -y 127.0.0.53</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[ 8225.935267] input info: p=17, x=0 y=889192575 m=0 n=0</span><br><span class="line">[ 8234.208966] A UDP packet is denied!</span><br><span class="line">[ 8234.209040] A UDP packet is denied!</span><br><span class="line">[ 8234.209100] A UDP packet is denied!</span><br><span class="line">[ 8234.209212] A UDP packet is denied!</span><br></pre></td></tr></table></figure></li>
+<li>tcp报文过滤测试<br>使用 hping3 工具发送一个 TCP SYN 报文到指定的目标 IP 地址和端口<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hping3 -c 1 -S -p 80 10.160.101.243</span><br></pre></td></tr></table></figure>
+配置规则之后<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">hping3 -c 1 -S -p 80 10.160.101.243</span><br><span class="line">HPING 10.160.101.243 (ens33 10.160.101.243): S set, 40 headers + 0 data bytes</span><br><span class="line">[send_ip] sendto: Operation not permitted</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[13043.943593] input info: p=6, x=0 y=-211443702 m=0 n=20480</span><br><span class="line">[13051.969525] A TCP packet is denied!</span><br><span class="line">[13068.720651] A TCP packet is denied!</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h3 id="5-源代码"><a href="#5-源代码" class="headerlink" title="5.源代码"></a>5.源代码</h3><ol>
+<li>configure.c  <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/stat.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;fcntl.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;arpa/inet.h&gt;</span>    </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;netinet/in.h&gt;</span>   </span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 规则配置程序定义5个全局变量，保存用户通过命令行选项配置的控制信息</span></span><br><span class="line"><span class="type">unsigned</span> <span class="type">int</span> g_controlledProtocol = <span class="number">0</span>;</span><br><span class="line"><span class="type">unsigned</span> <span class="type">short</span> g_controlledSrcport = <span class="number">0</span>;</span><br><span class="line"><span class="type">unsigned</span> <span class="type">short</span> g_controlledDstport = <span class="number">0</span>;</span><br><span class="line"><span class="type">unsigned</span> <span class="type">int</span> g_controlledSaddr = <span class="number">0</span>;</span><br><span class="line"><span class="type">unsigned</span> <span class="type">int</span> g_controlledDaddr = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">getpara</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span>* argv[])</span>;</span><br><span class="line"><span class="type">void</span> <span class="title function_">display_usage</span><span class="params">(<span class="type">char</span>* commandname)</span>;</span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span>* argv[])</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">char</span> controlinfo[<span class="number">128</span>];    <span class="comment">// 规则信息的缓冲区</span></span><br><span class="line">    <span class="type">int</span> controlinfoLen = <span class="number">0</span>;  <span class="comment">// 规则信息长度，0：关闭防火墙</span></span><br><span class="line">    <span class="type">int</span> fd;                  <span class="comment">// 设备文件打开后的文件描述符</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">stat</span> <span class="title">buf</span>;</span>         <span class="comment">// 用于获取设备文件是否存在的临时缓冲区</span></span><br><span class="line">    <span class="keyword">if</span> (argc == <span class="number">1</span>) &#123;  <span class="comment">// 不带参数表示要关闭防火墙，把传入的规则长度置为0，关闭防火墙的报文检查控制功能</span></span><br><span class="line">        controlinfoLen = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        getpara(argc, argv);  <span class="comment">// 获取命令行选项中规则信息到相应的全局变量</span></span><br><span class="line">        <span class="comment">// 规则信息顺序：协议类型、源IP、目的IP、源端口、目的端口</span></span><br><span class="line">        <span class="comment">// 每个字段占四个字节</span></span><br><span class="line">        *(<span class="type">int</span>*)controlinfo = g_controlledProtocol;</span><br><span class="line">        *(<span class="type">int</span>*)(controlinfo + <span class="number">4</span>) = g_controlledSaddr;</span><br><span class="line">        *(<span class="type">int</span>*)(controlinfo + <span class="number">8</span>) = g_controlledDaddr;</span><br><span class="line">        *(<span class="type">int</span>*)(controlinfo + <span class="number">12</span>) = g_controlledSrcport;</span><br><span class="line">        *(<span class="type">int</span>*)(controlinfo + <span class="number">16</span>) = g_controlledDstport;</span><br><span class="line">        controlinfoLen = <span class="number">20</span>;  <span class="comment">// 设置规则信息的长度</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (stat(<span class="string">&quot;/dev/controlinfo&quot;</span>, &amp;buf) != <span class="number">0</span>) &#123;  <span class="comment">// 用stat调用来测试设备文件是否已经存在</span></span><br><span class="line">        <span class="comment">/* 如果设备文件不存在，则先调用mknod创建设备文件，</span></span><br><span class="line"><span class="comment">        注意创建设备文件的参数要和内核中设备注册的相应参数一致 */</span></span><br><span class="line">        <span class="keyword">if</span> (system(<span class="string">&quot;mknod /dev/controlinfo c 124 0&quot;</span>) == <span class="number">-1</span>) &#123;</span><br><span class="line">            <span class="comment">/* 创建设备文件:mknod /dev/controlinfo c 124 0:</span></span><br><span class="line"><span class="comment">            创建一个字符型设备文件&quot;/dev/controlinfo&quot;，</span></span><br><span class="line"><span class="comment">            并指定设备号为124，设备的权限为0。 */</span></span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;Cannot create the device file!\n&quot;</span>);</span><br><span class="line">            <span class="built_in">printf</span>(<span class="string">&quot;Please check and try again!\n&quot;</span>);</span><br><span class="line">            <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// O_RDWR：读写方式打开，S_IRUSR：用户可读权限，S_IWUSR：用户可写权限</span></span><br><span class="line">    fd = open(<span class="string">&quot;/dev/controlinfo&quot;</span>, O_RDWR, S_IRUSR | S_IWUSR);  <span class="comment">// 打开设备文件</span></span><br><span class="line">    <span class="keyword">if</span> (fd &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        write(fd, controlinfo, controlinfoLen);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        perror(<span class="string">&quot;Cannot open /dev/controlinfo \n&quot;</span>);</span><br><span class="line">        <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    close(fd);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">getpara</span><span class="params">(<span class="type">int</span> argc, <span class="type">char</span>* argv[])</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">int</span> optret;</span><br><span class="line">    <span class="type">unsigned</span> <span class="type">short</span> tmpport;  <span class="comment">// 保存端口的临时变量</span></span><br><span class="line">    optret = getopt(argc, argv, <span class="string">&quot;pxymnh&quot;</span>);</span><br><span class="line">    <span class="keyword">while</span> (optret != <span class="number">-1</span>) &#123;</span><br><span class="line">        <span class="keyword">switch</span> (optret) &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="string">&#x27;p&#x27;</span>:  <span class="comment">// 协议类型</span></span><br><span class="line">            <span class="comment">// ICMP/TCP/UDP的协议类型分别为1，6，17</span></span><br><span class="line">            <span class="keyword">if</span> (<span class="built_in">strncmp</span>(argv[optind], <span class="string">&quot;ping&quot;</span>, <span class="number">4</span>) == <span class="number">0</span>)</span><br><span class="line">                g_controlledProtocol = <span class="number">1</span>;</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (<span class="built_in">strncmp</span>(argv[optind], <span class="string">&quot;tcp&quot;</span>, <span class="number">3</span>) == <span class="number">0</span>)</span><br><span class="line">                g_controlledProtocol = <span class="number">6</span>;</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (<span class="built_in">strncmp</span>(argv[optind], <span class="string">&quot;udp&quot;</span>, <span class="number">3</span>) == <span class="number">0</span>)</span><br><span class="line">                g_controlledProtocol = <span class="number">17</span>;</span><br><span class="line">            <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;Unknown protocol!Please check and try again\n&quot;</span>);</span><br><span class="line">                <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">            &#125;;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="string">&#x27;x&#x27;</span>:  <span class="comment">// 源IP</span></span><br><span class="line">            <span class="comment">// inet_aton用于将十进制点分IP地址格式转化为32位整数</span></span><br><span class="line">            <span class="keyword">if</span> (inet_aton(argv[optind], (<span class="keyword">struct</span> in_addr*)&amp;g_controlledSaddr) == <span class="number">0</span>) &#123;</span><br><span class="line">                <span class="comment">// 不是有效的ip地址</span></span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;Invalid source ip address!Please check and try again\n&quot;</span>);</span><br><span class="line">                <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="string">&#x27;y&#x27;</span>:  <span class="comment">// 目的IP</span></span><br><span class="line">            <span class="keyword">if</span> (inet_aton(argv[optind], (<span class="keyword">struct</span> in_addr*)&amp;g_controlledDaddr) == <span class="number">0</span>) &#123;</span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;Invalid destination ip address!Please check and try again\n&quot;</span>);</span><br><span class="line">                <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="string">&#x27;m&#x27;</span>:  <span class="comment">// 源端口</span></span><br><span class="line">            tmpport = atoi(argv[optind]);</span><br><span class="line">            <span class="keyword">if</span> (tmpport == <span class="number">0</span>) &#123;  <span class="comment">// 转换失败或者非整数</span></span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;Invalid source port!Please check and try again\n&quot;</span>);</span><br><span class="line">                <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            g_controlledSrcport = htons(tmpport);  <span class="comment">// 转化为网络字节序</span></span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="string">&#x27;n&#x27;</span>:  <span class="comment">// 目的端口</span></span><br><span class="line">            tmpport = atoi(argv[optind]);</span><br><span class="line">            <span class="keyword">if</span> (tmpport == <span class="number">0</span>) &#123;  <span class="comment">// 转换失败或者非整数</span></span><br><span class="line">                <span class="built_in">printf</span>(<span class="string">&quot;Invalid destination port!Please check and try again\n&quot;</span>);</span><br><span class="line">                <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            g_controlledDstport = htons(tmpport);  <span class="comment">// 转化为网络字节序</span></span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="string">&#x27;h&#x27;</span>:  <span class="comment">// 帮助信息</span></span><br><span class="line">            display_usage(argv[<span class="number">0</span>]);</span><br><span class="line">            <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">        <span class="keyword">default</span>:</span><br><span class="line">            display_usage(argv[<span class="number">0</span>]);</span><br><span class="line">            <span class="built_in">exit</span>(<span class="number">1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        optret = getopt(argc, argv, <span class="string">&quot;pxymnh&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="type">void</span> <span class="title function_">display_usage</span><span class="params">(<span class="type">char</span>* commandname)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Usage1: %s \n&quot;</span>, commandname);  <span class="comment">// 后不跟任何参数，即关闭防火墙功能</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Usage2: %s -p protocol -x sourceip -y destinationip -m sourceport -n destinationport\n&quot;</span>, commandname);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>mod_firewall.c  <figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;linux/kernel.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;linux/module.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;linux/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;linux/if_ether.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;linux/netfilter.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;linux/netfilter_ipv4.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;linux/tcp.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;linux/ip.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;linux/icmp.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;linux/udp.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;linux/fs.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;linux/uaccess.h&gt;</span>  <span class="comment">// for copy_from_user</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> MATCH 1  <span class="comment">// 表示端口、ip地址的匹配结果和要控制的IP地址端口一致</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> NMATCH 0</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 函数原型</span></span><br><span class="line"><span class="type">int</span> <span class="title function_">port_check</span><span class="params">(<span class="type">unsigned</span> <span class="type">short</span> srcport, <span class="type">unsigned</span> <span class="type">short</span> dstport)</span>;</span><br><span class="line"><span class="type">int</span> <span class="title function_">ipaddr_check</span><span class="params">(<span class="type">unsigned</span> <span class="type">int</span> saddr, <span class="type">unsigned</span> <span class="type">int</span> daddr)</span>;</span><br><span class="line"><span class="type">int</span> <span class="title function_">icmp_check</span><span class="params">(<span class="type">void</span>)</span>;</span><br><span class="line"><span class="type">int</span> <span class="title function_">tcp_check</span><span class="params">(<span class="type">void</span>)</span>;</span><br><span class="line"><span class="type">int</span> <span class="title function_">udp_check</span><span class="params">(<span class="type">void</span>)</span>;</span><br><span class="line"><span class="type">unsigned</span> <span class="type">int</span> <span class="title function_">hook_func</span><span class="params">(<span class="type">void</span> *priv, <span class="keyword">struct</span> sk_buff *skb, <span class="type">const</span> <span class="keyword">struct</span> nf_hook_state *state)</span>;</span><br><span class="line"><span class="type">ssize_t</span> <span class="title function_">write_controlinfo</span><span class="params">(<span class="keyword">struct</span> file *file, <span class="type">const</span> <span class="type">char</span> __user *buf, <span class="type">size_t</span> len, <span class="type">loff_t</span> *offset)</span>;</span><br><span class="line"><span class="type">static</span> <span class="type">int</span> __init <span class="title function_">initmodule</span><span class="params">(<span class="type">void</span>)</span>;</span><br><span class="line"><span class="type">static</span> <span class="type">void</span> __exit <span class="title function_">cleanupmodule</span><span class="params">(<span class="type">void</span>)</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 过滤信息类变量</span></span><br><span class="line"><span class="type">unsigned</span> <span class="type">int</span> g_controlledProtocol = <span class="number">0</span>;   <span class="comment">// 表示要控制的协议类型，1:ICMP,6:TCP,17:UDP</span></span><br><span class="line"><span class="type">unsigned</span> <span class="type">short</span> g_controlledSrcport = <span class="number">0</span>;  <span class="comment">// 表示要控制的源端口，该变量只对TCP和UDP报文有效</span></span><br><span class="line"><span class="type">unsigned</span> <span class="type">short</span> g_controlledDstport = <span class="number">0</span>;  <span class="comment">// 该变量只对TCP和UDP报文有效</span></span><br><span class="line"><span class="type">unsigned</span> <span class="type">int</span> g_controlledSaddr = <span class="number">0</span>;</span><br><span class="line"><span class="type">unsigned</span> <span class="type">int</span> g_controlledDaddr = <span class="number">0</span>;</span><br><span class="line"><span class="type">int</span> g_enableFlag = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 设备驱动变量</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">file_operations</span> <span class="title">fops</span> =</span> &#123;</span><br><span class="line">    .owner = THIS_MODULE,</span><br><span class="line">    .write = write_controlinfo,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="class"><span class="keyword">struct</span> <span class="title">nf_hook_ops</span> <span class="title">myhook</span>;</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sk_buff</span>* <span class="title">tmpskb</span>;</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">iphdr</span>* <span class="title">piphdr</span>;</span></span><br><span class="line"></span><br><span class="line">module_init(initmodule);</span><br><span class="line">module_exit(cleanupmodule);</span><br><span class="line"></span><br><span class="line">MODULE_LICENSE(<span class="string">&quot;GPL&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 函数实现</span></span><br><span class="line"><span class="type">int</span> <span class="title function_">port_check</span><span class="params">(<span class="type">unsigned</span> <span class="type">short</span> srcport, <span class="type">unsigned</span> <span class="type">short</span> dstport)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> (g_controlledSrcport == <span class="number">0</span> &amp;&amp; g_controlledDstport == <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> MATCH;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (g_controlledSrcport != <span class="number">0</span> &amp;&amp; g_controlledDstport == <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (g_controlledSrcport == srcport) &#123;</span><br><span class="line">            <span class="keyword">return</span> MATCH;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> NMATCH;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (g_controlledSrcport == <span class="number">0</span> &amp;&amp; g_controlledDstport != <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (g_controlledDstport == dstport) &#123;</span><br><span class="line">            <span class="keyword">return</span> MATCH;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> NMATCH;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (g_controlledSrcport != <span class="number">0</span> &amp;&amp; g_controlledDstport != <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (g_controlledSrcport == srcport &amp;&amp; g_controlledDstport == dstport) &#123;</span><br><span class="line">            <span class="keyword">return</span> MATCH;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> NMATCH;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> NMATCH;  <span class="comment">// 正常情况不会运行到这</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">ipaddr_check</span><span class="params">(<span class="type">unsigned</span> <span class="type">int</span> saddr, <span class="type">unsigned</span> <span class="type">int</span> daddr)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> (g_controlledSaddr == <span class="number">0</span> &amp;&amp; g_controlledDaddr == <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> MATCH;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (g_controlledSaddr != <span class="number">0</span> &amp;&amp; g_controlledDaddr == <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (g_controlledSaddr == saddr) &#123;</span><br><span class="line">            <span class="keyword">return</span> MATCH;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> NMATCH;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (g_controlledSaddr == <span class="number">0</span> &amp;&amp; g_controlledDaddr != <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (g_controlledDaddr == daddr) &#123;</span><br><span class="line">            <span class="keyword">return</span> MATCH;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> NMATCH;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (g_controlledSaddr != <span class="number">0</span> &amp;&amp; g_controlledDaddr != <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (g_controlledSaddr == saddr &amp;&amp; g_controlledDaddr == daddr) &#123;</span><br><span class="line">            <span class="keyword">return</span> MATCH;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> NMATCH;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> NMATCH;  <span class="comment">// 正常情况不会运行到这</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">icmp_check</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">icmphdr</span>* <span class="title">picmphdr</span>;</span></span><br><span class="line">    <span class="comment">// ICMP报文紧跟在IP头部之后，IP报文头长piphdr-&gt;ihl*4,ip报文头右移32bit</span></span><br><span class="line">    picmphdr = (<span class="keyword">struct</span> icmphdr*)(tmpskb-&gt;data + (piphdr-&gt;ihl * <span class="number">4</span>));</span><br><span class="line">    <span class="keyword">if</span> (picmphdr-&gt;type == <span class="number">8</span>) &#123;  <span class="comment">// 客户端向远程主机发出的ping请求报文</span></span><br><span class="line">        <span class="keyword">if</span> (ipaddr_check(piphdr-&gt;saddr, piphdr-&gt;daddr) == MATCH) &#123;</span><br><span class="line">            printk(<span class="string">&quot;An ICMP packet is denied!\n&quot;</span>);</span><br><span class="line">            <span class="keyword">return</span> NF_DROP;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (picmphdr-&gt;type == <span class="number">0</span>) &#123;  <span class="comment">// 远程主机向客户端发出的ping响应报文</span></span><br><span class="line">        <span class="comment">// 注意将响应报文的目的ip与要控制的源ip，报文的源ip跟要控制的目的ip作比较</span></span><br><span class="line">        <span class="keyword">if</span> (ipaddr_check(piphdr-&gt;daddr, piphdr-&gt;saddr) == MATCH) &#123;</span><br><span class="line">            printk(<span class="string">&quot;An ICMP packet is denied!\n&quot;</span>);</span><br><span class="line">            <span class="keyword">return</span> NF_DROP;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 其他类型ICMP或者不是要控制的，通行</span></span><br><span class="line">    <span class="keyword">return</span> NF_ACCEPT;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">tcp_check</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">tcphdr</span>* <span class="title">ptcphdr</span>;</span></span><br><span class="line">    <span class="comment">// TCP报文紧跟在IP头部之后，IP报文头长piphdr-&gt;ihl*4,ip报文头右移32bit</span></span><br><span class="line">    ptcphdr = (<span class="keyword">struct</span> tcphdr*)(tmpskb-&gt;data + (piphdr-&gt;ihl * <span class="number">4</span>));</span><br><span class="line">    <span class="keyword">if</span> (ipaddr_check(piphdr-&gt;saddr, piphdr-&gt;daddr) == MATCH &amp;&amp; port_check(ptcphdr-&gt;source, ptcphdr-&gt;dest) == MATCH) &#123;</span><br><span class="line">        printk(<span class="string">&quot;A TCP packet is denied!\n&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> NF_DROP;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> NF_ACCEPT;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="type">int</span> <span class="title function_">udp_check</span><span class="params">(<span class="type">void</span>)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">udphdr</span>* <span class="title">pudphdr</span>;</span></span><br><span class="line">    pudphdr = (<span class="keyword">struct</span> udphdr*)(tmpskb-&gt;data + (piphdr-&gt;ihl * <span class="number">4</span>));</span><br><span class="line">    <span class="keyword">if</span> (ipaddr_check(piphdr-&gt;saddr, piphdr-&gt;daddr) == MATCH &amp;&amp; port_check(pudphdr-&gt;source, pudphdr-&gt;dest) == MATCH) &#123;</span><br><span class="line">        printk(<span class="string">&quot;A UDP packet is denied!\n&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> NF_DROP;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> NF_ACCEPT;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="type">unsigned</span> <span class="type">int</span> <span class="title function_">hook_func</span><span class="params">(<span class="type">void</span> *priv, <span class="keyword">struct</span> sk_buff *skb, <span class="type">const</span> <span class="keyword">struct</span> nf_hook_state *state)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">// skb 为指向 netfilter 正在处理报文缓冲区的指针</span></span><br><span class="line">    <span class="keyword">if</span> (!g_enableFlag) &#123;</span><br><span class="line">        <span class="keyword">return</span> NF_ACCEPT;</span><br><span class="line">    &#125;</span><br><span class="line">    tmpskb = skb;  <span class="comment">// 获得报文缓冲区的指针</span></span><br><span class="line">    piphdr = (<span class="keyword">struct</span> iphdr *)skb_network_header(tmpskb);</span><br><span class="line">    <span class="keyword">if</span> (piphdr-&gt;protocol != g_controlledProtocol) &#123;</span><br><span class="line">        <span class="keyword">return</span> NF_ACCEPT;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (piphdr-&gt;protocol == <span class="number">1</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> icmp_check();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (piphdr-&gt;protocol == <span class="number">6</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> tcp_check();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span> (piphdr-&gt;protocol == <span class="number">17</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> udp_check();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> &#123;  <span class="comment">// 其他协议，默认放行，一般不会运行到这</span></span><br><span class="line">        printk(<span class="string">&quot;Unknown type of packet!\n&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> NF_ACCEPT;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="type">ssize_t</span> <span class="title function_">write_controlinfo</span><span class="params">(<span class="keyword">struct</span> file *file, <span class="type">const</span> <span class="type">char</span> __user *buf, <span class="type">size_t</span> len, <span class="type">loff_t</span> *offset)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">char</span> controlinfo[<span class="number">128</span>];  <span class="comment">// 用于保存所写入数据的内核空间缓冲区</span></span><br><span class="line">    <span class="type">char</span>* pchar;            <span class="comment">// 临时缓冲区指针</span></span><br><span class="line">    pchar = controlinfo;</span><br><span class="line">    <span class="keyword">if</span> (len == <span class="number">0</span>) &#123;  <span class="comment">// 写入内容为0，表示关闭防火墙</span></span><br><span class="line">        g_enableFlag = <span class="number">0</span>;</span><br><span class="line">        printk(<span class="string">&quot;Firewall is closed!\n&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> len;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 调用函数 copy_from_user 将规则配置程序传入的用户配置信息复制到内核空间缓存区</span></span><br><span class="line">    <span class="keyword">if</span> (copy_from_user(controlinfo, buf, len) != <span class="number">0</span>) &#123;</span><br><span class="line">        printk(<span class="string">&quot;Can&#x27;t get the control rule!\n&quot;</span>);</span><br><span class="line">        printk(<span class="string">&quot;Something may be wrong, please check it!\n&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 将规则赋给全局变量</span></span><br><span class="line">    g_controlledProtocol = *((<span class="type">int</span>*)pchar);</span><br><span class="line">    pchar = pchar + <span class="number">4</span>;</span><br><span class="line">    g_controlledSaddr = *((<span class="type">int</span>*)pchar);</span><br><span class="line">    pchar = pchar + <span class="number">4</span>;</span><br><span class="line">    g_controlledDaddr= *((<span class="type">int</span>*)pchar);</span><br><span class="line">    pchar = pchar + <span class="number">4</span>;</span><br><span class="line">    g_controlledSrcport= *((<span class="type">int</span>*)pchar);</span><br><span class="line">    pchar = pchar + <span class="number">4</span>;</span><br><span class="line">    g_controlledDstport= *((<span class="type">int</span>*)pchar);</span><br><span class="line">    g_enableFlag = <span class="number">1</span>;</span><br><span class="line">    printk(<span class="string">&quot;input info: p=%d, x=%d y=%d m=%d n=%d\n&quot;</span>, g_controlledProtocol, g_controlledSaddr, g_controlledDaddr, g_controlledSrcport, g_controlledDstport);</span><br><span class="line">    <span class="keyword">return</span> len;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="type">int</span> __init <span class="title function_">initmodule</span><span class="params">(<span class="type">void</span>)</span> &#123;</span><br><span class="line">    <span class="type">int</span> ret;</span><br><span class="line">    printk(<span class="string">&quot;Init Module\n&quot;</span>);</span><br><span class="line">    myhook.hook = hook_func;</span><br><span class="line">    myhook.hooknum = NF_INET_POST_ROUTING;</span><br><span class="line">    myhook.pf = PF_INET;</span><br><span class="line">    myhook.priority = NF_IP_PRI_FIRST;</span><br><span class="line">    nf_register_net_hook(&amp;init_net, &amp;myhook);</span><br><span class="line">    ret = register_chrdev(<span class="number">124</span>, <span class="string">&quot;/dev/controlinfo&quot;</span>, &amp;fops);</span><br><span class="line">    <span class="keyword">if</span> (ret != <span class="number">0</span>) &#123;</span><br><span class="line">        printk(<span class="string">&quot;Can&#x27;t register device file!\n&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">static</span> <span class="type">void</span> __exit <span class="title function_">cleanupmodule</span><span class="params">(<span class="type">void</span>)</span> &#123;</span><br><span class="line">    nf_unregister_net_hook(&amp;init_net, &amp;myhook);</span><br><span class="line">    unregister_chrdev(<span class="number">124</span>, <span class="string">&quot;controlinfo&quot;</span>);</span><br><span class="line">    printk(<span class="string">&quot;CleanUp\n&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure></li>
+<li>Makefile  <figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">CC := gcc-13</span><br><span class="line">obj-m += mod<span class="emphasis">_firewall.o</span></span><br><span class="line"><span class="emphasis">KDIR := /lib/modules/$(shell uname -r)/build</span></span><br><span class="line"><span class="emphasis">PWD  := $(shell pwd)</span></span><br><span class="line"><span class="emphasis"></span></span><br><span class="line"><span class="emphasis">default:</span></span><br><span class="line"><span class="emphasis">	$(MAKE) -C $(KDIR) M=$(PWD) modules</span></span><br><span class="line"><span class="emphasis">	$(CC) -o configure configure.c</span></span><br><span class="line"><span class="emphasis"></span></span><br><span class="line"><span class="emphasis">clean:</span></span><br><span class="line"><span class="emphasis">	rm -f *.o *.ko *.mod.c *.mod.o *.symvers *.order configure *.mod</span></span><br></pre></td></tr></table></figure></li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2024/07/13/vscodeC-json%E6%96%87%E4%BB%B6%E9%85%8D%E7%BD%AE/" rel="prev" title="vscode C++ launch.json和task.json配置">
+      <i class="fa fa-chevron-left"></i> vscode C++ launch.json和task.json配置
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2024/07/16/C-%E5%85%AB%E8%82%A1-1/" rel="next" title="C++八股(1)">
+      C++八股(1) <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%86%85%E6%A0%B8%E6%A8%A1%E5%9D%97%E5%8C%85%E8%BF%87%E6%BB%A4%E9%98%B2%E7%81%AB%E5%A2%99%E7%9A%84%E5%8E%9F%E5%9E%8B%E5%AE%9E%E7%8E%B0"><span class="nav-number">1.</span> <span class="nav-text">内核模块包过滤防火墙的原型实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%8E%9F%E5%9E%8B%E7%B3%BB%E7%BB%9F%E7%9A%84%E6%80%BB%E4%BD%93%E8%AE%BE%E8%AE%A1"><span class="nav-number">1.0.1.</span> <span class="nav-text">1.原型系统的总体设计</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E8%A7%84%E5%88%99%E9%85%8D%E7%BD%AE%E7%A8%8B%E5%BA%8F%E7%9A%84%E8%AE%BE%E8%AE%A1"><span class="nav-number">1.0.2.</span> <span class="nav-text">2.规则配置程序的设计</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E5%86%85%E6%A0%B8%E6%A8%A1%E5%9D%97%E7%9A%84%E8%AE%BE%E8%AE%A1"><span class="nav-number">1.0.3.</span> <span class="nav-text">3.内核模块的设计</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E6%B5%8B%E8%AF%95"><span class="nav-number">1.0.4.</span> <span class="nav-text">4.测试</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-%E6%BA%90%E4%BB%A3%E7%A0%81"><span class="nav-number">1.0.5.</span> <span class="nav-text">5.源代码</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">yhcs</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">31</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">yhcs</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
