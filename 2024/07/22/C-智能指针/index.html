@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="智能指针C++ 中的指针分为原始指针和智能指针智能指针是裸指针的封装智能指针只解决一部分问题：独占、共享所有权指针的释放、传输，没有从根本上解决C++内存安全的问题 独占指针：unique_ptr特点：  在任何时刻，只能有一个指针管理内存 指针超出作用域，内存将自动释放 该类型指针不可以copy，只可以move   三种创建方式  通过已有裸指针创建 通过new来创建 通过std::make_u">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C++_智能指针">
+<meta property="og:url" content="http://example.com/2024/07/22/C-%E6%99%BA%E8%83%BD%E6%8C%87%E9%92%88/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="智能指针C++ 中的指针分为原始指针和智能指针智能指针是裸指针的封装智能指针只解决一部分问题：独占、共享所有权指针的释放、传输，没有从根本上解决C++内存安全的问题 独占指针：unique_ptr特点：  在任何时刻，只能有一个指针管理内存 指针超出作用域，内存将自动释放 该类型指针不可以copy，只可以move   三种创建方式  通过已有裸指针创建 通过new来创建 通过std::make_u">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-07-22T15:24:05.000Z">
+<meta property="article:modified_time" content="2024-07-22T15:25:14.069Z">
+<meta property="article:author" content="yhcs">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/2024/07/22/C-%E6%99%BA%E8%83%BD%E6%8C%87%E9%92%88/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>C++_智能指针 | Hexo</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Hexo</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/07/22/C-%E6%99%BA%E8%83%BD%E6%8C%87%E9%92%88/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="yhcs">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          C++_智能指针
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2024-07-22 23:24:05 / 修改时间：23:25:14" itemprop="dateCreated datePublished" datetime="2024-07-22T23:24:05+08:00">2024-07-22</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C++</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="智能指针"><a href="#智能指针" class="headerlink" title="智能指针"></a>智能指针</h1><p>C++ 中的指针分为原始指针和智能指针<br>智能指针是裸指针的封装<br>智能指针只解决一部分问题：独占、共享所有权指针的释放、传输，没有从根本上解决C++内存安全的问题</p>
+<h3 id="独占指针：unique-ptr"><a href="#独占指针：unique-ptr" class="headerlink" title="独占指针：unique_ptr"></a>独占指针：unique_ptr</h3><p>特点：</p>
+<ul>
+<li>在任何时刻，只能有一个指针管理内存</li>
+<li>指针超出作用域，内存将自动释放</li>
+<li>该类型指针不可以copy，只可以move</li>
+</ul>
+<p> 三种创建方式</p>
+<ul>
+<li>通过已有裸指针创建</li>
+<li>通过<code>new</code>来创建</li>
+<li>通过<code>std::make_unique</code>创建（推荐）</li>
+</ul>
+<p> <code>unique_ptr</code>可以通过<code>get()</code>来获取地址<br> <code>unique_ptr</code>实现了<code>-&gt;</code>和<code>*</code></p>
+<ul>
+<li>可以通过<code>-&gt;</code>调用成员函数</li>
+<li>可以通过<code>*</code>调用<code>dereferencing</code>解引用<br>代码实例<br><code>unique</code>指针的三种创建方式</li>
+</ul>
+<ol>
+<li><p>使用原始指针：注意将原始指针置空</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Cat *c_ptr=<span class="keyword">new</span> <span class="built_in">Cat</span>(<span class="string">&quot;aa&quot;</span>);</span><br><span class="line"><span class="function">unique_ptr&lt;Cat&gt; <span class="title">u_c_ptr</span><span class="params">(c_ptr)</span></span>;</span><br><span class="line"><span class="comment">//之后要将原始指针置空</span></span><br><span class="line">c_ptr=<span class="literal">nullptr</span>;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>使用new</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">unique_ptr&lt;Cat&gt; <span class="title">u_ptr</span><span class="params">(<span class="keyword">new</span> Cat(<span class="string">&quot;bb&quot;</span>))</span></span>;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>使用<code>make_unique</code>（推荐）</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">unique_ptr&lt;Cat&gt; u_ptr=<span class="built_in">make_unique</span>&lt;Cat&gt;(<span class="string">&quot;cc&quot;</span>);</span><br></pre></td></tr></table></figure>
+<p><strong>程序结束会后自动调用析构函数！</strong></p>
+</li>
+</ol>
+<p>其他：使用<code>get()</code>获取地址，<code>*</code>解引用</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">unique_ptr&lt;<span class="type">int</span>&gt; u_ptr=<span class="built_in">make_unique</span>&lt;<span class="type">int</span>&gt;(<span class="number">10</span>);</span><br><span class="line">cout&lt;&lt;*u_ptr&lt;&lt;endl;</span><br><span class="line">cout&lt;&lt;u_ptr.<span class="built_in">get</span>()&lt;&lt;endl;</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">10</span><br><span class="line">0x183fb0</span><br></pre></td></tr></table></figure>
+
+<h3 id="unique-ptr与函数调用"><a href="#unique-ptr与函数调用" class="headerlink" title="unique_ptr与函数调用"></a>unique_ptr与函数调用</h3><ul>
+<li><code>unique_ptr</code>是不可copy，只可以move</li>
+<li>作函数参数和函数返回值时要注意所有权</li>
+</ul>
+<ol>
+<li><code>passing by value</code><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">pass_by_value</span><span class="params">(unique_ptr&lt;Cat&gt; p)</span></span>&#123;</span><br><span class="line">    p-&gt;<span class="built_in">cat_info</span>();</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    unique_ptr&lt;Cat&gt; c=<span class="built_in">make_unique</span>&lt;Cat&gt;(<span class="string">&quot;Tom&quot;</span>);</span><br><span class="line">    <span class="built_in">pass_by_value</span>(<span class="built_in">move</span>(c));</span><br><span class="line">    <span class="comment">// 此时c已经被move到pass_by_value中，c已经不可用</span></span><br><span class="line">	<span class="comment">//c-&gt;cat_info();此时程序会崩溃</span></span><br><span class="line">    <span class="built_in">pass_by_value</span>(<span class="built_in">make_unique</span>&lt;Cat&gt;(<span class="string">&quot;Jerry&quot;</span>));<span class="comment">//默认调用move</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Constructor of Cat:Tom</span><br><span class="line">cat info name:Tom</span><br><span class="line">Desctructor of Cat:Tom</span><br><span class="line">Constructor of Cat:Jerry</span><br><span class="line">cat info name:Jerry</span><br><span class="line">Desctructor of Cat:Jerry</span><br></pre></td></tr></table></figure></li>
+<li><code>passing by reference</code><ul>
+<li>不加const的情况<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">pass_by_reference</span><span class="params">(unique_ptr&lt;Cat&gt; &amp;p)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    p-&gt;<span class="built_in">set_name</span>(<span class="string">&quot;Amy&quot;</span>);</span><br><span class="line">    p-&gt;<span class="built_in">cat_info</span>();</span><br><span class="line">    p.<span class="built_in">reset</span>();<span class="comment">// 清空</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    unique_ptr&lt;Cat&gt; cat = <span class="built_in">make_unique</span>&lt;Cat&gt;(<span class="string">&quot;Tom&quot;</span>);</span><br><span class="line">    <span class="built_in">pass_by_reference</span>(cat);</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;=============unique_ptr=============&quot;</span> &lt;&lt; endl;</span><br><span class="line">	<span class="comment">// 此时cat被清空了</span></span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;cat address:&quot;</span> &lt;&lt; cat.<span class="built_in">get</span>() &lt;&lt; endl;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Constructor of Cat:Tom</span><br><span class="line">cat info name:Amy</span><br><span class="line">Desctructor of Cat:Amy</span><br><span class="line">=============unique_ptr=============</span><br><span class="line">cat address:0</span><br></pre></td></tr></table></figure></li>
+<li>加const的情况<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">pass_by_reference</span><span class="params">(<span class="type">const</span> unique_ptr&lt;Cat&gt; &amp;p)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    p-&gt;<span class="built_in">set_name</span>(<span class="string">&quot;Amy&quot;</span>);</span><br><span class="line">    p-&gt;<span class="built_in">cat_info</span>();</span><br><span class="line">    <span class="comment">// p.reset();加了const以后不允许清空</span></span><br><span class="line">	<span class="comment">//但还是可以对对象进行修改</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    unique_ptr&lt;Cat&gt; cat = <span class="built_in">make_unique</span>&lt;Cat&gt;(<span class="string">&quot;Tom&quot;</span>);</span><br><span class="line">    <span class="built_in">pass_by_reference</span>(cat);</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;=============unique_ptr=============&quot;</span> &lt;&lt; endl;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;cat address:&quot;</span> &lt;&lt; cat.<span class="built_in">get</span>() &lt;&lt; endl;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Constructor of Cat:Tom</span><br><span class="line">cat info name:Amy</span><br><span class="line">=============unique_ptr=============</span><br><span class="line">cat address:0x1f3f60</span><br><span class="line">Desctructor of Cat:Amy</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><code>return by value</code><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">unique_ptr&lt;Cat&gt; <span class="title">get_unique_ptr</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    unique_ptr&lt;Cat&gt; p = <span class="built_in">make_unique</span>&lt;Cat&gt;(<span class="string">&quot;Local cat&quot;</span>);</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;unique_ptr addreess:&quot;</span> &lt;&lt; p.<span class="built_in">get</span>() &lt;&lt; endl;</span><br><span class="line">    <span class="keyword">return</span> p;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    cout&lt;&lt;<span class="built_in">get_unique_ptr</span>().<span class="built_in">get</span>()&lt;&lt;endl;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;=============unique_ptr=============&quot;</span> &lt;&lt; endl;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Constructor of Cat:Local cat</span><br><span class="line">unique_ptr addreess:0x1043f60</span><br><span class="line">0x1043f60</span><br><span class="line">Desctructor of Cat:Local cat</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h3 id="共享指针-shared-ptr"><a href="#共享指针-shared-ptr" class="headerlink" title="共享指针:shared_ptr"></a>共享指针:shared_ptr</h3><ul>
+<li><code>shared_ptr</code>又称计数指针  </li>
+<li>与<code>unique_ptr</code>不同的是它可以共享数据，可以copy  </li>
+<li><code>shared_ptr</code>创建了一个计数器，与类对象的内存相关联；copy则计数器+1，销毁则计数器-1；api为<code>use_count()</code></li>
+</ul>
+<ol>
+<li>常量类型<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">   <span class="comment">// 常量类型</span></span><br><span class="line"><span class="comment">// 还有一种定义方式</span></span><br><span class="line"><span class="function">shared_ptr&lt;<span class="type">int</span>&gt; <span class="title">ptr</span><span class="params">(<span class="keyword">new</span> <span class="type">int</span>(<span class="number">10</span>))</span></span>;</span><br><span class="line"></span><br><span class="line">   shared_ptr&lt;<span class="type">int</span>&gt; p1 = <span class="built_in">make_shared</span>&lt;<span class="type">int</span>&gt;(<span class="number">10</span>);</span><br><span class="line">   cout &lt;&lt; <span class="string">&quot;value:&quot;</span> &lt;&lt; *p1 &lt;&lt; endl;</span><br><span class="line">   cout &lt;&lt; <span class="string">&quot;use count:&quot;</span> &lt;&lt; p1.<span class="built_in">use_count</span>() &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">   <span class="comment">// 复制，引用计数+1</span></span><br><span class="line">   shared_ptr&lt;<span class="type">int</span>&gt; p2 = p1;</span><br><span class="line">   shared_ptr&lt;<span class="type">int</span>&gt; p3 = p1;</span><br><span class="line">   cout &lt;&lt; <span class="string">&quot;use count:&quot;</span> &lt;&lt; p1.<span class="built_in">use_count</span>() &lt;&lt; endl;</span><br><span class="line">   cout &lt;&lt; <span class="string">&quot;use count:&quot;</span> &lt;&lt; p2.<span class="built_in">use_count</span>() &lt;&lt; endl;</span><br><span class="line">   cout &lt;&lt; <span class="string">&quot;use count:&quot;</span> &lt;&lt; p3.<span class="built_in">use_count</span>() &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">   <span class="comment">// 修改值，另一个值也会改变，因为指向一个地方</span></span><br><span class="line">   *p3 = <span class="number">30</span>;</span><br><span class="line">   cout &lt;&lt; <span class="string">&quot;p1 value:&quot;</span> &lt;&lt; *p1 &lt;&lt; endl;</span><br><span class="line">   cout &lt;&lt; <span class="string">&quot;p2 value:&quot;</span> &lt;&lt; *p2 &lt;&lt; endl; </span><br><span class="line"></span><br><span class="line">   <span class="comment">// 清空一个</span></span><br><span class="line">   p3 = <span class="literal">nullptr</span>;</span><br><span class="line">   cout &lt;&lt; <span class="string">&quot;use count:&quot;</span> &lt;&lt; p1.<span class="built_in">use_count</span>() &lt;&lt; endl;</span><br><span class="line">   cout &lt;&lt; <span class="string">&quot;use count:&quot;</span> &lt;&lt; p2.<span class="built_in">use_count</span>() &lt;&lt; endl;</span><br><span class="line">   cout &lt;&lt; <span class="string">&quot;use count:&quot;</span> &lt;&lt; p3.<span class="built_in">use_count</span>() &lt;&lt; endl;</span><br></pre></td></tr></table></figure></li>
+<li>自定义类型<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">shared_ptr&lt;Cat&gt; cat1 = <span class="built_in">make_shared</span>&lt;Cat&gt;();</span><br><span class="line">cout &lt;&lt; <span class="string">&quot;cat use count:&quot;</span> &lt;&lt; cat1.<span class="built_in">use_count</span>() &lt;&lt; endl;</span><br><span class="line">shared_ptr&lt;Cat&gt; cat2 = cat1;</span><br><span class="line">shared_ptr&lt;Cat&gt; cat3 = cat2;</span><br><span class="line">cout &lt;&lt; <span class="string">&quot;cat use count:&quot;</span> &lt;&lt; cat1.<span class="built_in">use_count</span>() &lt;&lt; endl;</span><br><span class="line">cout &lt;&lt; <span class="string">&quot;cat use count:&quot;</span> &lt;&lt; cat2.<span class="built_in">use_count</span>() &lt;&lt; endl;</span><br><span class="line">cout &lt;&lt; <span class="string">&quot;cat use count:&quot;</span> &lt;&lt; cat3.<span class="built_in">use_count</span>() &lt;&lt; endl;</span><br><span class="line">cat1.<span class="built_in">reset</span>();</span><br><span class="line">cout &lt;&lt; <span class="string">&quot;cat use count:&quot;</span> &lt;&lt; cat1.<span class="built_in">use_count</span>() &lt;&lt; endl;</span><br><span class="line">cout &lt;&lt; <span class="string">&quot;cat use count:&quot;</span> &lt;&lt; cat2.<span class="built_in">use_count</span>() &lt;&lt; endl;</span><br><span class="line">cout &lt;&lt; <span class="string">&quot;cat use count:&quot;</span> &lt;&lt; cat3.<span class="built_in">use_count</span>() &lt;&lt; endl;</span><br><span class="line">cout &lt;&lt; <span class="string">&quot;==================================&quot;</span> &lt;&lt; endl;</span><br><span class="line"><span class="keyword">return</span> <span class="number">0</span>;</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">cat use count:3</span><br><span class="line">cat use count:3</span><br><span class="line">cat use count:3</span><br><span class="line">cat use count:0</span><br><span class="line">cat use count:2</span><br><span class="line">cat use count:2</span><br><span class="line">==================================</span><br><span class="line">Desctructor of Cat:Mimi</span><br></pre></td></tr></table></figure>
+引用计数不为0，程序结束之后销毁<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">shared_ptr&lt;Cat&gt; cat1 = <span class="built_in">make_shared</span>&lt;Cat&gt;();</span><br><span class="line">cout &lt;&lt; <span class="string">&quot;cat use count:&quot;</span> &lt;&lt; cat1.<span class="built_in">use_count</span>() &lt;&lt; endl;</span><br><span class="line">shared_ptr&lt;Cat&gt; cat2 = cat1;</span><br><span class="line">shared_ptr&lt;Cat&gt; cat3 = cat2;</span><br><span class="line">cout &lt;&lt; <span class="string">&quot;cat use count:&quot;</span> &lt;&lt; cat1.<span class="built_in">use_count</span>() &lt;&lt; endl;</span><br><span class="line">cout &lt;&lt; <span class="string">&quot;cat use count:&quot;</span> &lt;&lt; cat2.<span class="built_in">use_count</span>() &lt;&lt; endl;</span><br><span class="line">cout &lt;&lt; <span class="string">&quot;cat use count:&quot;</span> &lt;&lt; cat3.<span class="built_in">use_count</span>() &lt;&lt; endl;</span><br><span class="line">cat1.<span class="built_in">reset</span>();</span><br><span class="line">cout &lt;&lt; <span class="string">&quot;cat use count:&quot;</span> &lt;&lt; cat1.<span class="built_in">use_count</span>() &lt;&lt; endl;</span><br><span class="line">cout &lt;&lt; <span class="string">&quot;cat use count:&quot;</span> &lt;&lt; cat2.<span class="built_in">use_count</span>() &lt;&lt; endl;</span><br><span class="line">cout &lt;&lt; <span class="string">&quot;cat use count:&quot;</span> &lt;&lt; cat3.<span class="built_in">use_count</span>() &lt;&lt; endl;</span><br><span class="line">cat2.<span class="built_in">reset</span>();</span><br><span class="line">cat3.<span class="built_in">reset</span>();</span><br><span class="line">cout &lt;&lt; <span class="string">&quot;==================================&quot;</span> &lt;&lt; endl;</span><br><span class="line"><span class="keyword">return</span> <span class="number">0</span>;</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">cat use count:1</span><br><span class="line">cat use count:3</span><br><span class="line">cat use count:3</span><br><span class="line">cat use count:3</span><br><span class="line">cat use count:0</span><br><span class="line">cat use count:2</span><br><span class="line">cat use count:2</span><br><span class="line">Desctructor of Cat:Mimi</span><br><span class="line">==================================</span><br></pre></td></tr></table></figure>
+引用计数为0，就调用析构函数</li>
+</ol>
+<h3 id="shared-ptr和函数调用"><a href="#shared-ptr和函数调用" class="headerlink" title="shared_ptr和函数调用"></a>shared_ptr和函数调用</h3><ol>
+<li><code>shared_ptr passed by value</code><br>涉及copy，内部引用计数+1，但离开函数use_count-1</li>
+<li><code>shared_ptr passed by ref</code></li>
+<li><code>return by value</code></li>
+</ol>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">pass_by_value</span><span class="params">(shared_ptr&lt;Cat&gt; cat)</span></span>&#123;</span><br><span class="line">    cat-&gt;<span class="built_in">cat_info</span>();</span><br><span class="line">    cat-&gt;<span class="built_in">set_name</span>(<span class="string">&quot;cat2&quot;</span>);</span><br><span class="line">    cout&lt;&lt;<span class="string">&quot;func1 use count:&quot;</span>&lt;&lt;cat.<span class="built_in">use_count</span>()&lt;&lt;endl;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">pass_by_ref</span><span class="params">(shared_ptr&lt;Cat&gt; &amp;cat)</span></span>&#123;</span><br><span class="line">    cat-&gt;<span class="built_in">cat_info</span>();</span><br><span class="line">    cout&lt;&lt;<span class="string">&quot;func2 use count:&quot;</span>&lt;&lt;cat.<span class="built_in">use_count</span>()&lt;&lt;endl;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 一般不用</span></span><br><span class="line"><span class="function">shared_ptr&lt;Cat&gt; <span class="title">get_shared_ptr</span><span class="params">()</span></span>&#123;</span><br><span class="line">    shared_ptr&lt;Cat&gt; cat=<span class="built_in">make_shared</span>&lt;Cat&gt;(<span class="string">&quot;local cat&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> cat;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    shared_ptr&lt;Cat&gt; cat1=<span class="built_in">make_shared</span>&lt;Cat&gt;(<span class="string">&quot;cat1&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">pass_by_value</span>(cat1);</span><br><span class="line">    cat1-&gt;<span class="built_in">cat_info</span>();</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;main use count:&quot;</span> &lt;&lt; cat1.<span class="built_in">use_count</span>() &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">pass_by_ref</span>(cat1);</span><br><span class="line">    cat1-&gt;<span class="built_in">cat_info</span>();</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;main use count:&quot;</span> &lt;&lt; cat1.<span class="built_in">use_count</span>() &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    shared_ptr&lt;Cat&gt; loacl_cat = <span class="built_in">get_shared_ptr</span>();</span><br><span class="line">    loacl_cat-&gt;<span class="built_in">cat_info</span>();</span><br><span class="line">    cout&lt;&lt;<span class="string">&quot;===============================&quot;</span>&lt;&lt;endl;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">Constructor of Cat:cat1</span><br><span class="line">cat info name:cat1</span><br><span class="line">func1 use count:2</span><br><span class="line">cat info name:cat2</span><br><span class="line">main use count:1</span><br><span class="line">cat info name:cat2</span><br><span class="line">func2 use count:1   // 此时引用计数并没有+1</span><br><span class="line">cat info name:cat2</span><br><span class="line">main use count:1</span><br><span class="line">Constructor of Cat:local cat</span><br><span class="line">cat info name:local cat</span><br><span class="line">===============================</span><br><span class="line">Desctructor of Cat:local cat</span><br><span class="line">Desctructor of Cat:cat2</span><br></pre></td></tr></table></figure>
+
+<h3 id="shared-ptr与unique-ptr"><a href="#shared-ptr与unique-ptr" class="headerlink" title="shared_ptr与unique_ptr"></a>shared_ptr与unique_ptr</h3><ul>
+<li>不能将<code>shared_ptr</code>转换为<code>unique_ptr</code></li>
+<li><code>unique_ptr</code>可以转换为<code>shared_ptr</code><ul>
+<li>通过<code>std::move</code></li>
+</ul>
+</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">unique_ptr&lt;Cat&gt; <span class="title">get_unique_ptr</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    unique_ptr&lt;Cat&gt; cat = <span class="built_in">make_unique</span>&lt;Cat&gt;(<span class="string">&quot;local cat&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> cat;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    unique_ptr&lt;Cat&gt; cat1 = <span class="built_in">make_unique</span>&lt;Cat&gt;(<span class="string">&quot;Amy&quot;</span>);</span><br><span class="line">	<span class="comment">// 通过move将unique_ptr转换为shared_ptr</span></span><br><span class="line">    shared_ptr&lt;Cat&gt; cat2 = <span class="built_in">move</span>(cat1);  <span class="comment">// 此时cat1已经不能用了</span></span><br><span class="line"></span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;cat2 use count:&quot;</span> &lt;&lt; cat2.<span class="built_in">use_count</span>() &lt;&lt; endl;</span><br><span class="line">	<span class="comment">// 函数返回值为unique_ptr，可以用shared_ptr接收</span></span><br><span class="line">    shared_ptr&lt;Cat&gt; cat3 = <span class="built_in">get_unique_ptr</span>();</span><br><span class="line">    <span class="keyword">if</span> (cat3) &#123;</span><br><span class="line">        cat3-&gt;<span class="built_in">cat_info</span>();</span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;cat3 use count:&quot;</span> &lt;&lt; cat3.<span class="built_in">use_count</span>() &lt;&lt; endl;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;===============================&quot;</span> &lt;&lt; endl;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="weak-ptr"><a href="#weak-ptr" class="headerlink" title="weak_ptr"></a>weak_ptr</h3><ul>
+<li><code>weak_ptr</code>并不拥有内存的所有权，所以不能调用<code>-&gt;</code>和<code>*</code>解引用</li>
+<li>和<code>shared_ptr</code>类似，但不影响对象引用计数</li>
+<li>为什么需要<code>weak_ptr</code>：解决<code>shared_ptr</code>循环引用的问题<ul>
+<li>例：Person1中有一个成员friend，指向另一个Person2，Person2-&gt;friend又指向另一个Person3或者指向Person1，最后每个的引用计数都不为0 —— 循环引用</li>
+<li>这里需要用一个不需要拥有所有权的指针</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">// weak_ptr不能单独存在</span></span><br><span class="line">    shared_ptr&lt;Cat&gt; s_cat1=<span class="built_in">make_shared</span>&lt;Cat&gt;(<span class="string">&quot;cat1&quot;</span>);</span><br><span class="line">    weak_ptr&lt;Cat&gt; w_cat1=s_cat1;</span><br><span class="line">    <span class="comment">// weak_ptr不影响引用计数</span></span><br><span class="line">    cout&lt;&lt;<span class="string">&quot;w_cat1:&quot;</span>&lt;&lt;w_cat1.<span class="built_in">use_count</span>()&lt;&lt;endl;</span><br><span class="line">    cout&lt;&lt;<span class="string">&quot;s_cat1:&quot;</span>&lt;&lt;s_cat1.<span class="built_in">use_count</span>()&lt;&lt;endl;</span><br><span class="line">    <span class="comment">// weak_ptr不能使用-&gt;和*操作符</span></span><br><span class="line">    <span class="comment">// w_cat1-&gt;cat_info();</span></span><br><span class="line">    shared_ptr&lt;Cat&gt; s_cat2 = w_cat1.<span class="built_in">lock</span>();</span><br><span class="line">    cout&lt;&lt;<span class="string">&quot;w_cat1:&quot;</span>&lt;&lt;w_cat1.<span class="built_in">use_count</span>()&lt;&lt;endl;</span><br><span class="line">    cout&lt;&lt;<span class="string">&quot;s_cat1:&quot;</span>&lt;&lt;s_cat1.<span class="built_in">use_count</span>()&lt;&lt;endl;</span><br><span class="line">    cout&lt;&lt;<span class="string">&quot;s_cat2:&quot;</span>&lt;&lt;s_cat2.<span class="built_in">use_count</span>()&lt;&lt;endl;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;===============================&quot;</span> &lt;&lt; endl;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>循环依赖的问题</strong></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;memory&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Cat</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">explicit</span> <span class="title">Cat</span><span class="params">(string name)</span></span>;</span><br><span class="line">    <span class="built_in">Cat</span>() = <span class="keyword">default</span>;</span><br><span class="line">    ~<span class="built_in">Cat</span>();</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">cat_info</span><span class="params">()</span> <span class="type">const</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;cat info name:&quot;</span> &lt;&lt; name &lt;&lt; endl;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function">string <span class="title">get_name</span><span class="params">()</span> <span class="type">const</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> name;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">set_name</span><span class="params">(<span class="type">const</span> string &amp;name)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>-&gt;name = name;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">set_friend</span><span class="params">(shared_ptr&lt;Cat&gt; m_friend)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>-&gt;m_friend = m_friend;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    string name&#123;<span class="string">&quot;Mimi&quot;</span>&#125;;</span><br><span class="line">    shared_ptr&lt;Cat&gt; m_friend;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">Cat::<span class="built_in">Cat</span>(string name) : <span class="built_in">name</span>(name)</span><br><span class="line">&#123;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;Constructor of Cat:&quot;</span> &lt;&lt; name &lt;&lt; endl;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Cat::~<span class="built_in">Cat</span>()</span><br><span class="line">&#123;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;Desctructor of Cat:&quot;</span> &lt;&lt; name &lt;&lt; endl;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    shared_ptr&lt;Cat&gt; cat1 = <span class="built_in">make_shared</span>&lt;Cat&gt;(<span class="string">&quot;cat1&quot;</span>);</span><br><span class="line">    shared_ptr&lt;Cat&gt; cat3 = <span class="built_in">make_shared</span>&lt;Cat&gt;(<span class="string">&quot;cat3&quot;</span>);</span><br><span class="line">    shared_ptr&lt;Cat&gt; cat4 = <span class="built_in">make_shared</span>&lt;Cat&gt;(<span class="string">&quot;cat4&quot;</span>);</span><br><span class="line"></span><br><span class="line">    cat3-&gt;<span class="built_in">set_friend</span>(cat4);</span><br><span class="line">    cat4-&gt;<span class="built_in">set_friend</span>(cat3);</span><br><span class="line">    </span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;===============================&quot;</span> &lt;&lt; endl;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Constructor of Cat:cat1</span><br><span class="line">Constructor of Cat:cat3</span><br><span class="line">Constructor of Cat:cat4</span><br><span class="line">===============================</span><br><span class="line">Desctructor of Cat:cat1</span><br></pre></td></tr></table></figure>
+<p>发现没有调用cat3和cat4的析构函数<br><strong>解决方法：</strong>将成员变量数据<code>shared_ptr&lt;Cat&gt; m_friend;</code>改为<code>weak_ptr&lt;Cat&gt; m_friend;</code><br>但是<code>void set_friend(shared_ptr&lt;Cat&gt; m_friend)</code>这里的不用改</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Constructor of Cat:cat1</span><br><span class="line">Constructor of Cat:cat3</span><br><span class="line">Constructor of Cat:cat4</span><br><span class="line">===============================</span><br><span class="line">Desctructor of Cat:cat4</span><br><span class="line">Desctructor of Cat:cat3</span><br><span class="line">Desctructor of Cat:cat1</span><br></pre></td></tr></table></figure>
+<p>此时可以正常析构</p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2024/07/22/DMA/" rel="prev" title="DMA">
+      <i class="fa fa-chevron-left"></i> DMA
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2024/07/22/0717%E7%99%BE%E5%BA%A6%E9%9D%A2%E7%BB%8F/" rel="next" title="0717百度面经">
+      0717百度面经 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%99%BA%E8%83%BD%E6%8C%87%E9%92%88"><span class="nav-number">1.</span> <span class="nav-text">智能指针</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%8B%AC%E5%8D%A0%E6%8C%87%E9%92%88%EF%BC%9Aunique-ptr"><span class="nav-number">1.0.1.</span> <span class="nav-text">独占指针：unique_ptr</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#unique-ptr%E4%B8%8E%E5%87%BD%E6%95%B0%E8%B0%83%E7%94%A8"><span class="nav-number">1.0.2.</span> <span class="nav-text">unique_ptr与函数调用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B1%E4%BA%AB%E6%8C%87%E9%92%88-shared-ptr"><span class="nav-number">1.0.3.</span> <span class="nav-text">共享指针:shared_ptr</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#shared-ptr%E5%92%8C%E5%87%BD%E6%95%B0%E8%B0%83%E7%94%A8"><span class="nav-number">1.0.4.</span> <span class="nav-text">shared_ptr和函数调用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#shared-ptr%E4%B8%8Eunique-ptr"><span class="nav-number">1.0.5.</span> <span class="nav-text">shared_ptr与unique_ptr</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#weak-ptr"><span class="nav-number">1.0.6.</span> <span class="nav-text">weak_ptr</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">yhcs</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">35</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">yhcs</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
