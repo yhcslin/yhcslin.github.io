@@ -150,6 +150,424 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/07/04/Linux_Linux%E5%86%85%E6%A0%B8%E7%BA%A7%E5%AE%89%E5%85%A8%E5%BC%80%E5%8F%91%E5%9F%BA%E7%A1%80(3)Linux%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8%E6%A6%82%E8%BF%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="yhcs">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/07/04/Linux_Linux%E5%86%85%E6%A0%B8%E7%BA%A7%E5%AE%89%E5%85%A8%E5%BC%80%E5%8F%91%E5%9F%BA%E7%A1%80(3)Linux%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8%E6%A6%82%E8%BF%B0/" class="post-title-link" itemprop="url">Linux：Linux内核级安全开发基础(3)Linux系统调用概述</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2024-07-04 22:54:27 / 修改时间：23:04:04" itemprop="dateCreated datePublished" datetime="2024-07-04T22:54:27+08:00">2024-07-04</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="Linux内核级安全开发基础"><a href="#Linux内核级安全开发基础" class="headerlink" title="Linux内核级安全开发基础"></a>Linux内核级安全开发基础</h3><h4 id="1-3-Linux系统调用概述"><a href="#1-3-Linux系统调用概述" class="headerlink" title="1.3 Linux系统调用概述"></a>1.3 Linux系统调用概述</h4><h5 id="1-系统调用与系统安全"><a href="#1-系统调用与系统安全" class="headerlink" title="1.系统调用与系统安全"></a>1.系统调用与系统安全</h5><p>当代计算机体系中</p>
+<ul>
+<li>操作系统内核运行在系统态</li>
+<li>应用程序运行在内核态——权限受到限制：不能执行特权指令，不能直接对硬件进行操作</li>
+</ul>
+<p>&#x3D;&#x3D;&#x3D;&gt;有利于保证操作系统的安全性</p>
+<p>——&gt;带来问题：应用程序为了应用任务需要执行特权指令或者访问硬件，例：访问磁盘来保存自己的数据</p>
+<p>解决思路：操作系统为应用程序提供相应的服务，应用程序间接执行特权指令或者访问硬件</p>
+<ol>
+<li>操作系统在提供服务之前进行安全控制检查</li>
+<li>检查通过，提供相应的特权操作或硬件访问操作</li>
+</ol>
+<p>这是操作系统的重要任务之一：为应用程序的运行提供各种操作系统服务</p>
+<p>——应用程序要访问硬件或者执行某特权操作，只需要调用相应的操作系统服务，这就是系统调用过程</p>
+<p>——每一种类型的服务被称为一个系统调用</p>
+<h5 id="2-系统调用的服务功能"><a href="#2-系统调用的服务功能" class="headerlink" title="2.系统调用的服务功能"></a>2.系统调用的服务功能</h5><p>操作系统的服务是以系统调用接口形式存在的</p>
+<p><strong>系统调用</strong>是应用程序和操作系统内核之间的<strong>功能接口</strong></p>
+<ul>
+<li>目的：比较方便使用操作系统提供的有关设备管理、输入&#x2F;输出系统、文件系统和进程控制、通信以及存储管理等方面的功能，而不用了解系统内核代码的内部结构和有关硬件细节</li>
+<li>编程中用到的很多函数，如<code>open()</code>、<code>write()</code>、<code>read()</code>，都跟具体的系统调用相对应</li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/07/03/python_%E5%A4%84%E7%90%86csv/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="yhcs">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/07/03/python_%E5%A4%84%E7%90%86csv/" class="post-title-link" itemprop="url">python：处理csv</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2024-07-03 19:30:39" itemprop="dateCreated datePublished" datetime="2024-07-03T19:30:39+08:00">2024-07-03</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-07-13 16:57:54" itemprop="dateModified" datetime="2024-07-13T16:57:54+08:00">2024-07-13</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index"><span itemprop="name">python</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>Python中集成了专用于处理csv文件的库，名为：csv<br>csv 库中有4个常用的对象：</p>
+<ul>
+<li><code>csv.reader</code>：以列表的形式返回读取的数据。</li>
+<li><code>csv.writer</code>：以列表的形式写入数据。</li>
+<li><code>csv.DictReader</code>：以字典的形式返回读取的数据。</li>
+<li><code>csv.DictWriter</code>：以字典的形式写入数据。</li>
+</ul>
+<h3 id="读取csv文件"><a href="#读取csv文件" class="headerlink" title="读取csv文件"></a>读取csv文件</h3><h4 id="使用csv-reader读取数据"><a href="#使用csv-reader读取数据" class="headerlink" title="使用csv.reader读取数据"></a>使用<code>csv.reader</code>读取数据</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 导入 csv 库</span></span><br><span class="line"><span class="keyword">import</span> csv</span><br><span class="line"></span><br><span class="line"><span class="comment"># 以读方式打开文件</span></span><br><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&quot;data.csv&quot;</span>, mode=<span class="string">&quot;r&quot;</span>, encoding=<span class="string">&quot;utf-8-sig&quot;</span>) <span class="keyword">as</span> f:</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 基于打开的文件，创建csv.reader实例</span></span><br><span class="line">    reader = csv.reader(f)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 获取第一行的header</span></span><br><span class="line">    <span class="comment"># header[0] = &quot;设备编号&quot;</span></span><br><span class="line">    <span class="comment"># header[1] = &quot;温度&quot;</span></span><br><span class="line">    <span class="comment"># header[2] = &quot;湿度&quot;</span></span><br><span class="line">    <span class="comment"># header[3] = &quot;转速&quot;</span></span><br><span class="line">    header = <span class="built_in">next</span>(reader)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 逐行获取数据，并输出</span></span><br><span class="line">    <span class="keyword">for</span> row <span class="keyword">in</span> reader:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;&#123;&#125;&#123;&#125;: &#123;&#125;=&#123;&#125;, &#123;&#125;=&#123;&#125;, &#123;&#125;=&#123;&#125;&quot;</span>.<span class="built_in">format</span>(header[<span class="number">0</span>], row[<span class="number">0</span>],</span><br><span class="line">                                                 header[<span class="number">1</span>], row[<span class="number">1</span>],</span><br><span class="line">                                                 header[<span class="number">2</span>], row[<span class="number">2</span>],</span><br><span class="line">                                                 header[<span class="number">3</span>], row[<span class="number">3</span>]))</span><br></pre></td></tr></table></figure>
+<h4 id="使用csv-DictReader读取数据"><a href="#使用csv-DictReader读取数据" class="headerlink" title="使用csv.DictReader读取数据"></a>使用<code>csv.DictReader</code>读取数据</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 导入 csv 库</span></span><br><span class="line"><span class="keyword">import</span> csv</span><br><span class="line"></span><br><span class="line"><span class="comment"># 打开文件</span></span><br><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&quot;data.csv&quot;</span>, encoding=<span class="string">&quot;utf-8-sig&quot;</span>, mode=<span class="string">&quot;r&quot;</span>) <span class="keyword">as</span> f:</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 基于打开的文件，创建csv.DictReader实例</span></span><br><span class="line">    reader = csv.DictReader(f)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 输出信息</span></span><br><span class="line">    <span class="keyword">for</span> row <span class="keyword">in</span> reader:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;设备编号&#123;&#125;: 温度=&#123;&#125;, 湿度=&#123;&#125;, 转速=&#123;&#125;&quot;</span>.<span class="built_in">format</span>(row[<span class="string">&quot;设备编号&quot;</span>],</span><br><span class="line">                                                   row[<span class="string">&quot;温度&quot;</span>],</span><br><span class="line">                                                   row[<span class="string">&quot;湿度&quot;</span>],</span><br><span class="line">                                                   row[<span class="string">&quot;转速&quot;</span>]))</span><br></pre></td></tr></table></figure>
+<h3 id="写入csv文件"><a href="#写入csv文件" class="headerlink" title="写入csv文件"></a>写入csv文件</h3><h4 id="使用csv-writer写入数据"><a href="#使用csv-writer写入数据" class="headerlink" title="使用csv.writer写入数据"></a>使用csv.writer写入数据</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 导入 csv 库</span></span><br><span class="line"><span class="keyword">import</span> csv</span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建列表，保存header内容</span></span><br><span class="line">header_list = [<span class="string">&quot;设备编号&quot;</span>, <span class="string">&quot;温度&quot;</span>, <span class="string">&quot;湿度&quot;</span>, <span class="string">&quot;转速&quot;</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建列表，保存数据</span></span><br><span class="line">data_list = [</span><br><span class="line">    [<span class="number">0</span>, <span class="number">31</span>, <span class="number">20</span>, <span class="number">1000</span>],</span><br><span class="line">    [<span class="number">1</span>, <span class="number">30</span>, <span class="number">22</span>, <span class="number">998</span>],</span><br><span class="line">    [<span class="number">2</span>, <span class="number">32</span>, <span class="number">33</span>, <span class="number">1005</span>]</span><br><span class="line">]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 以写方式打开文件。注意添加 newline=&quot;&quot;，否则会在两行数据之间都插入一行空白。</span></span><br><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&quot;new_data.csv&quot;</span>, mode=<span class="string">&quot;w&quot;</span>, encoding=<span class="string">&quot;utf-8-sig&quot;</span>, newline=<span class="string">&quot;&quot;</span>) <span class="keyword">as</span> f:</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 基于打开的文件，创建 csv.writer 实例</span></span><br><span class="line">    writer = csv.writer(f)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 写入 header。</span></span><br><span class="line">    <span class="comment"># writerow() 一次只能写入一行。</span></span><br><span class="line">    writer.writerow(header_list)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 写入数据。</span></span><br><span class="line">    <span class="comment"># writerows() 一次写入多行。</span></span><br><span class="line">    writer.writerows(data_list)</span><br></pre></td></tr></table></figure>
+<h4 id="使用csv-DictWriter写入数据"><a href="#使用csv-DictWriter写入数据" class="headerlink" title="使用csv.DictWriter写入数据"></a>使用csv.DictWriter写入数据</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 导入 csv 库</span></span><br><span class="line"><span class="keyword">import</span> csv</span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建 header 列表</span></span><br><span class="line">header_list = [<span class="string">&quot;设备编号&quot;</span>, <span class="string">&quot;温度&quot;</span>, <span class="string">&quot;湿度&quot;</span>, <span class="string">&quot;转速&quot;</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建数据列表，列表的每个元素都是字典</span></span><br><span class="line">data_list = [</span><br><span class="line">    &#123;<span class="string">&quot;设备编号&quot;</span>: <span class="string">&quot;0&quot;</span>, <span class="string">&quot;温度&quot;</span>: <span class="number">31</span>, <span class="string">&quot;湿度&quot;</span>: <span class="number">20</span>, <span class="string">&quot;转速&quot;</span>: <span class="number">1000</span>&#125;,</span><br><span class="line">    &#123;<span class="string">&quot;设备编号&quot;</span>: <span class="string">&quot;1&quot;</span>, <span class="string">&quot;温度&quot;</span>: <span class="number">30</span>, <span class="string">&quot;湿度&quot;</span>: <span class="number">22</span>, <span class="string">&quot;转速&quot;</span>: <span class="number">998</span>&#125;,</span><br><span class="line">    &#123;<span class="string">&quot;设备编号&quot;</span>: <span class="string">&quot;2&quot;</span>, <span class="string">&quot;温度&quot;</span>: <span class="number">32</span>, <span class="string">&quot;湿度&quot;</span>: <span class="number">23</span>, <span class="string">&quot;转速&quot;</span>: <span class="number">1005</span>&#125;,</span><br><span class="line">]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 以写方式打开文件。注意添加 newline=&quot;&quot;，否则会在两行数据之间都插入一行空白。</span></span><br><span class="line"><span class="keyword">with</span> <span class="built_in">open</span>(<span class="string">&quot;new_data.csv&quot;</span>, mode=<span class="string">&quot;w&quot;</span>, encoding=<span class="string">&quot;utf-8-sig&quot;</span>, newline=<span class="string">&quot;&quot;</span>) <span class="keyword">as</span> f:</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 基于打开的文件，创建 csv.DictWriter 实例，将 header 列表作为参数传入。</span></span><br><span class="line">    writer = csv.DictWriter(f, header_list)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 写入 header</span></span><br><span class="line">    writer.writeheader()</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 写入数据</span></span><br><span class="line">    writer.writerows(data_list)</span><br></pre></td></tr></table></figure>
+<p>关于写入，需要注意：</p>
+<ol>
+<li>在打开文件时，需要添加newline &#x3D; “”。否则，会在每2行有效内容之间添加一行空白。</li>
+<li>如果要保存的内容有中文，而且之后需要用Excel打开文件，那么需要选用utf-8-sig编码。如果使用utf-8编码，会导致使用Excel查看文件时中文乱码。</li>
+</ol>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/07/03/python_%E5%A4%84%E7%90%86excel/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="yhcs">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/07/03/python_%E5%A4%84%E7%90%86excel/" class="post-title-link" itemprop="url">python：处理excel</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2024-07-03 19:30:16" itemprop="dateCreated datePublished" datetime="2024-07-03T19:30:16+08:00">2024-07-03</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-07-13 16:57:58" itemprop="dateModified" datetime="2024-07-13T16:57:58+08:00">2024-07-13</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index"><span itemprop="name">python</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><p><code>pip install openpyxl</code><br>需要在文件中包含图片：<code>pip install pillow</code></p>
+<h3 id="打开保存"><a href="#打开保存" class="headerlink" title="打开保存"></a>打开保存</h3><p>创建工作簿并保存</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> openpyxl <span class="keyword">import</span> Workbook</span><br><span class="line"><span class="comment"># 创建工作簿，包含一张默认工作表</span></span><br><span class="line">wb = Workbook()</span><br><span class="line"><span class="comment"># active默认值为0，默认的工作表</span></span><br><span class="line">ws = wb.active</span><br><span class="line"><span class="built_in">print</span>(ws.title) <span class="comment">#...Sheet</span></span><br><span class="line"><span class="comment"># 保存工作簿，参数：路径</span></span><br><span class="line">wb.save(<span class="string">&quot;test.xlsx&quot;</span>)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>加载已有的工作簿</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> openpyxl <span class="keyword">import</span> Workbook, load_workbook</span><br><span class="line"><span class="comment"># load_workbook加载工作簿</span></span><br><span class="line">wb = load_workbook(<span class="string">&quot;test.xlsx&quot;</span>)</span><br><span class="line">ws = wb.active</span><br><span class="line"><span class="built_in">print</span>(ws.title)</span><br></pre></td></tr></table></figure>
+<h3 id="操作工作表"><a href="#操作工作表" class="headerlink" title="操作工作表"></a>操作工作表</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> openpyxl <span class="keyword">import</span> Workbook, load_workbook</span><br><span class="line"></span><br><span class="line">wb = Workbook()</span><br><span class="line">ws = wb.active</span><br><span class="line"></span><br><span class="line"><span class="comment"># Workbook.create_sheet创建新的工作簿</span></span><br><span class="line">ws1 = wb.create_sheet(<span class="string">&quot;test1&quot;</span>)  <span class="comment"># 默认在最后生成</span></span><br><span class="line">ws2 = wb.create_sheet(<span class="string">&quot;test2&quot;</span>, <span class="number">0</span>)  <span class="comment"># 在第一个位置生成</span></span><br><span class="line">ws3 = wb.create_sheet(<span class="string">&quot;test3&quot;</span>, -<span class="number">1</span>)  <span class="comment"># 在倒数第二个生成</span></span><br><span class="line"><span class="comment"># 工作簿自动生成名字Sheeti，还可以通过title属性命名</span></span><br><span class="line">ws.title = <span class="string">&quot;New Title&quot;</span></span><br><span class="line"><span class="comment"># 标题选项卡背景默认白色，可更改颜色</span></span><br><span class="line">ws.sheet_properties.tabColor = <span class="string">&quot;1072BA&quot;</span></span><br><span class="line"><span class="comment"># 名字可以作为工作表的键，获取已有的表</span></span><br><span class="line">ws4 = wb[<span class="string">&quot;test1&quot;</span>]</span><br><span class="line"><span class="comment"># wb.sheetnames获取所有表格</span></span><br><span class="line"><span class="built_in">print</span>(wb.sheetnames)</span><br><span class="line"><span class="comment"># 遍历工作表</span></span><br><span class="line"><span class="keyword">for</span> sheet <span class="keyword">in</span> wb:</span><br><span class="line">    <span class="built_in">print</span>(sheet.title)</span><br><span class="line"><span class="comment"># 改变位置</span></span><br><span class="line"><span class="comment"># 参数：工作表，偏移量（原地为0，向前为负，向后为正）</span></span><br><span class="line">wb.move_sheet(ws3, -<span class="number">1</span>)</span><br><span class="line"><span class="comment"># 删除</span></span><br><span class="line"><span class="keyword">del</span> wb[<span class="string">&quot;New Title&quot;</span>]</span><br><span class="line"><span class="comment"># 复制工作表</span></span><br><span class="line">cp_sheet = wb.copy_worksheet(ws1)</span><br><span class="line"><span class="built_in">print</span>(cp_sheet.title)  <span class="comment"># ...test1 Copy</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="访问单元格"><a href="#访问单元格" class="headerlink" title="访问单元格"></a>访问单元格</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> openpyxl <span class="keyword">import</span> Workbook</span><br><span class="line"></span><br><span class="line">wb = Workbook()</span><br><span class="line">ws = wb.active</span><br><span class="line"><span class="comment"># 单元格赋值</span></span><br><span class="line">ws[<span class="string">&quot;a1&quot;</span>] = <span class="string">&quot;test&quot;</span></span><br><span class="line">cell = ws.cell(<span class="number">6</span>, <span class="number">1</span>, <span class="string">&quot;test&quot;</span>)  <span class="comment"># cell（行，列）获取对应单元格、cell（行，列，值）修改对应单元格的值</span></span><br><span class="line">cell.value = <span class="string">&quot;test1&quot;</span>  <span class="comment"># 单元格的value属性——&gt;访问/修改</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">print</span>(cell.value)</span><br><span class="line"><span class="built_in">print</span>(cell.coordinate)   <span class="comment"># 单元格坐标</span></span><br><span class="line"><span class="built_in">print</span>(cell.row)  		 <span class="comment"># 行</span></span><br><span class="line"><span class="built_in">print</span>(cell.column)  	 <span class="comment"># 列</span></span><br><span class="line"><span class="built_in">print</span>(cell.col_idx)</span><br><span class="line"><span class="built_in">print</span>(cell.column_letter)<span class="comment"># 字母形式的列</span></span><br><span class="line"></span><br><span class="line">x = <span class="number">1</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, <span class="number">11</span>):   <span class="comment"># range左闭右开，1~10</span></span><br><span class="line">    <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, <span class="number">6</span>):<span class="comment"># 1~5</span></span><br><span class="line">        ws.cell(i, j, x) <span class="comment"># 单元格赋值</span></span><br><span class="line">        x += <span class="number">1</span></span><br><span class="line"><span class="comment"># a到c列</span></span><br><span class="line"><span class="built_in">print</span>(ws[<span class="string">&quot;a:c&quot;</span>]) </span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;元组套元组的形式</span></span><br><span class="line"><span class="string">((&lt;Cell &#x27;Sheet&#x27;.A1&gt;，....&lt;Cell &#x27;Sheet&#x27;.A10&gt;),</span></span><br><span class="line"><span class="string"> (&lt;Cell &#x27;Sheet&#x27;.B1&gt;，....&lt;Cell &#x27;Sheet&#x27;.B10&gt;),</span></span><br><span class="line"><span class="string"> (&lt;Cell &#x27;Sheet&#x27;.C1&gt;，....&lt;Cell &#x27;Sheet&#x27;.C10&gt;))</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="comment">#1~5行</span></span><br><span class="line"><span class="built_in">print</span>(ws[<span class="number">1</span>:<span class="number">5</span>])</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">((&lt;Cell &#x27;Sheet&#x27;.A1&gt;, &lt;Cell &#x27;Sheet&#x27;.B1&gt;, &lt;Cell &#x27;Sheet&#x27;.C1&gt;, &lt;Cell &#x27;Sheet&#x27;.D1&gt;, &lt;Cell &#x27;Sheet&#x27;.E1&gt;),</span></span><br><span class="line"><span class="string">......</span></span><br><span class="line"><span class="string">(&lt;Cell &#x27;Sheet&#x27;.A5&gt;, &lt;Cell &#x27;Sheet&#x27;.B5&gt;, &lt;Cell &#x27;Sheet&#x27;.C5&gt;, &lt;Cell &#x27;Sheet&#x27;.D5&gt;, &lt;Cell &#x27;Sheet&#x27;.E5&gt;))</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="built_in">print</span>(ws[<span class="string">&quot;a1:c4&quot;</span>])</span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">((&lt;Cell &#x27;Sheet&#x27;.A1&gt;, &lt;Cell &#x27;Sheet&#x27;.B1&gt;, &lt;Cell &#x27;Sheet&#x27;.C1&gt;), </span></span><br><span class="line"><span class="string"> (&lt;Cell &#x27;Sheet&#x27;.A2&gt;, &lt;Cell &#x27;Sheet&#x27;.B2&gt;, &lt;Cell &#x27;Sheet&#x27;.C2&gt;), </span></span><br><span class="line"><span class="string"> (&lt;Cell &#x27;Sheet&#x27;.A3&gt;, &lt;Cell &#x27;Sheet&#x27;.B3&gt;, &lt;Cell &#x27;Sheet&#x27;.C3&gt;), </span></span><br><span class="line"><span class="string"> (&lt;Cell &#x27;Sheet&#x27;.A4&gt;, &lt;Cell &#x27;Sheet&#x27;.B4&gt;, &lt;Cell &#x27;Sheet&#x27;.C4&gt;))</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="built_in">print</span>(ws[<span class="string">&quot;b&quot;</span>])  <span class="comment"># 第b列</span></span><br><span class="line"><span class="comment"># 遍历：ws[&quot;a1:c4&quot;]结果是元组的元组</span></span><br><span class="line"><span class="keyword">for</span> cells <span class="keyword">in</span> ws[<span class="string">&quot;a1:c4&quot;</span>]:</span><br><span class="line">    <span class="keyword">for</span> cell <span class="keyword">in</span> cells:</span><br><span class="line">        <span class="built_in">print</span>(cell.value)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="操作单元格"><a href="#操作单元格" class="headerlink" title="操作单元格"></a>操作单元格</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> openpyxl <span class="keyword">import</span> Workbook</span><br><span class="line"></span><br><span class="line">wb = Workbook()</span><br><span class="line">ws = wb.active</span><br><span class="line"></span><br><span class="line">x = <span class="number">1</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, <span class="number">11</span>):  <span class="comment"># 1~10</span></span><br><span class="line">    <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">1</span>, <span class="number">11</span>):</span><br><span class="line">        ws.cell(i, j, x)</span><br><span class="line">        x += <span class="number">1</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 合并：只保留左上角的值</span></span><br><span class="line">ws.merge_cells(<span class="string">&quot;b2:d4&quot;</span>)</span><br><span class="line"><span class="comment"># 取消合并</span></span><br><span class="line">ws.unmerge_cells(<span class="string">&quot;b2:d4&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 插入</span></span><br><span class="line">ws.insert_cols(<span class="number">2</span>, <span class="number">3</span>)  <span class="comment"># 从第二列开始插入三列</span></span><br><span class="line">ws.insert_rows(<span class="number">1</span>, <span class="number">2</span>)  <span class="comment"># 从第一行开始插入两行</span></span><br><span class="line"><span class="comment"># 删除</span></span><br><span class="line">ws.delete_cols(<span class="number">2</span>, <span class="number">3</span>)  <span class="comment"># 从第二列开始删除三列</span></span><br><span class="line">ws.delete_rows(<span class="number">2</span>, <span class="number">3</span>)  <span class="comment"># 从第二行开始删除三行</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 移动</span></span><br><span class="line">ws.move_range(<span class="string">&quot;c4:d5&quot;</span>, <span class="number">2</span>, -<span class="number">2</span>)  <span class="comment"># 向下移动两行，向左移动两列，下、右：正数，上、左：负数</span></span><br><span class="line">wb.save(<span class="string">&quot;test5.xlsx&quot;</span>)</span><br></pre></td></tr></table></figure>
+<h3 id="使用公式"><a href="#使用公式" class="headerlink" title="使用公式"></a>使用公式</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> openpyxl <span class="keyword">import</span> Workbook</span><br><span class="line"><span class="keyword">from</span> openpyxl.utils <span class="keyword">import</span> FORMULAE</span><br><span class="line"><span class="keyword">from</span> openpyxl.formula.translate <span class="keyword">import</span> Translator</span><br><span class="line"></span><br><span class="line">wb = Workbook()</span><br><span class="line">ws = wb.active</span><br><span class="line"></span><br><span class="line"><span class="comment"># 添加一行，参数：可迭代的对象</span></span><br><span class="line">ws.append([<span class="string">&quot;price1&quot;</span>, <span class="string">&quot;price2&quot;</span>, <span class="string">&quot;sum&quot;</span>, <span class="string">&quot;average&quot;</span>])</span><br><span class="line">ws.append([<span class="number">54</span>, <span class="number">21</span>])</span><br><span class="line">ws.append([<span class="number">12</span>, <span class="number">45</span>])</span><br><span class="line">ws.append([<span class="number">45</span>, <span class="number">78</span>])</span><br><span class="line"><span class="comment"># 直接使用公式</span></span><br><span class="line">ws[<span class="string">&quot;c2&quot;</span>] = <span class="string">&quot;=SUM(a2:b2)&quot;</span></span><br><span class="line">ws[<span class="string">&quot;d2&quot;</span>] = <span class="string">&quot;=AVERAGE(a2:b2)&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 翻译源单元格的行为，参数：Translator（公式，复制源）.(目标单元格)</span></span><br><span class="line">ws[<span class="string">&quot;c3&quot;</span>] = Translator(formula=<span class="string">&quot;=SUM(a2:b2)&quot;</span>, origin=<span class="string">&quot;c2&quot;</span>).translate_formula(<span class="string">&quot;c3&quot;</span>)</span><br><span class="line">ws[<span class="string">&quot;c4&quot;</span>] = Translator(formula=<span class="string">&quot;=SUM(a2:b2)&quot;</span>, origin=<span class="string">&quot;c2&quot;</span>).translate_formula(<span class="string">&quot;c4&quot;</span>)</span><br><span class="line">ws[<span class="string">&quot;d3&quot;</span>] = Translator(formula=<span class="string">&quot;=AVERAGE(a2:b2)&quot;</span>, origin=<span class="string">&quot;d2&quot;</span>).translate_formula(<span class="string">&quot;d3&quot;</span>)</span><br><span class="line">ws[<span class="string">&quot;d4&quot;</span>] = Translator(formula=<span class="string">&quot;=AVERAGE(a2:b2)&quot;</span>, origin=<span class="string">&quot;d2&quot;</span>).translate_formula(<span class="string">&quot;d4&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 通过遍历翻译单元格的行为</span></span><br><span class="line"><span class="keyword">for</span> cell <span class="keyword">in</span> ws[<span class="string">&quot;c3:d4&quot;</span>]:</span><br><span class="line">    cell[<span class="number">0</span>].value = Translator(formula=<span class="string">&quot;=SUM(a2:b2)&quot;</span>, origin=<span class="string">&quot;c2&quot;</span>).translate_formula(cell[<span class="number">0</span>].coordinate)</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> cell <span class="keyword">in</span> ws[<span class="string">&quot;d3:d4&quot;</span>]:</span><br><span class="line">    cell[<span class="number">0</span>].value = Translator(formula=<span class="string">&quot;=AVERAGE(a2:b2)&quot;</span>, origin=<span class="string">&quot;d2&quot;</span>).translate_formula(cell[<span class="number">0</span>].coordinate)</span><br><span class="line"></span><br><span class="line">wb.save(<span class="string">&quot;test6.xlsx&quot;</span>)</span><br></pre></td></tr></table></figure>
+<h3 id="排序"><a href="#排序" class="headerlink" title="排序"></a>排序</h3><p>使用<code>pandas</code>库<br><code>pip install pandas</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"></span><br><span class="line"><span class="comment"># 获取工作簿的工作表</span></span><br><span class="line">df = pd.read_excel(<span class="string">&quot;test7.xlsx&quot;</span>, sheet_name=<span class="string">&quot;Sheet&quot;</span>)</span><br><span class="line"><span class="comment"># 参数：排序依据（先按桃子排，桃子一样再按西瓜排），升序/降序</span></span><br><span class="line">df_value = df.sort_values(by=[<span class="string">&quot;桃子&quot;</span>, <span class="string">&quot;西瓜&quot;</span>], ascending=<span class="literal">False</span>)</span><br><span class="line"><span class="comment"># 保存</span></span><br><span class="line">writer = pd.ExcelWriter(<span class="string">&quot;test7_sort.xlsx&quot;</span>)</span><br><span class="line">df_value.to_excel(writer, sheet_name=<span class="string">&quot;Sheet_sort&quot;</span>, index=<span class="literal">False</span>)</span><br><span class="line">writer._save()</span><br></pre></td></tr></table></figure>
+<h3 id="插入图表"><a href="#插入图表" class="headerlink" title="插入图表"></a>插入图表</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> openpyxl <span class="keyword">import</span> Workbook</span><br><span class="line"><span class="keyword">from</span> openpyxl.chart <span class="keyword">import</span> Reference, LineChart</span><br><span class="line"></span><br><span class="line">wb = Workbook()</span><br><span class="line">ws = wb.active</span><br><span class="line"></span><br><span class="line">rows = [</span><br><span class="line">    [<span class="string">&#x27;月份&#x27;</span>, <span class="string">&#x27;桃子&#x27;</span>, <span class="string">&#x27;西瓜&#x27;</span>, <span class="string">&#x27;龙眼&#x27;</span>],</span><br><span class="line">    [<span class="number">1</span>, <span class="number">23</span>, <span class="number">23</span>, <span class="number">56</span>],</span><br><span class="line">    [<span class="number">2</span>, <span class="number">56</span>, <span class="number">56</span>, <span class="number">28</span>],</span><br><span class="line">    [<span class="number">3</span>, <span class="number">58</span>, <span class="number">45</span>, <span class="number">74</span>],</span><br><span class="line">    [<span class="number">4</span>, <span class="number">23</span>, <span class="number">23</span>, <span class="number">56</span>],</span><br><span class="line">    [<span class="number">5</span>, <span class="number">56</span>, <span class="number">56</span>, <span class="number">28</span>],</span><br><span class="line">    [<span class="number">6</span>, <span class="number">58</span>, <span class="number">45</span>, <span class="number">74</span>],</span><br><span class="line">]</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> row <span class="keyword">in</span> rows:</span><br><span class="line">    ws.append(row)</span><br><span class="line"></span><br><span class="line">c1 = LineChart()  <span class="comment"># 实例化</span></span><br><span class="line">c1.title = <span class="string">&quot;水果销量折线图&quot;</span></span><br><span class="line">c1.style = <span class="number">13</span></span><br><span class="line">c1.y_axis.title = <span class="string">&quot;销量&quot;</span></span><br><span class="line">c1.x_axis.title = <span class="string">&quot;月份&quot;</span></span><br><span class="line"></span><br><span class="line">data = Reference(ws, min_row=<span class="number">1</span>, max_row=<span class="number">7</span>, min_col=<span class="number">2</span>, max_col=<span class="number">4</span>)  <span class="comment"># data范围</span></span><br><span class="line">c1.add_data(data, titles_from_data=<span class="literal">True</span>)  <span class="comment"># true：范围表示包括title</span></span><br><span class="line"></span><br><span class="line">s0 = c1.series[<span class="number">0</span>]</span><br><span class="line"><span class="comment"># 样式</span></span><br><span class="line">s0.marker.symbol = <span class="string">&quot;triangle&quot;</span></span><br><span class="line">s0.marker.graphicalProperties.solidFill = <span class="string">&quot;FF0000&quot;</span></span><br><span class="line">s0.marker.graphicalProperties.line.solidFill = <span class="string">&quot;0000FF&quot;</span></span><br><span class="line"></span><br><span class="line">s1 = c1.series[<span class="number">1</span>]</span><br><span class="line">s2 = c1.series[<span class="number">2</span>]</span><br><span class="line">s2.smooth = <span class="literal">True</span>  <span class="comment"># 线条平滑</span></span><br><span class="line">ws.add_chart(c1, <span class="string">&quot;A8&quot;</span>)</span><br><span class="line">wb.save(<span class="string">&quot;test8.xlsx&quot;</span>)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="只读只写"><a href="#只读只写" class="headerlink" title="只读只写"></a>只读只写</h3><p>把excel读到内存当中，大小是原来的50倍左右</p>
+<h4 id="只读模式"><a href="#只读模式" class="headerlink" title="只读模式"></a>只读模式</h4><p>只读模式，如果需要读取很大的Excel文件，但是又不改变和保存，例如只读取数值用于其他数据分析，可以使用只读模式提供性能</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> openpyxl <span class="keyword">import</span> load_workbook</span><br><span class="line"></span><br><span class="line"><span class="comment"># 加载Excel文件时使用read_only指定只读模式</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">load_workbook参数说明：</span></span><br><span class="line"><span class="string">定义：</span></span><br><span class="line"><span class="string">def load_workbook(filename, read_only=False, keep_vba=KEEP_VBA, data_only=False, keep_links=True)</span></span><br><span class="line"><span class="string">参数：</span></span><br><span class="line"><span class="string">read_only:是否只读，默认False</span></span><br><span class="line"><span class="string">keep_vba：是否使用VBA编程，默认False</span></span><br><span class="line"><span class="string">data_only：是否只加载数据值，即丢弃公式、排序等操作，默认False</span></span><br><span class="line"><span class="string">keep_links：是否保留超链接，默认True</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line">wb = load_workbook(filename=<span class="string">&#x27;large_file.xlsx&#x27;</span>, read_only=<span class="literal">True</span>)</span><br><span class="line">ws = wb[<span class="string">&#x27;big_data&#x27;</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 可以正常读取值</span></span><br><span class="line"><span class="keyword">for</span> row <span class="keyword">in</span> ws.rows:</span><br><span class="line">    <span class="keyword">for</span> cell <span class="keyword">in</span> row:</span><br><span class="line">        <span class="built_in">print</span>(cell.value)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 注意：读取完之后需要手动关闭避免内存泄露</span></span><br><span class="line">wb.close()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h4 id="只写模式"><a href="#只写模式" class="headerlink" title="只写模式"></a>只写模式</h4><p>如果文件是以写为主，可以在创建工作簿的时候指定为只写模式以便提高性能，不管文件有多大，都可以把内存保持在10M以下</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> openpyxl <span class="keyword">import</span> Workbook</span><br><span class="line"><span class="keyword">from</span> openpyxl.cell <span class="keyword">import</span> WriteOnlyCell</span><br><span class="line"><span class="keyword">from</span> openpyxl.comments <span class="keyword">import</span> Comment</span><br><span class="line"><span class="keyword">from</span> openpyxl.styles <span class="keyword">import</span> Font</span><br><span class="line"></span><br><span class="line">wb = Workbook(write_only=<span class="literal">True</span>)  <span class="comment"># 创建工作簿时指定只写模式</span></span><br><span class="line">ws = wb.create_sheet()  <span class="comment"># 需要通过create_sheet创建一个sheet</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 可以正常保存数据</span></span><br><span class="line"><span class="keyword">for</span> _ <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">100</span>):</span><br><span class="line">    ws.append([i <span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(<span class="number">200</span>)])  <span class="comment"># 只能通过append写</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 如果需要保留公式、注释等操作，可以使用WriteOnlyCell</span></span><br><span class="line">cell = WriteOnlyCell(ws, value=<span class="string">&quot;test&quot;</span>)</span><br><span class="line">cell.font = Font(name=<span class="string">&#x27;黑体&#x27;</span>, size=<span class="number">15</span>)</span><br><span class="line">cell.comment = Comment(text=<span class="string">&quot;这是注释&quot;</span>, author=<span class="string">&quot;pan&quot;</span>)</span><br><span class="line"></span><br><span class="line">ws.append([cell])</span><br><span class="line"></span><br><span class="line">wb.save(<span class="string">&#x27;openpyxl/test.xlsx&#x27;</span>)</span><br></pre></td></tr></table></figure>
+<p>只写模式注意点：</p>
+<ol>
+<li>需要通过<code>create_sheet()</code>创建表</li>
+<li>只能通过<code>append()</code>增加数据，不能通过<code>cell或iter_rows()</code></li>
+<li><code>wb.save()</code>之后不能再修改，否则抛出WorkbookAlreadySaved异常</li>
+</ol>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/07/01/python_%E8%A7%A3%E6%9E%90xml-3-ElementTree/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="yhcs">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/07/01/python_%E8%A7%A3%E6%9E%90xml-3-ElementTree/" class="post-title-link" itemprop="url">python：解析xml(3):ElementTree</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2024-07-01 22:34:24" itemprop="dateCreated datePublished" datetime="2024-07-01T22:34:24+08:00">2024-07-01</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-07-13 16:58:12" itemprop="dateModified" datetime="2024-07-13T16:58:12+08:00">2024-07-13</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index"><span itemprop="name">python</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="XML-树和元素"><a href="#XML-树和元素" class="headerlink" title="XML 树和元素"></a>XML 树和元素</h3><p>XML 是一种继承性的分层数据格式，最自然的表示方法是使用树。 </p>
+<p>为此， <code>ET</code> 有两个类 </p>
+<ol>
+<li><a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.ElementTree"><code>ElementTree</code></a> 将整个XML文档表示为一个树</li>
+<li><a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.Element"><code>Element</code></a> 表示该树中的单个节点</li>
+</ol>
+<p> 与整个文档的交互（读写文件）通常在 <a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.ElementTree"><code>ElementTree</code></a> 级别完成。 与单个 XML 元素及其子元素的交互是在 <a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.Element"><code>Element</code></a> 级别完成的。</p>
+<h3 id="解析XML"><a href="#解析XML" class="headerlink" title="解析XML"></a>解析XML</h3><ol>
+<li><p>从文件中读取来导入数据</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> xml.etree.ElementTree <span class="keyword">as</span> ET</span><br><span class="line">tree = ET.parse(<span class="string">&#x27;country_data.xml&#x27;</span>)</span><br><span class="line">root = tree.getroot()</span><br></pre></td></tr></table></figure>
+
+<p><code>parse()</code>方法用来解析xml文档</p>
+</li>
+<li><p>直接从字符串中解析</p>
+<p><a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.fromstring"><code>fromstring()</code></a> 将 XML 从字符串直接解析为 <a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.Element"><code>Element</code></a> ，该元素是已解析树的根元素</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">root = ET.fromstring(country_data_as_string)</span><br></pre></td></tr></table></figure>
+
+<p>作为 <a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.Element"><code>Element</code></a> ， <code>root</code> 具有标签和属性字典:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>root.tag</span><br><span class="line"><span class="string">&#x27;data&#x27;</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>root.attrib</span><br><span class="line">&#123;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>还有可以迭代的子节点：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> child <span class="keyword">in</span> root:</span><br><span class="line">    <span class="built_in">print</span>(child.tag, child.attrib)</span><br><span class="line"></span><br><span class="line">country &#123;<span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;Liechtenstein&#x27;</span>&#125;</span><br><span class="line">country &#123;<span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;Singapore&#x27;</span>&#125;</span><br><span class="line">country &#123;<span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;Panama&#x27;</span>&#125;</span><br></pre></td></tr></table></figure>
+
+<p>子级是可以嵌套的，我们可以通过索引访问特定的子级节点：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>root[<span class="number">0</span>][<span class="number">1</span>].text</span><br><span class="line"><span class="string">&#x27;2008&#x27;</span></span><br></pre></td></tr></table></figure></li>
+</ol>
+<h3 id="用于非阻塞解析的拉取-API"><a href="#用于非阻塞解析的拉取-API" class="headerlink" title="用于非阻塞解析的拉取 API"></a>用于非阻塞解析的拉取 API</h3><p>大多数解析函数都要求在返回任何结果之前<strong>一次性读取</strong>整个文档。 </p>
+<p> <a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.XMLParser"><code>XMLParser</code></a> ：以增量方式添加数据，但这是在回调目标上调用方法的推送式 API。 有时用户真正想要的是能够以增量方式解析 XML 而无需阻塞操作，同时享受完整的已构造 <a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.Element"><code>Element</code></a> 对象。</p>
+<p>针对此需求的最强大工具是 <a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.XMLPullParser"><code>XMLPullParser</code></a>。 它不要求通过<strong>阻塞式读取</strong>来获得 XML 数据，而是通过执行 <a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.XMLPullParser.feed"><code>XMLPullParser.feed()</code></a> 调用来增量式地添加数据。 要获得已解析的 XML 元素，应调用 <a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.XMLPullParser.read_events"><code>XMLPullParser.read_events()</code></a>。 </p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">parser = ET.XMLPullParser([<span class="string">&#x27;start&#x27;</span>, <span class="string">&#x27;end&#x27;</span>])</span><br><span class="line">parser.feed(<span class="string">&#x27;&lt;mytag&gt;sometext&#x27;</span>)</span><br><span class="line"><span class="built_in">list</span>(parser.read_events())</span><br><span class="line"></span><br><span class="line">parser.feed(<span class="string">&#x27; more text&lt;/mytag&gt;&#x27;</span>)</span><br><span class="line"><span class="keyword">for</span> event, elem <span class="keyword">in</span> parser.read_events():</span><br><span class="line">    <span class="built_in">print</span>(event)</span><br><span class="line">    <span class="built_in">print</span>(elem.tag, <span class="string">&#x27;text=&#x27;</span>, elem.text)</span><br></pre></td></tr></table></figure>
+
+<p>应用：针对以非阻塞方式进行的应用程序，其中 XML 是从套接字接收或从某些存储设备增量式读取的。 在这些用例中，阻塞式读取是不可接受的。</p>
+<p>缺点：因为其非常灵活，<a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.XMLPullParser"><code>XMLPullParser</code></a> 在更简单的用例中使用起来可能并不方便。</p>
+<p>其他方法：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.iterparse"><code>iterparse()</code></a>：不介意你的应用程序在读取 XML 数据时造成阻塞但仍希望具有增量解析能力。 它在你读取大型 XML 文档并且不希望将它完全放去内存时会很适用。</li>
+<li><a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.XMLPullParser.flush"><code>XMLPullParser.flush()</code></a> ：有助于减少延迟，适用于需要通过事件获得<strong>即时反馈</strong>的场合</li>
+</ul>
+<h3 id="查找元素"><a href="#查找元素" class="headerlink" title="查找元素"></a>查找元素</h3><ul>
+<li><p><a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.Element.iter"><code>Element.iter()</code></a>:帮助递归遍历其下的所有子树（包括子级，子级的子级，等等）</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> neighbor <span class="keyword">in</span> root.<span class="built_in">iter</span>(<span class="string">&#x27;neighbor&#x27;</span>):</span><br><span class="line">    <span class="built_in">print</span>(neighbor.attrib)</span><br><span class="line"></span><br><span class="line">&#123;<span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;Austria&#x27;</span>, <span class="string">&#x27;direction&#x27;</span>: <span class="string">&#x27;E&#x27;</span>&#125;</span><br><span class="line">&#123;<span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;Switzerland&#x27;</span>, <span class="string">&#x27;direction&#x27;</span>: <span class="string">&#x27;W&#x27;</span>&#125;</span><br><span class="line">&#123;<span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;Malaysia&#x27;</span>, <span class="string">&#x27;direction&#x27;</span>: <span class="string">&#x27;N&#x27;</span>&#125;</span><br><span class="line">&#123;<span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;Costa Rica&#x27;</span>, <span class="string">&#x27;direction&#x27;</span>: <span class="string">&#x27;W&#x27;</span>&#125;</span><br><span class="line">&#123;<span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;Colombia&#x27;</span>, <span class="string">&#x27;direction&#x27;</span>: <span class="string">&#x27;E&#x27;</span>&#125;   </span><br></pre></td></tr></table></figure>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.Element.findall"><code>Element.findall()</code></a> ：仅查找当前元素的直接子元素中带有指定标签的元素</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.Element.find"><code>Element.find()</code></a> ：找带有特定标签的 <strong>第一个</strong> 子级</p>
+</li>
+</ul>
+<p>然后可以用 <a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.Element.text"><code>Element.text</code></a> 访问元素的文本内容。 <a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.Element.get"><code>Element.get</code></a> 访问元素的属性:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> country <span class="keyword">in</span> root.findall(<span class="string">&#x27;country&#x27;</span>):</span><br><span class="line">    rank = country.find(<span class="string">&#x27;rank&#x27;</span>).text</span><br><span class="line">    name = country.get(<span class="string">&#x27;name&#x27;</span>)</span><br><span class="line">    <span class="built_in">print</span>(name, rank)</span><br><span class="line">    </span><br><span class="line">Liechtenstein <span class="number">1</span></span><br><span class="line">Singapore <span class="number">4</span></span><br><span class="line">Panama <span class="number">68</span></span><br></pre></td></tr></table></figure>
+
+<p>ps：通过使用 <a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/xml.etree.elementtree.html#elementtree-xpath">XPath</a> ，可以更精确地指定要查找的元素</p>
+<h3 id="修改XML文件"><a href="#修改XML文件" class="headerlink" title="修改XML文件"></a>修改XML文件</h3><p><a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.ElementTree"><code>ElementTree</code></a> 提供了一种构建XML文档并将其写入文件的简单方法。调用 <a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.ElementTree.write"><code>ElementTree.write()</code></a> 方法就可以实现。</p>
+<p>创建后可以直接操作 <a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.Element"><code>Element</code></a> 对象。例如：</p>
+<ul>
+<li>使用 <a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.Element.text"><code>Element.text</code></a> 修改文本字段</li>
+<li>使用 <a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.Element.set"><code>Element.set()</code></a> 方法添加和修改属性</li>
+<li>使用 <a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.Element.append"><code>Element.append()</code></a> 添加新的子元素。</li>
+</ul>
+<p>假设我们要为每个国家&#x2F;地区的中添加一个排名，并在排名元素中添加一个 <code>updated</code> 属性：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> rank <span class="keyword">in</span> root.<span class="built_in">iter</span>(<span class="string">&#x27;rank&#x27;</span>):</span><br><span class="line">    new_rank = <span class="built_in">int</span>(rank.text) + <span class="number">1</span></span><br><span class="line">    rank.text = <span class="built_in">str</span>(new_rank)</span><br><span class="line">    rank.<span class="built_in">set</span>(<span class="string">&#x27;updated&#x27;</span>, <span class="string">&#x27;yes&#x27;</span>)</span><br><span class="line"></span><br><span class="line">tree.write(<span class="string">&#x27;output.xml&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p><a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.Element.remove"><code>Element.remove()</code></a> 删除元素</p>
+</li>
+<li><p>假设我们要删除排名高于50的所有国家&#x2F;地区:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> country <span class="keyword">in</span> root.findall(<span class="string">&#x27;country&#x27;</span>):</span><br><span class="line">    <span class="comment"># using root.findall() to avoid removal during traversal</span></span><br><span class="line">    rank = <span class="built_in">int</span>(country.find(<span class="string">&#x27;rank&#x27;</span>).text)</span><br><span class="line">    <span class="keyword">if</span> rank &gt; <span class="number">50</span>:</span><br><span class="line">        root.remove(country)</span><br><span class="line"></span><br><span class="line">tree.write(<span class="string">&#x27;output.xml&#x27;</span>)</span><br></pre></td></tr></table></figure></li>
+</ul>
+<blockquote>
+<p>请注意在迭代时进行并发修改可能会导致问题，就像在迭代并修改 Python 列表或字典时那样。 因此，可以先通过 <code>root.findall()</code> 收集所有匹配的元素，在此之后再对匹配项列表进行迭代。</p>
+</blockquote>
+<h3 id="构建XML文档"><a href="#构建XML文档" class="headerlink" title="构建XML文档"></a>构建XML文档</h3><p><a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.SubElement"><code>SubElement()</code></a> 函数还提供了一种便捷方法来为给定元素创建新的子元素</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>a = ET.Element(<span class="string">&#x27;a&#x27;</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b = ET.SubElement(a, <span class="string">&#x27;b&#x27;</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>c = ET.SubElement(a, <span class="string">&#x27;c&#x27;</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>d = ET.SubElement(c, <span class="string">&#x27;d&#x27;</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>ET.dump(a)</span><br><span class="line">&lt;a&gt;&lt;b /&gt;&lt;c&gt;&lt;d /&gt;&lt;/c&gt;&lt;/a&gt;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/2024/07/01/python_%E8%A7%A3%E6%9E%90xml-2-DOM/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1033,515 +1451,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/06/04/C-TCP%E5%8D%8F%E8%AE%AE%E5%AE%9E%E7%8E%B0%E7%BD%91%E7%BB%9C%E9%80%9A%E8%AE%AF/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="yhcs">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hexo">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2024/06/04/C-TCP%E5%8D%8F%E8%AE%AE%E5%AE%9E%E7%8E%B0%E7%BD%91%E7%BB%9C%E9%80%9A%E8%AE%AF/" class="post-title-link" itemprop="url">C：TCP协议实现网络通讯</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2024-06-04 22:37:54" itemprop="dateCreated datePublished" datetime="2024-06-04T22:37:54+08:00">2024-06-04</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-07-13 16:56:05" itemprop="dateModified" datetime="2024-07-13T16:56:05+08:00">2024-07-13</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C++</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>分成两个项目：<strong>服务端和客户端</strong>，完整源码在最后</p>
-<h3 id="服务端"><a href="#服务端" class="headerlink" title="服务端"></a>服务端</h3><ol>
-<li><p>包含相关的库文件</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;WinSock2.h&gt;</span><span class="comment">//windows网络通讯头文件</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">pragma</span> comment(lib,<span class="string">&quot;ws2_32.lib&quot;</span>)<span class="comment">//一个库文件(windows不开源) ws2_32,提供接口</span></span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p>开启网络权限</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">WSADATA wsaData;</span><br><span class="line">WSAStartup(MAKEWORD(<span class="number">2</span>, <span class="number">2</span>), &amp;wsaData);</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>创建socket套接字</p>
-<p>先看一下socket的数据结构</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">socket(</span><br><span class="line">	_In_ <span class="type">int</span> af,		<span class="comment">//协议地址族 AF_INET/AF_INET6 ipv4/ipv6</span></span><br><span class="line">	_In_ <span class="type">int</span> type,		<span class="comment">//协议类型 TCP/UDP SOCK_STREAM/SOCK_DGRAM</span></span><br><span class="line">	_In_ <span class="type">int</span> protocol	<span class="comment">//保护方式</span></span><br><span class="line">);</span><br></pre></td></tr></table></figure>
-
-<p>创建socket，如果创建失败，socket值为-1</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//创建socket</span></span><br><span class="line">SOCKET server_socket = socket(AF_INET, SOCK_STREAM, <span class="number">0</span>);<span class="comment">//如果创建失败为-1</span></span><br><span class="line"><span class="comment">//进行检查</span></span><br><span class="line"><span class="keyword">if</span> (server_socket == <span class="number">-1</span>) &#123;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;server socket create failed!Error Code:%d\n&quot;</span>, GetLastError());</span><br><span class="line">	<span class="built_in">exit</span>(<span class="number">-1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>指定ip和端口号</p>
-<p>先来看一下<code>struct sockaddr_in</code>的数据结构</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">sockaddr_in</span> &#123;</span></span><br><span class="line">	<span class="type">short</span>   sin_family;<span class="comment">//协议地址族</span></span><br><span class="line">	USHORT sin_port;<span class="comment">//端口号 5000+</span></span><br><span class="line">	IN_ADDR sin_addr;<span class="comment">//服务端，所有网卡都要监测，所以一般为0.0.0.0</span></span><br><span class="line">					<span class="comment">//inet_addr()——将点分十进制的IP地址转换为整数</span></span><br><span class="line">	CHAR sin_zero[<span class="number">8</span>];<span class="comment">//保留位置 可能将来升级协议可能会用</span></span><br><span class="line">&#125; SOCKADDR_IN, * PSOCKADDR_IN;</span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>这里涉及到<strong>大端序和小端序</strong>的内容</p>
-<ul>
-<li><p>大端序：数字大的在前面  比如：百 十 个</p>
-</li>
-<li><p>小端序：数字小的在前面  比如：个 十 百</p>
-</li>
-</ul>
-<p>例：本地为<code>90 1f 00 00</code>为小端序，网络上为大端序<code>00 00 1f 90</code>（实际值）——8080</p>
-<p><code>htons()</code>：小端序转换为大端序  eg：<code>htons(8080);</code></p>
-</blockquote>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sockaddr_in</span> <span class="title">local</span>;</span></span><br><span class="line">local.sin_family = AF_INET;</span><br><span class="line">local.sin_port = htons(<span class="number">8080</span>);<span class="comment">//将8080转换为大端序</span></span><br><span class="line">local.sin_addr.S_un.S_addr = inet_addr(<span class="string">&quot;0.0.0.0&quot;</span>);</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>绑定socket和端口</p>
-<p><code>bind()</code></p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 绑定socket和端口</span></span><br><span class="line"><span class="keyword">if</span> (bind(server_socket, (<span class="keyword">struct</span> sockaddr*)&amp;local, <span class="keyword">sizeof</span>(<span class="keyword">struct</span> sockaddr_in))</span><br><span class="line">	== <span class="number">-1</span>) &#123;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;bind server socket failed!Error Code:%ld\n&quot;</span>, GetLastError());</span><br><span class="line">	<span class="built_in">exit</span>(<span class="number">-1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>监听端口</p>
-<p><code>listen()</code></p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (listen(server_socket, <span class="number">10</span>) == <span class="number">-1</span>) &#123;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;listen server socket failed!Error Code:%ld\n&quot;</span>, GetLastError());</span><br><span class="line">	<span class="built_in">exit</span>(<span class="number">-1</span>);</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;bind and listen success. wait client connect ...\n&quot;</span>);</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>等待客户端连接</p>
-<p><code>accept()</code>：函数进行过程就是三次握手</p>
-<p>accept函数是阻塞函数，没有客户端连接就停在这里</p>
-<p><code>server_socket</code>：负责传话</p>
-<p>返回值：一个新的socket负责通信  </p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">SOCKET client_socket = accept(server_socket, <span class="literal">NULL</span>, <span class="literal">NULL</span>);</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>循环处理</p>
-<p>可以接收消息或者发送消息，在循环内部自行定义</p>
-<p><code>recv()</code>：从通信socket上接收数据</p>
-<ul>
-<li>返回值为-1，表示出错</li>
-<li>返回值为0，表示正常断开</li>
-<li>返回值为正数，表示接收到了多少数据</li>
-</ul>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">	<span class="type">char</span> buff[BUFSIZ * <span class="number">4</span>] = &#123; <span class="number">0</span> &#125;;<span class="comment">//接收数据</span></span><br><span class="line">    </span><br><span class="line">	<span class="type">int</span> ret = recv(client_socket, buff, BUFSIZ * <span class="number">4</span>, <span class="number">0</span>);</span><br><span class="line">	<span class="keyword">if</span> (ret &lt;= <span class="number">0</span>) <span class="keyword">break</span>;</span><br><span class="line">    </span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;ret:%d buff:%s\n&quot;</span>, ret, buff);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (<span class="built_in">memcmp</span>(buff, <span class="string">&quot;music&quot;</span>, <span class="built_in">strlen</span>(<span class="string">&quot;music&quot;</span>)) == <span class="number">0</span>) &#123;</span><br><span class="line">		<span class="comment">//表示当你接收到&quot;music&quot;，进行这部分处理</span></span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;playing music\r\n&quot;</span>);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
-</ol>
-<h3 id="客户端"><a href="#客户端" class="headerlink" title="客户端"></a>客户端</h3><ol>
-<li><p>包含相关的库文件</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;WinSock2.h&gt;</span><span class="comment">//windows网络通讯头文件</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">pragma</span> comment(lib,<span class="string">&quot;ws2_32.lib&quot;</span>)<span class="comment">//一个库文件(windows不开源) ws2_32,提供接口</span></span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p>开启网络权限</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">WSADATA wsaData;</span><br><span class="line">WSAStartup(MAKEWORD(<span class="number">2</span>, <span class="number">2</span>), &amp;wsaData);</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>创建socket套接字</p>
-<p>跟服务端代码一样</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//创建socket</span></span><br><span class="line">SOCKET client_socket = socket(AF_INET, SOCK_STREAM, <span class="number">0</span>);</span><br><span class="line"><span class="keyword">if</span> (client_socket == <span class="number">-1</span>) &#123;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;client socket create failed!Error Code:%d\n&quot;</span>, GetLastError());</span><br><span class="line">	<span class="built_in">exit</span>(<span class="number">-1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>指定目标ip和端口号</p>
-<p>跟服务端不同的是，不是监听所有，只是针对目标ip</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">sockaddr_in</span> <span class="title">target</span>;</span></span><br><span class="line">target.sin_family = AF_INET;</span><br><span class="line">target.sin_port = htons(<span class="number">8080</span>);</span><br><span class="line"><span class="comment">//127.0.0.1本地环回</span></span><br><span class="line"><span class="comment">//或者填本机ip</span></span><br><span class="line">target.sin_addr.S_un.S_addr = inet_addr(<span class="string">&quot;127.0.0.1&quot;</span>);</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>直接连接就行</p>
-<p><code>connect()</code></p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//直接连接就行</span></span><br><span class="line"><span class="keyword">if</span> (connect(client_socket, (<span class="keyword">struct</span> sockaddr*)&amp;target, <span class="keyword">sizeof</span>(<span class="keyword">struct</span> sockaddr)) == <span class="number">-1</span>) &#123;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;connect server failed!Error Code:%ld\n&quot;</span>,GetLastError());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>进行通信</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">	<span class="type">char</span> buff[BUFSIZ * <span class="number">4</span>] = &#123; <span class="number">0</span> &#125;;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;please input send content:&quot;</span>);</span><br><span class="line">	<span class="built_in">scanf</span>(<span class="string">&quot;%s&quot;</span>,buff);</span><br><span class="line">	<span class="type">int</span> ret = send(client_socket, buff, <span class="built_in">strlen</span>(buff), <span class="number">0</span>);</span><br><span class="line">	<span class="keyword">if</span> (ret &lt;= <span class="number">0</span>)</span><br><span class="line">		<span class="keyword">break</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
-</ol>
-<hr>
-<p>最后同时运行两个项目就可以了！</p>
-<h3 id="完整源码"><a href="#完整源码" class="headerlink" title="完整源码"></a>完整源码</h3><h4 id="服务端-1"><a href="#服务端-1" class="headerlink" title="服务端"></a>服务端</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;WinSock2.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">pragma</span> comment(lib,<span class="string">&quot;ws2_32.lib&quot;</span>)</span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span> &#123;</span><br><span class="line">	WSADATA wsaData;</span><br><span class="line">	WSAStartup(MAKEWORD(<span class="number">2</span>, <span class="number">2</span>), &amp;wsaData);</span><br><span class="line">	<span class="comment">//创建socket</span></span><br><span class="line">	SOCKET server_socket = socket(AF_INET, SOCK_STREAM, <span class="number">0</span>);<span class="comment">//如果创建失败为-1</span></span><br><span class="line">	<span class="keyword">if</span> (server_socket == <span class="number">-1</span>) &#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;server socket create failed!Error Code:%d\n&quot;</span>, GetLastError());</span><br><span class="line">		<span class="built_in">exit</span>(<span class="number">-1</span>);</span><br><span class="line">	&#125;</span><br><span class="line">    </span><br><span class="line">	<span class="comment">//ip地址 + 端口号</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">sockaddr_in</span> <span class="title">local</span>;</span></span><br><span class="line">	local.sin_family = AF_INET;</span><br><span class="line">	local.sin_port = htons(<span class="number">8080</span>);<span class="comment">//将8080转换为大端序</span></span><br><span class="line">	local.sin_addr.S_un.S_addr = inet_addr(<span class="string">&quot;0.0.0.0&quot;</span>);</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 绑定socket和端口</span></span><br><span class="line">	<span class="keyword">if</span> (bind(server_socket, (<span class="keyword">struct</span> sockaddr*)&amp;local, <span class="keyword">sizeof</span>(<span class="keyword">struct</span> sockaddr_in))</span><br><span class="line">		== <span class="number">-1</span>) &#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;bind server socket failed!Error Code:%ld\n&quot;</span>, GetLastError());</span><br><span class="line">		<span class="built_in">exit</span>(<span class="number">-1</span>);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">//监听这个端口</span></span><br><span class="line">	<span class="keyword">if</span> (listen(server_socket, <span class="number">10</span>) == <span class="number">-1</span>) &#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;listen server socket failed!Error Code:%ld\n&quot;</span>, GetLastError());</span><br><span class="line">		<span class="built_in">exit</span>(<span class="number">-1</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;bind and listen success. wait client connect ...\n&quot;</span>);</span><br><span class="line"></span><br><span class="line">	<span class="comment">//等待客户端连接 accept函数在进行的过程中就是三次握手</span></span><br><span class="line">	SOCKET client_socket = accept(server_socket, <span class="literal">NULL</span>, <span class="literal">NULL</span>);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">		<span class="type">char</span> buff[BUFSIZ * <span class="number">4</span>] = &#123; <span class="number">0</span> &#125;;</span><br><span class="line">		<span class="type">int</span> ret = recv(client_socket, buff, BUFSIZ * <span class="number">4</span>, <span class="number">0</span>);</span><br><span class="line">		<span class="keyword">if</span> (ret &lt;= <span class="number">0</span>) <span class="keyword">break</span>;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;ret:%d buff:%s\n&quot;</span>, ret, buff);</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> (<span class="built_in">memcmp</span>(buff, <span class="string">&quot;music&quot;</span>, <span class="built_in">strlen</span>(<span class="string">&quot;music&quot;</span>)) == <span class="number">0</span>) &#123;</span><br><span class="line">			<span class="built_in">printf</span>(<span class="string">&quot;playing music\r\n&quot;</span>);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;	</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="客户端-1"><a href="#客户端-1" class="headerlink" title="客户端"></a>客户端</h4><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;WinSock2.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">pragma</span> comment(lib,<span class="string">&quot;ws2_32.lib&quot;</span>)</span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="title function_">main</span><span class="params">()</span> &#123;</span><br><span class="line">	<span class="comment">//开启网络权限</span></span><br><span class="line">	WSADATA wsaData;</span><br><span class="line">	WSAStartup(MAKEWORD(<span class="number">2</span>, <span class="number">2</span>), &amp;wsaData);</span><br><span class="line"></span><br><span class="line">	<span class="comment">//创建socket</span></span><br><span class="line">	SOCKET client_socket = socket(AF_INET, SOCK_STREAM, <span class="number">0</span>);</span><br><span class="line">	<span class="keyword">if</span> (client_socket == <span class="number">-1</span>) &#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;client socket create failed!Error Code:%d\n&quot;</span>, GetLastError());</span><br><span class="line">		<span class="built_in">exit</span>(<span class="number">-1</span>);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">//创建目标IP和端口</span></span><br><span class="line">	<span class="class"><span class="keyword">struct</span> <span class="title">sockaddr_in</span> <span class="title">target</span>;</span></span><br><span class="line">	target.sin_family = AF_INET;</span><br><span class="line">	target.sin_port = htons(<span class="number">8080</span>);</span><br><span class="line">	<span class="comment">//127.0.0.1本地环回</span></span><br><span class="line">	<span class="comment">//或者填本机ip</span></span><br><span class="line">	target.sin_addr.S_un.S_addr = inet_addr(<span class="string">&quot;127.0.0.1&quot;</span>);</span><br><span class="line"></span><br><span class="line">	<span class="comment">//直接连接就行</span></span><br><span class="line">	<span class="keyword">if</span> (connect(client_socket, (<span class="keyword">struct</span> sockaddr*)&amp;target, <span class="keyword">sizeof</span>(<span class="keyword">struct</span> sockaddr)) == <span class="number">-1</span>) &#123;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;connect server failed!Error Code:%ld\n&quot;</span>,GetLastError());</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">//发消息</span></span><br><span class="line">	<span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">		<span class="type">char</span> buff[BUFSIZ * <span class="number">4</span>] = &#123; <span class="number">0</span> &#125;;</span><br><span class="line">		<span class="built_in">printf</span>(<span class="string">&quot;please input send content:&quot;</span>);</span><br><span class="line">		<span class="built_in">scanf</span>(<span class="string">&quot;%s&quot;</span>,buff);</span><br><span class="line">		<span class="type">int</span> ret = send(client_socket, buff, <span class="built_in">strlen</span>(buff), <span class="number">0</span>);</span><br><span class="line">		<span class="keyword">if</span> (ret &lt;= <span class="number">0</span>)</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/05/10/C++_%E7%BB%A7%E6%89%BF/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="yhcs">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hexo">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2024/05/10/C++_%E7%BB%A7%E6%89%BF/" class="post-title-link" itemprop="url">C++：继承</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2024-05-10 15:29:26" itemprop="dateCreated datePublished" datetime="2024-05-10T15:29:26+08:00">2024-05-10</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-07-13 16:55:48" itemprop="dateModified" datetime="2024-07-13T16:55:48+08:00">2024-07-13</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C++</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="单继承"><a href="#单继承" class="headerlink" title="单继承"></a>单继承</h3><h4 id="1-继承的写法和权限问题"><a href="#1-继承的写法和权限问题" class="headerlink" title="1.继承的写法和权限问题"></a>1.继承的写法和权限问题</h4><p><code>class 子类：继承方法 父类</code></p>
-<ol>
-<li><p>继承方法：父类中的属性在子类中的最低权限</p>
-<p>权限由低到高：<code>public</code> <code>protected</code> <code>private</code></p>
-<p>eg:<code>class boy:public woman</code>——woman类的属性在boy类的最低权限为public</p>
-</li>
-<li><p>父类的私有属性对于子类来说是不可访问的</p>
-</li>
-</ol>
-<blockquote>
-<p>类的访问权限有三种：</p>
-<ol>
-<li>public 公共权限： 可以被该类中的函数、子类的函数、其友元函数访问,也可以由该类的对象访问</li>
-<li>protected 保护权限： 可以<strong>被该类中的函数、子类的函数、以及其友元函数</strong>访问,但不能被该类的对象访问</li>
-<li>private 私有权限：只能由<strong>该类中的函数、其友元函数</strong>访问,不能被任何其他访问，该类的对象也不能访问。</li>
-</ol>
-<p>三种权限的区别：</p>
-<p>public:可以被任意实体访问<br>protected:只允许本类及子类的成员函数访问<br>private:只允许本类的成员函数访问</p>
-</blockquote>
-<h4 id="2-继承中构造函数的写法"><a href="#2-继承中构造函数的写法" class="headerlink" title="2.继承中构造函数的写法"></a>2.继承中构造函数的写法</h4><p>子类的构造函数<strong>必须</strong>调用父类的构造函数</p>
-<p>不想写的时候，习惯在父类中增加一个无参构造函数</p>
-<p>如：直接<code>Boy boy；</code>——报错，显示是已删除的构造函数</p>
-<p>​		解决方法：在woman类中新增无参构造函数<code>Woman()&#123;&#125;</code></p>
-<p>测试代码：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Woman</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">Woman</span>(string name,<span class="type">int</span> age):<span class="built_in">name</span>(name),<span class="built_in">age</span>(age)&#123;</span><br><span class="line">        cout&lt;&lt;<span class="string">&quot;调用基类带参构造函数&quot;</span>&lt;&lt;endl;</span><br><span class="line">    &#125;<span class="comment">//初始化参数列表</span></span><br><span class="line">    <span class="built_in">Woman</span>()&#123;</span><br><span class="line">        cout&lt;&lt;<span class="string">&quot;调用基类无参构造函数&quot;</span>&lt;&lt;endl;</span><br><span class="line">    &#125;;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">print</span><span class="params">()</span></span>&#123;</span><br><span class="line">        cout&lt;&lt;<span class="string">&quot;Woman &quot;</span>&lt;&lt;name&lt;&lt;<span class="string">&quot; &quot;</span>&lt;&lt;age&lt;&lt;endl;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="keyword">protected</span>:</span><br><span class="line">    string name;</span><br><span class="line">    <span class="type">int</span> age;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Boy</span>:<span class="keyword">protected</span> Woman<span class="comment">//Woman类的属性在boy类的最低权限是protected</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">Boy</span>()&#123;</span><br><span class="line">        cout&lt;&lt;<span class="string">&quot;调用子类无参构造函数&quot;</span>&lt;&lt;endl;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//采用初始化列表的方式调用父类的构造函数</span></span><br><span class="line">    <span class="built_in">Boy</span>(string name,<span class="type">int</span> age):<span class="built_in">Woman</span>(name,age)&#123;</span><br><span class="line">        cout&lt;&lt;<span class="string">&quot;调用子类带参构造函数&quot;</span>&lt;&lt;endl;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">print</span><span class="params">()</span></span>&#123;</span><br><span class="line">        cout&lt;&lt;<span class="string">&quot;Boy &quot;</span>&lt;&lt;name&lt;&lt;<span class="string">&quot; &quot;</span>&lt;&lt;age&lt;&lt;endl;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="keyword">protected</span>:</span><br><span class="line">    <span class="comment">//子类隐含有以下属性</span></span><br><span class="line">    <span class="comment">//void print();</span></span><br><span class="line">    <span class="comment">//string name;</span></span><br><span class="line">    <span class="comment">//int age;</span></span><br><span class="line">&#125;;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    Woman woman1;</span><br><span class="line">    cout&lt;&lt;<span class="string">&quot;============================&quot;</span>&lt;&lt;endl;</span><br><span class="line">    <span class="function">Woman <span class="title">woman2</span><span class="params">(<span class="string">&quot;Amy&quot;</span>,<span class="number">40</span>)</span></span>;</span><br><span class="line">    cout&lt;&lt;<span class="string">&quot;============================&quot;</span>&lt;&lt;endl;</span><br><span class="line">    Boy boy1;</span><br><span class="line">    cout&lt;&lt;<span class="string">&quot;============================&quot;</span>&lt;&lt;endl;</span><br><span class="line">    <span class="function">Boy <span class="title">boy2</span><span class="params">(<span class="string">&quot;Jack&quot;</span>,<span class="number">10</span>)</span></span>;</span><br><span class="line">    cout&lt;&lt;<span class="string">&quot;============================&quot;</span>&lt;&lt;endl;</span><br><span class="line">    woman2.<span class="built_in">print</span>();</span><br><span class="line">    boy2.<span class="built_in">print</span>();</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<p>结果：</p>
-<p><img src="/../assets/C-plus-plus-%E7%BB%A7%E6%89%BF/image-20240510131814280.png" alt="image-20240510131814280"></p>
-<p><strong>总结：子类构造函数一定会调用对应的父类构造函数</strong></p>
-<h3 id="构造顺序和析构顺序"><a href="#构造顺序和析构顺序" class="headerlink" title="构造顺序和析构顺序"></a>构造顺序和析构顺序</h3><p>正常情况下，构造函数和析构函数顺序相反</p>
-<p>测试代码：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">A</span>&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">A</span>()&#123;</span><br><span class="line">        cout&lt;&lt;<span class="string">&quot;A&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    ~<span class="built_in">A</span>()&#123;</span><br><span class="line">        cout&lt;&lt;<span class="string">&quot;~A&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">B</span>:<span class="keyword">public</span> A&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">B</span>()&#123;</span><br><span class="line">        cout&lt;&lt;<span class="string">&quot;B&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    ~<span class="built_in">B</span>()&#123;</span><br><span class="line">        cout&lt;&lt;<span class="string">&quot;~B&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    A a;<span class="comment">//A</span></span><br><span class="line">    B b;<span class="comment">//AB</span></span><br><span class="line">    <span class="comment">//~B~A~A</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<p>结果：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">AAB~B~A~A</span><br></pre></td></tr></table></figure>
-
-<p>注意：有<code>delete</code>的时候</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">B *p=<span class="keyword">new</span> B;</span><br><span class="line">B b;</span><br><span class="line"><span class="keyword">delete</span> p;</span><br></pre></td></tr></table></figure>
-
-<p>结果：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ABAB~B~A~B~A</span><br><span class="line"><span class="comment">//第一个~B~A是对象p的，什么delete就结束对象的生命周期</span></span><br><span class="line"><span class="comment">//b的析构是因为程序结束，生命周期结束自动调用析构函数    </span></span><br></pre></td></tr></table></figure>
-
-<h3 id="类的继承的遗传性"><a href="#类的继承的遗传性" class="headerlink" title="类的继承的遗传性"></a>类的继承的遗传性</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">A</span>&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="type">int</span> a;</span><br><span class="line">    <span class="built_in">A</span>(<span class="type">int</span> a):<span class="built_in">a</span>(a)&#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">B</span>&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="comment">//int a;</span></span><br><span class="line">    <span class="type">int</span> b;</span><br><span class="line">    <span class="built_in">B</span>(<span class="type">int</span> a,<span class="type">int</span> b):<span class="built_in">A</span>(a),<span class="built_in">b</span>(b)&#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">C</span>&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="comment">//int a;</span></span><br><span class="line">    <span class="comment">//int b;</span></span><br><span class="line">    <span class="type">int</span> c;</span><br><span class="line">    <span class="built_in">C</span>(<span class="type">int</span> a,<span class="type">int</span> b,<span class="type">int</span> c):<span class="built_in">B</span>(a,b),<span class="built_in">c</span>(c)&#123;&#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<ol>
-<li>B继承A，C继承B——则C不仅包含B的属性，也包含A的属性</li>
-<li>构造函数的写法：初始化参数列表—调用直接父类的构造函数+初始化其他属性</li>
-</ol>
-<h3 id="继承中的同名问题"><a href="#继承中的同名问题" class="headerlink" title="继承中的同名问题"></a>继承中的同名问题</h3><p>父类和子类同名问题：</p>
-<ol>
-<li>数据成员同名</li>
-<li>成员函数同名</li>
-</ol>
-<p>通常情况为<strong>就近原则</strong>，优先调用本类的</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Woman</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">Woman</span>(string name,<span class="type">int</span> age):<span class="built_in">name</span>(name),<span class="built_in">age</span>(age)&#123;&#125;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">print</span><span class="params">()</span></span>&#123;</span><br><span class="line">        cout&lt;&lt;<span class="string">&quot;Woman &quot;</span>&lt;&lt;name&lt;&lt;<span class="string">&quot; &quot;</span>&lt;&lt;age&lt;&lt;endl;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="keyword">protected</span>:</span><br><span class="line">    string name;</span><br><span class="line">    <span class="type">int</span> age;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Boy</span>:<span class="keyword">public</span> Woman</span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:   </span><br><span class="line">    <span class="built_in">Boy</span>(string name,<span class="type">int</span> age,string mmName,<span class="type">int</span> mmAge):<span class="built_in">name</span>(name),<span class="built_in">age</span>(age),<span class="built_in">Woman</span>(mmName,mmAge)&#123;&#125;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">print</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="comment">//1.通常都是就近原则，调用本类的</span></span><br><span class="line">        cout&lt;&lt;<span class="string">&quot;Boy &quot;</span>&lt;&lt;name&lt;&lt;<span class="string">&quot; &quot;</span>&lt;&lt;age&lt;&lt;endl;</span><br><span class="line">        <span class="comment">//2.用类名限定，调用对应类的属性</span></span><br><span class="line">        cout&lt;&lt;<span class="string">&quot;类名限定 &quot;</span>&lt;&lt;Woman::name&lt;&lt;<span class="string">&quot; &quot;</span>&lt;&lt; Woman::age&lt;&lt;endl;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="keyword">protected</span>:</span><br><span class="line">    string name;</span><br><span class="line">    <span class="type">int</span> age;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="function">Boy <span class="title">coolboy</span><span class="params">(<span class="string">&quot;boy&quot;</span>,<span class="number">18</span>,<span class="string">&quot;woman&quot;</span>,<span class="number">40</span>)</span></span>;</span><br><span class="line">    coolboy.<span class="built_in">print</span>();<span class="comment">//Boy boy 18 类名限定 woman 40</span></span><br><span class="line">    coolboy.Woman.<span class="built_in">print</span>();<span class="comment">//Woman woman 40</span></span><br><span class="line">    Woman *p=<span class="keyword">new</span> <span class="built_in">Boy</span>(<span class="string">&quot;Woman_Boy&quot;</span>,<span class="number">19</span>,<span class="string">&quot;Woman&quot;</span>,<span class="number">41</span>);</span><br><span class="line">    p-&gt;<span class="built_in">print</span>();<span class="comment">//Woman WomanPtr 41</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<p>结果：</p>
-<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Boy boy 18</span><br><span class="line">类名限定 woman 40</span><br><span class="line">Woman woman 40</span><br><span class="line">Woman WomanPtr 41</span><br></pre></td></tr></table></figure>
-
-<p>总结：</p>
-<ol>
-<li><p>通常情况下，都是就近原则，优先调用本类的数据和方法</p>
-</li>
-<li><p>如果加上类名限定，则调用对应类的数据和方法</p>
-</li>
-<li><p>如果是指针，没有<code>virtual</code>的情况下，也是就近原则</p>
-</li>
-<li><p>特殊情况：父类指针被子类对象初始化，没有<code>virtual</code>的情况看类型，有<code>virtual</code>的情况看对象</p>
-<p><code>Woman *p=new Boy(&quot;Woman_Boy&quot;,19,&quot;Woman&quot;,41);p-&gt;print();</code></p>
-<p>所以调用的<code>p</code>对应的类型<code>Woman</code>的函数</p>
-<p>注意：不允许子类指针被父类对象初始化&#x2F;&#x2F;除非进行指针类型转换</p>
-</li>
-</ol>
-<h3 id="多继承"><a href="#多继承" class="headerlink" title="多继承"></a>多继承</h3><ol>
-<li>多继承——存在两个及以上的父类</li>
-<li>权限问题：跟单继承情况一样</li>
-<li>构造函数写法：跟单继承也是一样的</li>
-</ol>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Woman</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">Woman</span>(string WomanFName,string WomanSName):<span class="built_in">WomanFName</span>(WomanFName),<span class="built_in">WomanSName</span>(WomanSName)&#123;&#125;</span><br><span class="line"><span class="keyword">protected</span>:</span><br><span class="line">    string WomanFName;<span class="comment">//姓</span></span><br><span class="line">    string WomanSName;<span class="comment">//名</span></span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Man</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:   </span><br><span class="line">    <span class="built_in">Man</span>(string ManFName,string ManSName):<span class="built_in">ManFName</span>(ManFName),<span class="built_in">ManSName</span>(ManSName)&#123;&#125;</span><br><span class="line"><span class="keyword">protected</span>:</span><br><span class="line">    string ManFName;</span><br><span class="line">    string ManSName;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">//多继承</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Son</span>:<span class="keyword">public</span> Woman,<span class="keyword">public</span> Man</span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="comment">//多继承要调用多个父类的构造函数</span></span><br><span class="line">    <span class="built_in">Son</span>(string ManFName,string ManSName,string WomanFName,string WomanSName,string SonSName)</span><br><span class="line">        :<span class="built_in">Man</span>(ManFName,ManSName),<span class="built_in">Woman</span>(WomanFName,WomanSName),<span class="built_in">SonFName</span>(ManFName+WomanFName),<span class="built_in">SonSName</span>(SonSName)&#123;&#125;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">print</span><span class="params">()</span></span>&#123;</span><br><span class="line">        cout&lt;&lt;<span class="string">&quot;mother:&quot;</span>&lt;&lt;WomanFName+WomanSName&lt;&lt;endl;</span><br><span class="line">        cout&lt;&lt;<span class="string">&quot;father:&quot;</span>&lt;&lt;ManFName+ManSName&lt;&lt;endl;</span><br><span class="line">        cout&lt;&lt;<span class="string">&quot;Son:&quot;</span>&lt;&lt;SonFName+SonSName&lt;&lt;endl;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="keyword">protected</span>:</span><br><span class="line">    string SonFName;</span><br><span class="line">    string SonSName;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="function">Son <span class="title">son</span><span class="params">(<span class="string">&quot;欧&quot;</span>,<span class="string">&quot;明明&quot;</span>,<span class="string">&quot;阳&quot;</span>,<span class="string">&quot;丽丽&quot;</span>,<span class="string">&quot;修&quot;</span>)</span></span>;</span><br><span class="line">    son.<span class="built_in">print</span>();</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mother:阳丽丽</span><br><span class="line">father:欧明明</span><br><span class="line">Son:欧阳修</span><br></pre></td></tr></table></figure>
-
-<h3 id="虚继承"><a href="#虚继承" class="headerlink" title="虚继承"></a>虚继承</h3><p>菱形继承：B、C继承A，D继承B、C</p>
-<p>存在二义性：例如<code>A-int a;B-//int a;C-//int a;D-//int a;</code>二义性：D的a来自谁</p>
-<p><img src="/../assets/C-plus-plus-%E7%BB%A7%E6%89%BF/image-20240510145208543.png" alt="image-20240510145208543"></p>
-<p>解决方法一：加上类型限定</p>
-<p><img src="/../assets/C-plus-plus-%E7%BB%A7%E6%89%BF/%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE%202024-05-10%20145254.png" alt="屏幕截图 2024-05-10 145254"></p>
-<p>解决方法二：使用虚继承</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">A</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="type">int</span> a;</span><br><span class="line">    <span class="built_in">A</span>(<span class="type">int</span> a) : <span class="built_in">a</span>(a) &#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">B</span> : <span class="keyword">virtual</span> <span class="keyword">public</span> A &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">B</span>(<span class="type">int</span> a) : <span class="built_in">A</span>(a) &#123;&#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">C</span> : <span class="keyword">virtual</span> <span class="keyword">public</span> A &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">C</span>(<span class="type">int</span> a) : <span class="built_in">A</span>(a) &#123;&#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-<p><img src="/../assets/C-plus-plus-%E7%BB%A7%E6%89%BF/image-20240510150049091.png" alt="image-20240510150049091"></p>
-<p><img src="/../assets/C-plus-plus-%E7%BB%A7%E6%89%BF/image-20240510150104291.png" alt="image-20240510150104291"></p>
-<p>PS：几个类共享一份数据</p>
-<p><img src="/../assets/C++_%E7%BB%A7%E6%89%BF/image-20240517090644926.png" alt="image-20240517090644926"></p>
-<ul>
-<li>类B和类C都虚继承自类A。虚继承意味着它们不会<strong>直接包含</strong>类A的实例，而是会包含一个指向类A的共享基类的指针（这通常被称为<strong>虚基类指针</strong>）。所以<code>sizeof(B)=8，sizeof(C)=8</code></li>
-<li>类D继承了类B和类C，D需要包含B和C的所有成员，所以<code>sizeof(D)=16</code></li>
-</ul>
-<h3 id="虚函数"><a href="#虚函数" class="headerlink" title="虚函数"></a>虚函数</h3><p>虚函数——用<code>virtual</code>修饰的函数</p>
-<p>注意：构造函数不能为虚函数</p>
-<h4 id="1-虚函数对类的内存的影响"><a href="#1-虚函数对类的内存的影响" class="headerlink" title="1.虚函数对类的内存的影响"></a>1.虚函数对类的内存的影响</h4><p><img src="/../assets/C-plus-plus-%E7%BB%A7%E6%89%BF/image-20240510150956262.png" alt="image-20240510150956262"></p>
-<h4 id="2-纯虚函数"><a href="#2-纯虚函数" class="headerlink" title="2.纯虚函数"></a>2.纯虚函数</h4><p>抽象类：具有纯虚函数的类</p>
-<p>特性：不能创建对象，但可以创建对象类型指针</p>
-<p><img src="/../assets/C-plus-plus-%E7%BB%A7%E6%89%BF/image-20240510151251920.png" alt="image-20240510151251920"></p>
-<p>子类继承抽象类，必须实现所有的纯虚函数才能实例化。</p>
-<h4 id="3-虚析构函数"><a href="#3-虚析构函数" class="headerlink" title="3.虚析构函数"></a>3.虚析构函数</h4><p><img src="/../assets/C-plus-plus-%E7%BB%A7%E6%89%BF/image-20240510151908866.png" alt="image-20240510151908866"></p>
-<p>结果：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">父类构造函数</span><br><span class="line">子类构造函数</span><br><span class="line">父类析构函数</span><br><span class="line"><span class="comment">//发现没有调用子类的析构函数</span></span><br></pre></td></tr></table></figure>
-
-<p>解决方法：使用虚析构函数</p>
-<p>——注意：虚函数一旦被继承，不管被继承多少次，永远为虚函数</p>
-<p><img src="/../assets/C-plus-plus-%E7%BB%A7%E6%89%BF/image-20240510152117958.png" alt="image-20240510152117958"></p>
-<p>结果：</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">父类构造函数</span><br><span class="line">子类构造函数</span><br><span class="line">子类析构函数</span><br><span class="line">父类析构函数</span><br></pre></td></tr></table></figure>
-
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/05/08/const%E5%92%8C-define%E7%9A%84%E5%8C%BA%E5%88%AB/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="yhcs">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hexo">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2024/05/08/const%E5%92%8C-define%E7%9A%84%E5%8C%BA%E5%88%AB/" class="post-title-link" itemprop="url">const和#define的区别</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2024-05-08 22:03:36" itemprop="dateCreated datePublished" datetime="2024-05-08T22:03:36+08:00">2024-05-08</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-07-13 16:55:52" itemprop="dateModified" datetime="2024-07-13T16:55:52+08:00">2024-07-13</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C++</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h4 id="1-什么是const"><a href="#1-什么是const" class="headerlink" title="1.什么是const"></a>1.什么是const</h4><p><code>const</code>是C&#x2F;C++中的关键字，一般用来定义一个常量，所以<code>const</code>修饰的变量不能修改它的值</p>
-<p><img src="/../assets/const%E5%92%8C-define%E7%9A%84%E5%8C%BA%E5%88%AB/image-20240508220803581.png" alt="image-20240508220803581"></p>
-<h4 id="2-什么是-define"><a href="#2-什么是-define" class="headerlink" title="2.什么是#define"></a>2.什么是#define</h4><p><code>#define</code>是一条预编译指令，编译器在编译阶段会将所有使用到<code>#define</code>的地方进行替换</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">define</span> a 1</span></span><br><span class="line"><span class="comment">//编译前</span></span><br><span class="line"><span class="type">int</span> num=a;</span><br><span class="line"><span class="comment">//编译后进行替换，用1替换a</span></span><br><span class="line"><span class="type">int</span> num=<span class="number">1</span>;</span><br></pre></td></tr></table></figure>
-
-
-
-<h4 id="3-const和-define的区别"><a href="#3-const和-define的区别" class="headerlink" title="3.const和#define的区别"></a>3.const和#define的区别</h4>
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/05/08/next%E4%B8%BB%E9%A2%98%E6%B7%BB%E5%8A%A0%E5%88%86%E7%B1%BB/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="yhcs">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hexo">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2024/05/08/next%E4%B8%BB%E9%A2%98%E6%B7%BB%E5%8A%A0%E5%88%86%E7%B1%BB/" class="post-title-link" itemprop="url">next主题添加分类</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2024-05-08 21:42:34 / 修改时间：21:59:49" itemprop="dateCreated datePublished" datetime="2024-05-08T21:42:34+08:00">2024-05-08</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E5%8D%9A%E5%AE%A2%E7%BB%B4%E6%8A%A4/" itemprop="url" rel="index"><span itemprop="name">博客维护</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h4 id="1-在主题里把分类选项打开"><a href="#1-在主题里把分类选项打开" class="headerlink" title="1.在主题里把分类选项打开"></a>1.在主题里把分类选项打开</h4><p>打开文件<code>\themes\next\_config.yml</code>,搜索<code>menu</code>，找到如下代码段</p>
-<p><img src="/../assets/next%E4%B8%BB%E9%A2%98%E6%B7%BB%E5%8A%A0%E5%88%86%E7%B1%BB/image-20240508214604038.png" alt="image-20240508214604038"></p>
-<p>去掉<code>categories: /categories/ || fa fa-th</code>行的注释</p>
-<h4 id="2-创建分类目录文件"><a href="#2-创建分类目录文件" class="headerlink" title="2.创建分类目录文件"></a>2.创建分类目录文件</h4><p>在博客文件夹下打开git bash，输入以下命令</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo new page categories</span><br></pre></td></tr></table></figure>
-
-<p>成功后：<img src="/../assets/next%E4%B8%BB%E9%A2%98%E6%B7%BB%E5%8A%A0%E5%88%86%E7%B1%BB/image-20240508214818388.png" alt="image-20240508214818388"></p>
-<h4 id="3-打开生成的index-md文件"><a href="#3-打开生成的index-md文件" class="headerlink" title="3.打开生成的index.md文件"></a>3.打开生成的index.md文件</h4><p>打开后内容如下</p>
-<p><img src="/../assets/next%E4%B8%BB%E9%A2%98%E6%B7%BB%E5%8A%A0%E5%88%86%E7%B1%BB/image-20240508215002707.png" alt="image-20240508215002707"></p>
-<p>加上 <code>type: &quot;categories&quot;</code></p>
-<p><img src="/../assets/next%E4%B8%BB%E9%A2%98%E6%B7%BB%E5%8A%A0%E5%88%86%E7%B1%BB/image-20240508215029274.png" alt="image-20240508215029274"></p>
-<h4 id="4-给文章设置分类属性"><a href="#4-给文章设置分类属性" class="headerlink" title="4.给文章设置分类属性"></a>4.给文章设置分类属性</h4><p>添加以下内容就设置好分类了</p>
-<p>注意：”-“跟类别名之间有一个<strong>空格</strong>！</p>
-<p><img src="/../assets/next%E4%B8%BB%E9%A2%98%E6%B7%BB%E5%8A%A0%E5%88%86%E7%B1%BB/image-20240508215850772.png" alt="image-20240508215850772"></p>
-<p>如果需要二级分类：</p>
-<p><img src="/../assets/next%E4%B8%BB%E9%A2%98%E6%B7%BB%E5%8A%A0%E5%88%86%E7%B1%BB/image-20240508215842702.png" alt="image-20240508215842702"></p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1611,7 +1520,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">35</span>
+          <span class="site-state-item-count">39</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

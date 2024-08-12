@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="资源管理和对象的基本原则C++的特点与演化 为什么要使用C++？ 贴近硬件： 使用原生的指令和类型，高性能 方便使用硬件（GPU、FPGA等）   零开销抽象 类、继承、模板 零开销！&#x3D;无开销， 零开销&#x3D;无额外开销     C和C++ 功能上，C++是C的超集 C++更加严格和安全，比如说const的正确性、指针的自动转换 现代C++的惯用法和C大相径庭 C和机器码有更简单的映">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C++11:资源管理和对象的基本原则">
+<meta property="og:url" content="http://example.com/2024/08/12/C-11-%E8%B5%84%E6%BA%90%E7%AE%A1%E7%90%86%E5%92%8C%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%9F%BA%E6%9C%AC%E5%8E%9F%E5%88%99/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="资源管理和对象的基本原则C++的特点与演化 为什么要使用C++？ 贴近硬件： 使用原生的指令和类型，高性能 方便使用硬件（GPU、FPGA等）   零开销抽象 类、继承、模板 零开销！&#x3D;无开销， 零开销&#x3D;无额外开销     C和C++ 功能上，C++是C的超集 C++更加严格和安全，比如说const的正确性、指针的自动转换 现代C++的惯用法和C大相径庭 C和机器码有更简单的映">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/assets/C-11-%E8%B5%84%E6%BA%90%E7%AE%A1%E7%90%86%E5%92%8C%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%9F%BA%E6%9C%AC%E5%8E%9F%E5%88%99/upload_932af37df75786921fb0fae431eff972.png">
+<meta property="og:image" content="http://example.com/assets/C-11-%E8%B5%84%E6%BA%90%E7%AE%A1%E7%90%86%E5%92%8C%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%9F%BA%E6%9C%AC%E5%8E%9F%E5%88%99/upload_61fa7e6c8ee55bc1f67f56e1e1c8caae.png">
+<meta property="og:image" content="http://example.com/assets/C-11-%E8%B5%84%E6%BA%90%E7%AE%A1%E7%90%86%E5%92%8C%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%9F%BA%E6%9C%AC%E5%8E%9F%E5%88%99/upload_2ef5d878a8166e38bd6c50b1ac20173b.png">
+<meta property="og:image" content="http://example.com/assets/C-11-%E8%B5%84%E6%BA%90%E7%AE%A1%E7%90%86%E5%92%8C%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%9F%BA%E6%9C%AC%E5%8E%9F%E5%88%99/upload_145f106f5096dd86530bee53d866b6f6.png">
+<meta property="article:published_time" content="2024-08-12T07:46:13.000Z">
+<meta property="article:modified_time" content="2024-08-12T07:49:45.310Z">
+<meta property="article:author" content="yhcs">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/assets/C-11-%E8%B5%84%E6%BA%90%E7%AE%A1%E7%90%86%E5%92%8C%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%9F%BA%E6%9C%AC%E5%8E%9F%E5%88%99/upload_932af37df75786921fb0fae431eff972.png">
+
+<link rel="canonical" href="http://example.com/2024/08/12/C-11-%E8%B5%84%E6%BA%90%E7%AE%A1%E7%90%86%E5%92%8C%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%9F%BA%E6%9C%AC%E5%8E%9F%E5%88%99/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>C++11:资源管理和对象的基本原则 | Hexo</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Hexo</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/08/12/C-11-%E8%B5%84%E6%BA%90%E7%AE%A1%E7%90%86%E5%92%8C%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%9F%BA%E6%9C%AC%E5%8E%9F%E5%88%99/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="yhcs">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          C++11:资源管理和对象的基本原则
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2024-08-12 15:46:13 / 修改时间：15:49:45" itemprop="dateCreated datePublished" datetime="2024-08-12T15:46:13+08:00">2024-08-12</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C++</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="资源管理和对象的基本原则"><a href="#资源管理和对象的基本原则" class="headerlink" title="资源管理和对象的基本原则"></a>资源管理和对象的基本原则</h2><h3 id="C-的特点与演化"><a href="#C-的特点与演化" class="headerlink" title="C++的特点与演化"></a>C++的特点与演化</h3><ol>
+<li>为什么要使用C++？<ol>
+<li>贴近硬件：<ul>
+<li>使用原生的指令和类型，高性能</li>
+<li>方便使用硬件（GPU、FPGA等）</li>
+</ul>
+</li>
+<li>零开销抽象<ul>
+<li>类、继承、模板</li>
+<li>零开销！&#x3D;无开销， 零开销&#x3D;无额外开销</li>
+</ul>
+</li>
+</ol>
+</li>
+<li>C和C++<ol>
+<li>功能上，C++是C的超集</li>
+<li>C++更加严格和安全，比如说const的正确性、指针的自动转换</li>
+<li>现代C++的惯用法和C大相径庭<ul>
+<li>C和机器码有更简单的映射关系，从C源码可以大致知道机器码是什么样</li>
+<li>C++里有更多的抽象机制，源代码和机器码映射复杂得多</li>
+</ul>
+</li>
+</ol>
+</li>
+</ol>
+<h3 id="资源管理和对象的基本原则-1"><a href="#资源管理和对象的基本原则-1" class="headerlink" title="资源管理和对象的基本原则"></a>资源管理和对象的基本原则</h3><h4 id="1-堆与栈"><a href="#1-堆与栈" class="headerlink" title="1. 堆与栈"></a>1. 堆与栈</h4><p><strong>栈的示例</strong></p>
+<p><img src="/../assets/C-11-%E8%B5%84%E6%BA%90%E7%AE%A1%E7%90%86%E5%92%8C%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%9F%BA%E6%9C%AC%E5%8E%9F%E5%88%99/upload_932af37df75786921fb0fae431eff972.png"></p>
+<p><strong>main对应的x86汇编代码（msvc）</strong></p>
+<p><img src="/../assets/C-11-%E8%B5%84%E6%BA%90%E7%AE%A1%E7%90%86%E5%92%8C%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%9F%BA%E6%9C%AC%E5%8E%9F%E5%88%99/upload_61fa7e6c8ee55bc1f67f56e1e1c8caae.png"></p>
+<ol>
+<li>设置栈框架：保存原有的ebp的值，设置新的ebp的值，ebp的作用：索引这个函数所用到的参数和本地变量</li>
+<li>参数压栈</li>
+<li>call：调用bar函数，名字奇怪的原因：编译器会起名</li>
+<li>退栈：esp的指针+4——<code>pop eax</code>：取出数据，ESP指向栈中下一个元素</li>
+<li>异或操作对eax寄存器清零，函数返回值存储在eax寄存器</li>
+</ol>
+<p><strong>bar对应的x86汇编代码（msvc）</strong></p>
+<p><img src="/../assets/C-11-%E8%B5%84%E6%BA%90%E7%AE%A1%E7%90%86%E5%92%8C%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%9F%BA%E6%9C%AC%E5%8E%9F%E5%88%99/upload_2ef5d878a8166e38bd6c50b1ac20173b.png"></p>
+<p>调用过程中的栈变化</p>
+<p><img src="/../assets/C-11-%E8%B5%84%E6%BA%90%E7%AE%A1%E7%90%86%E5%92%8C%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%9F%BA%E6%9C%AC%E5%8E%9F%E5%88%99/upload_145f106f5096dd86530bee53d866b6f6.png"></p>
+<p>“返回main的地址”：main下一句指令的地址</p>
+<p><strong>栈内存的特性：</strong></p>
+<ol>
+<li>分配简单，只是移动栈指针</li>
+<li>当前函数执行完即自动释放</li>
+<li>后进先出，不可能出现内存碎片</li>
+<li>函数返回后，栈上对象即被销毁</li>
+<li>栈内存不分享，栈上对象通常没有多线程竞争问题（除非把指向栈内存的指针传递给另一个线程）</li>
+</ol>
+<p><strong>堆内存的特性：</strong></p>
+<ol>
+<li>分配和释放算法较为复杂</li>
+<li>可能出现内存碎片</li>
+<li><strong>内存的分配和释放通常需要加锁</strong></li>
+<li>堆上的对象在被释放之前一直可以使用</li>
+<li>堆上对象可能被多个线程访问，潜在有线程竞争问题</li>
+</ol>
+<h4 id="2-RAII"><a href="#2-RAII" class="headerlink" title="2. RAII"></a>2. RAII</h4><p>——析构函数和RAII是C++最基本的惯用法</p>
+<ul>
+<li><p><strong>RAII：</strong>Resource Acquisition Is Initialization</p>
+</li>
+<li><p>帮助管理堆上的对象：对象很大、对象的大小在编译时不能确定、对象是函数的返回值但由于特殊的原因不应使用对象的值返回</p>
+</li>
+<li><p><code>new</code>和<code>delete</code>的原理</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// new circle(...)</span></span><br><span class="line">&#123;</span><br><span class="line">    <span class="type">void</span> *temp=<span class="keyword">operator</span> <span class="built_in">new</span>(<span class="built_in">sizeof</span>(circle));	<span class="comment">//分配内存</span></span><br><span class="line">    <span class="keyword">try</span>&#123;</span><br><span class="line">        circle *ptr=<span class="built_in">static_cast</span>&lt;circle*&gt;(temp);	<span class="comment">//类型转换</span></span><br><span class="line">        ptr-&gt;<span class="built_in">circle</span>(...);						<span class="comment">//通过指针调用构造函数</span></span><br><span class="line">        <span class="keyword">return</span> ptr;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">catch</span>(...)&#123;</span><br><span class="line">        <span class="function"><span class="keyword">operator</span> <span class="title">delete</span><span class="params">(ptr)</span></span>;</span><br><span class="line">        <span class="keyword">throw</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// delete ptr</span></span><br><span class="line"><span class="keyword">if</span>(ptr!=<span class="literal">nullptr</span>)&#123;</span><br><span class="line">    ptr-&gt;~<span class="built_in">shape</span>();</span><br><span class="line">    <span class="function"><span class="keyword">operator</span> <span class="title">delete</span><span class="params">(ptr)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2024/08/12/leetcode%E5%88%B7%E9%A2%98%E7%AC%94%E8%AE%B0/" rel="prev" title="leetcode刷题笔记">
+      <i class="fa fa-chevron-left"></i> leetcode刷题笔记
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2024/08/12/C-11-%E7%A7%BB%E5%8A%A8%E8%AF%AD%E4%B9%89%E5%92%8C%E5%8F%B3%E5%80%BC%E5%BC%95%E7%94%A8/" rel="next" title="C++11:移动语义和右值引用">
+      C++11:移动语义和右值引用 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%B5%84%E6%BA%90%E7%AE%A1%E7%90%86%E5%92%8C%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%9F%BA%E6%9C%AC%E5%8E%9F%E5%88%99"><span class="nav-number">1.</span> <span class="nav-text">资源管理和对象的基本原则</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#C-%E7%9A%84%E7%89%B9%E7%82%B9%E4%B8%8E%E6%BC%94%E5%8C%96"><span class="nav-number">1.1.</span> <span class="nav-text">C++的特点与演化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B5%84%E6%BA%90%E7%AE%A1%E7%90%86%E5%92%8C%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%9F%BA%E6%9C%AC%E5%8E%9F%E5%88%99-1"><span class="nav-number">1.2.</span> <span class="nav-text">资源管理和对象的基本原则</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E5%A0%86%E4%B8%8E%E6%A0%88"><span class="nav-number">1.2.1.</span> <span class="nav-text">1. 堆与栈</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-RAII"><span class="nav-number">1.2.2.</span> <span class="nav-text">2. RAII</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">yhcs</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">39</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">yhcs</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
