@@ -150,6 +150,598 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/07/01/python_%E8%A7%A3%E6%9E%90xml-3-ElementTree/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="yhcs">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/07/01/python_%E8%A7%A3%E6%9E%90xml-3-ElementTree/" class="post-title-link" itemprop="url">python：解析xml(3):ElementTree</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2024-07-01 22:34:24" itemprop="dateCreated datePublished" datetime="2024-07-01T22:34:24+08:00">2024-07-01</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-07-13 16:58:12" itemprop="dateModified" datetime="2024-07-13T16:58:12+08:00">2024-07-13</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index"><span itemprop="name">python</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="XML-树和元素"><a href="#XML-树和元素" class="headerlink" title="XML 树和元素"></a>XML 树和元素</h3><p>XML 是一种继承性的分层数据格式，最自然的表示方法是使用树。 </p>
+<p>为此， <code>ET</code> 有两个类 </p>
+<ol>
+<li><a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.ElementTree"><code>ElementTree</code></a> 将整个XML文档表示为一个树</li>
+<li><a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.Element"><code>Element</code></a> 表示该树中的单个节点</li>
+</ol>
+<p> 与整个文档的交互（读写文件）通常在 <a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.ElementTree"><code>ElementTree</code></a> 级别完成。 与单个 XML 元素及其子元素的交互是在 <a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.Element"><code>Element</code></a> 级别完成的。</p>
+<h3 id="解析XML"><a href="#解析XML" class="headerlink" title="解析XML"></a>解析XML</h3><ol>
+<li><p>从文件中读取来导入数据</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> xml.etree.ElementTree <span class="keyword">as</span> ET</span><br><span class="line">tree = ET.parse(<span class="string">&#x27;country_data.xml&#x27;</span>)</span><br><span class="line">root = tree.getroot()</span><br></pre></td></tr></table></figure>
+
+<p><code>parse()</code>方法用来解析xml文档</p>
+</li>
+<li><p>直接从字符串中解析</p>
+<p><a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.fromstring"><code>fromstring()</code></a> 将 XML 从字符串直接解析为 <a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.Element"><code>Element</code></a> ，该元素是已解析树的根元素</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">root = ET.fromstring(country_data_as_string)</span><br></pre></td></tr></table></figure>
+
+<p>作为 <a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.Element"><code>Element</code></a> ， <code>root</code> 具有标签和属性字典:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>root.tag</span><br><span class="line"><span class="string">&#x27;data&#x27;</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>root.attrib</span><br><span class="line">&#123;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>还有可以迭代的子节点：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> child <span class="keyword">in</span> root:</span><br><span class="line">    <span class="built_in">print</span>(child.tag, child.attrib)</span><br><span class="line"></span><br><span class="line">country &#123;<span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;Liechtenstein&#x27;</span>&#125;</span><br><span class="line">country &#123;<span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;Singapore&#x27;</span>&#125;</span><br><span class="line">country &#123;<span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;Panama&#x27;</span>&#125;</span><br></pre></td></tr></table></figure>
+
+<p>子级是可以嵌套的，我们可以通过索引访问特定的子级节点：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>root[<span class="number">0</span>][<span class="number">1</span>].text</span><br><span class="line"><span class="string">&#x27;2008&#x27;</span></span><br></pre></td></tr></table></figure></li>
+</ol>
+<h3 id="用于非阻塞解析的拉取-API"><a href="#用于非阻塞解析的拉取-API" class="headerlink" title="用于非阻塞解析的拉取 API"></a>用于非阻塞解析的拉取 API</h3><p>大多数解析函数都要求在返回任何结果之前<strong>一次性读取</strong>整个文档。 </p>
+<p> <a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.XMLParser"><code>XMLParser</code></a> ：以增量方式添加数据，但这是在回调目标上调用方法的推送式 API。 有时用户真正想要的是能够以增量方式解析 XML 而无需阻塞操作，同时享受完整的已构造 <a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.Element"><code>Element</code></a> 对象。</p>
+<p>针对此需求的最强大工具是 <a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.XMLPullParser"><code>XMLPullParser</code></a>。 它不要求通过<strong>阻塞式读取</strong>来获得 XML 数据，而是通过执行 <a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.XMLPullParser.feed"><code>XMLPullParser.feed()</code></a> 调用来增量式地添加数据。 要获得已解析的 XML 元素，应调用 <a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.XMLPullParser.read_events"><code>XMLPullParser.read_events()</code></a>。 </p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">parser = ET.XMLPullParser([<span class="string">&#x27;start&#x27;</span>, <span class="string">&#x27;end&#x27;</span>])</span><br><span class="line">parser.feed(<span class="string">&#x27;&lt;mytag&gt;sometext&#x27;</span>)</span><br><span class="line"><span class="built_in">list</span>(parser.read_events())</span><br><span class="line"></span><br><span class="line">parser.feed(<span class="string">&#x27; more text&lt;/mytag&gt;&#x27;</span>)</span><br><span class="line"><span class="keyword">for</span> event, elem <span class="keyword">in</span> parser.read_events():</span><br><span class="line">    <span class="built_in">print</span>(event)</span><br><span class="line">    <span class="built_in">print</span>(elem.tag, <span class="string">&#x27;text=&#x27;</span>, elem.text)</span><br></pre></td></tr></table></figure>
+
+<p>应用：针对以非阻塞方式进行的应用程序，其中 XML 是从套接字接收或从某些存储设备增量式读取的。 在这些用例中，阻塞式读取是不可接受的。</p>
+<p>缺点：因为其非常灵活，<a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.XMLPullParser"><code>XMLPullParser</code></a> 在更简单的用例中使用起来可能并不方便。</p>
+<p>其他方法：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.iterparse"><code>iterparse()</code></a>：不介意你的应用程序在读取 XML 数据时造成阻塞但仍希望具有增量解析能力。 它在你读取大型 XML 文档并且不希望将它完全放去内存时会很适用。</li>
+<li><a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.XMLPullParser.flush"><code>XMLPullParser.flush()</code></a> ：有助于减少延迟，适用于需要通过事件获得<strong>即时反馈</strong>的场合</li>
+</ul>
+<h3 id="查找元素"><a href="#查找元素" class="headerlink" title="查找元素"></a>查找元素</h3><ul>
+<li><p><a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.Element.iter"><code>Element.iter()</code></a>:帮助递归遍历其下的所有子树（包括子级，子级的子级，等等）</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> neighbor <span class="keyword">in</span> root.<span class="built_in">iter</span>(<span class="string">&#x27;neighbor&#x27;</span>):</span><br><span class="line">    <span class="built_in">print</span>(neighbor.attrib)</span><br><span class="line"></span><br><span class="line">&#123;<span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;Austria&#x27;</span>, <span class="string">&#x27;direction&#x27;</span>: <span class="string">&#x27;E&#x27;</span>&#125;</span><br><span class="line">&#123;<span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;Switzerland&#x27;</span>, <span class="string">&#x27;direction&#x27;</span>: <span class="string">&#x27;W&#x27;</span>&#125;</span><br><span class="line">&#123;<span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;Malaysia&#x27;</span>, <span class="string">&#x27;direction&#x27;</span>: <span class="string">&#x27;N&#x27;</span>&#125;</span><br><span class="line">&#123;<span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;Costa Rica&#x27;</span>, <span class="string">&#x27;direction&#x27;</span>: <span class="string">&#x27;W&#x27;</span>&#125;</span><br><span class="line">&#123;<span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;Colombia&#x27;</span>, <span class="string">&#x27;direction&#x27;</span>: <span class="string">&#x27;E&#x27;</span>&#125;   </span><br></pre></td></tr></table></figure>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.Element.findall"><code>Element.findall()</code></a> ：仅查找当前元素的直接子元素中带有指定标签的元素</p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.Element.find"><code>Element.find()</code></a> ：找带有特定标签的 <strong>第一个</strong> 子级</p>
+</li>
+</ul>
+<p>然后可以用 <a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.Element.text"><code>Element.text</code></a> 访问元素的文本内容。 <a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.Element.get"><code>Element.get</code></a> 访问元素的属性:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> country <span class="keyword">in</span> root.findall(<span class="string">&#x27;country&#x27;</span>):</span><br><span class="line">    rank = country.find(<span class="string">&#x27;rank&#x27;</span>).text</span><br><span class="line">    name = country.get(<span class="string">&#x27;name&#x27;</span>)</span><br><span class="line">    <span class="built_in">print</span>(name, rank)</span><br><span class="line">    </span><br><span class="line">Liechtenstein <span class="number">1</span></span><br><span class="line">Singapore <span class="number">4</span></span><br><span class="line">Panama <span class="number">68</span></span><br></pre></td></tr></table></figure>
+
+<p>ps：通过使用 <a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/xml.etree.elementtree.html#elementtree-xpath">XPath</a> ，可以更精确地指定要查找的元素</p>
+<h3 id="修改XML文件"><a href="#修改XML文件" class="headerlink" title="修改XML文件"></a>修改XML文件</h3><p><a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.ElementTree"><code>ElementTree</code></a> 提供了一种构建XML文档并将其写入文件的简单方法。调用 <a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.ElementTree.write"><code>ElementTree.write()</code></a> 方法就可以实现。</p>
+<p>创建后可以直接操作 <a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.Element"><code>Element</code></a> 对象。例如：</p>
+<ul>
+<li>使用 <a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.Element.text"><code>Element.text</code></a> 修改文本字段</li>
+<li>使用 <a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.Element.set"><code>Element.set()</code></a> 方法添加和修改属性</li>
+<li>使用 <a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.Element.append"><code>Element.append()</code></a> 添加新的子元素。</li>
+</ul>
+<p>假设我们要为每个国家&#x2F;地区的中添加一个排名，并在排名元素中添加一个 <code>updated</code> 属性：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> rank <span class="keyword">in</span> root.<span class="built_in">iter</span>(<span class="string">&#x27;rank&#x27;</span>):</span><br><span class="line">    new_rank = <span class="built_in">int</span>(rank.text) + <span class="number">1</span></span><br><span class="line">    rank.text = <span class="built_in">str</span>(new_rank)</span><br><span class="line">    rank.<span class="built_in">set</span>(<span class="string">&#x27;updated&#x27;</span>, <span class="string">&#x27;yes&#x27;</span>)</span><br><span class="line"></span><br><span class="line">tree.write(<span class="string">&#x27;output.xml&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p><a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.Element.remove"><code>Element.remove()</code></a> 删除元素</p>
+</li>
+<li><p>假设我们要删除排名高于50的所有国家&#x2F;地区:</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> country <span class="keyword">in</span> root.findall(<span class="string">&#x27;country&#x27;</span>):</span><br><span class="line">    <span class="comment"># using root.findall() to avoid removal during traversal</span></span><br><span class="line">    rank = <span class="built_in">int</span>(country.find(<span class="string">&#x27;rank&#x27;</span>).text)</span><br><span class="line">    <span class="keyword">if</span> rank &gt; <span class="number">50</span>:</span><br><span class="line">        root.remove(country)</span><br><span class="line"></span><br><span class="line">tree.write(<span class="string">&#x27;output.xml&#x27;</span>)</span><br></pre></td></tr></table></figure></li>
+</ul>
+<blockquote>
+<p>请注意在迭代时进行并发修改可能会导致问题，就像在迭代并修改 Python 列表或字典时那样。 因此，可以先通过 <code>root.findall()</code> 收集所有匹配的元素，在此之后再对匹配项列表进行迭代。</p>
+</blockquote>
+<h3 id="构建XML文档"><a href="#构建XML文档" class="headerlink" title="构建XML文档"></a>构建XML文档</h3><p><a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.SubElement"><code>SubElement()</code></a> 函数还提供了一种便捷方法来为给定元素创建新的子元素</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>a = ET.Element(<span class="string">&#x27;a&#x27;</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b = ET.SubElement(a, <span class="string">&#x27;b&#x27;</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>c = ET.SubElement(a, <span class="string">&#x27;c&#x27;</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>d = ET.SubElement(c, <span class="string">&#x27;d&#x27;</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>ET.dump(a)</span><br><span class="line">&lt;a&gt;&lt;b /&gt;&lt;c&gt;&lt;d /&gt;&lt;/c&gt;&lt;/a&gt;</span><br></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/07/01/python_%E8%A7%A3%E6%9E%90xml-2-DOM/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="yhcs">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/07/01/python_%E8%A7%A3%E6%9E%90xml-2-DOM/" class="post-title-link" itemprop="url">python：解析xml(2):DOM</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2024-07-01 22:33:55" itemprop="dateCreated datePublished" datetime="2024-07-01T22:33:55+08:00">2024-07-01</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-07-13 16:58:07" itemprop="dateModified" datetime="2024-07-13T16:58:07+08:00">2024-07-13</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index"><span itemprop="name">python</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="使用xml-dom解析xml"><a href="#使用xml-dom解析xml" class="headerlink" title="使用xml.dom解析xml"></a>使用xml.dom解析xml</h3><ul>
+<li>文件对象模型（Document Object Model，简称DOM）</li>
+<li>一个 DOM 的解析器在解析一个 XML 文档时，<strong>一次性读取</strong>整个文档，把文档中所有元素保存在内存中的一个树结构里，之后你可以利用DOM 提供的不同的函数来读取或修改文档的内容和结构，也可以把修改过的内容写入xml文件。</li>
+<li>python中用xml.dom.minidom来解析xml文件</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/python</span></span><br><span class="line"><span class="comment"># -*- coding: UTF-8 -*-</span></span><br><span class="line"> </span><br><span class="line"><span class="keyword">from</span> xml.dom.minidom <span class="keyword">import</span> parse</span><br><span class="line"><span class="keyword">import</span> xml.dom.minidom</span><br><span class="line"> </span><br><span class="line"><span class="comment"># 使用minidom解析器打开 XML 文档</span></span><br><span class="line">DOMTree = xml.dom.minidom.parse(<span class="string">&quot;movies.xml&quot;</span>)</span><br><span class="line">collection = DOMTree.documentElement</span><br><span class="line"><span class="keyword">if</span> collection.hasAttribute(<span class="string">&quot;shelf&quot;</span>):</span><br><span class="line">   <span class="built_in">print</span> <span class="string">&quot;Root element : %s&quot;</span> % collection.getAttribute(<span class="string">&quot;shelf&quot;</span>)</span><br><span class="line"> </span><br><span class="line"><span class="comment"># 在集合中获取所有电影</span></span><br><span class="line">movies = collection.getElementsByTagName(<span class="string">&quot;movie&quot;</span>)</span><br><span class="line"> </span><br><span class="line"><span class="comment"># 打印每部电影的详细信息</span></span><br><span class="line"><span class="keyword">for</span> movie <span class="keyword">in</span> movies:</span><br><span class="line">   <span class="built_in">print</span> <span class="string">&quot;*****Movie*****&quot;</span></span><br><span class="line">   <span class="keyword">if</span> movie.hasAttribute(<span class="string">&quot;title&quot;</span>):</span><br><span class="line">      <span class="built_in">print</span> <span class="string">&quot;Title: %s&quot;</span> % movie.getAttribute(<span class="string">&quot;title&quot;</span>)</span><br><span class="line"> </span><br><span class="line">   <span class="built_in">type</span> = movie.getElementsByTagName(<span class="string">&#x27;type&#x27;</span>)[<span class="number">0</span>]</span><br><span class="line">   <span class="built_in">print</span> <span class="string">&quot;Type: %s&quot;</span> % <span class="built_in">type</span>.childNodes[<span class="number">0</span>].data</span><br><span class="line">   <span class="built_in">format</span> = movie.getElementsByTagName(<span class="string">&#x27;format&#x27;</span>)[<span class="number">0</span>]</span><br><span class="line">   <span class="built_in">print</span> <span class="string">&quot;Format: %s&quot;</span> % <span class="built_in">format</span>.childNodes[<span class="number">0</span>].data</span><br><span class="line">   rating = movie.getElementsByTagName(<span class="string">&#x27;rating&#x27;</span>)[<span class="number">0</span>]</span><br><span class="line">   <span class="built_in">print</span> <span class="string">&quot;Rating: %s&quot;</span> % rating.childNodes[<span class="number">0</span>].data</span><br><span class="line">   description = movie.getElementsByTagName(<span class="string">&#x27;description&#x27;</span>)[<span class="number">0</span>]</span><br><span class="line">   <span class="built_in">print</span> <span class="string">&quot;Description: %s&quot;</span> % description.childNodes[<span class="number">0</span>].data</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/07/01/python_%E8%A7%A3%E6%9E%90xml-1-SAX/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="yhcs">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/07/01/python_%E8%A7%A3%E6%9E%90xml-1-SAX/" class="post-title-link" itemprop="url">python：解析xml(1):SAX</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2024-07-01 22:12:10" itemprop="dateCreated datePublished" datetime="2024-07-01T22:12:10+08:00">2024-07-01</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-07-13 16:58:02" itemprop="dateModified" datetime="2024-07-13T16:58:02+08:00">2024-07-13</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index"><span itemprop="name">python</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="XML"><a href="#XML" class="headerlink" title="XML"></a>XML</h3><p>xml：可扩展标记语言</p>
+<p>——&gt;用来传输和存储数据</p>
+<p>——没有预定义的标签</p>
+<p>——对html的补充</p>
+<p>描述：独立于软件和硬件的信息传输工具</p>
+<p><strong>python对xml的解析：</strong></p>
+<ol>
+<li>SAX：事件驱动模型，通过在解析XML的过程中触发一个个的事件并调用用户定义的回调函数来处理XML文件</li>
+<li>DOM：将 XML 数据在内存中解析成一个树，通过对树的操作来操作XML</li>
+<li>ElementTree：轻量级的DOM</li>
+</ol>
+<blockquote>
+<p>对比：DOM需要将XML数据映射到内存中的树，一是比较慢，二是比较耗内存，而SAX流式读取XML文件，比较快，占用内存少，但需要用户实现回调函数（handler）</p>
+</blockquote>
+<h3 id="python使用SAX解析xml"><a href="#python使用SAX解析xml" class="headerlink" title="python使用SAX解析xml"></a>python使用SAX解析xml</h3><p>SAX是一种基于事件驱动的 API，牵涉到两个部分: <strong>解析器</strong>和<strong>事件处理器</strong>。</p>
+<ol>
+<li>解析器：读取XML文档，并向事件处理器发送事件，如元素开始跟元素结束事件。</li>
+<li>事件处理器：负责对事件作出响应，对传递的XML数据进行处理。</li>
+</ol>
+<ul>
+<li><p>引入：<code>import xml.sax</code></p>
+</li>
+<li><p>继承基类，自定义相关的类</p>
+<ul>
+<li><code>init</code>方法</li>
+<li><code>ContebtHandler</code>类方法<ul>
+<li><code>characters(content)</code>：内容事件处理</li>
+<li><code>startDocument()</code> ：文档启动的时候调用</li>
+<li><code>endDocument()</code> ：解析器到达文档结尾时调用</li>
+<li><code>startElement(name, attrs)</code>：遇到XML开始标签时调用，name是标签的名字，attrs是标签的属性值字典</li>
+<li><code>endElement(name)</code> ：遇到XML结束标签时调用</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/python</span></span><br><span class="line"><span class="comment"># -*- coding: UTF-8 -*-</span></span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> xml.sax</span><br><span class="line"> </span><br><span class="line"><span class="keyword">class</span> <span class="title class_">MovieHandler</span>( xml.sax.ContentHandler ):</span><br><span class="line">   <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self</span>):</span><br><span class="line">      self.CurrentData = <span class="string">&quot;&quot;</span></span><br><span class="line">      self.<span class="built_in">type</span> = <span class="string">&quot;&quot;</span></span><br><span class="line">      self.<span class="built_in">format</span> = <span class="string">&quot;&quot;</span></span><br><span class="line">      self.year = <span class="string">&quot;&quot;</span></span><br><span class="line">      self.rating = <span class="string">&quot;&quot;</span></span><br><span class="line">      self.stars = <span class="string">&quot;&quot;</span></span><br><span class="line">      self.description = <span class="string">&quot;&quot;</span></span><br><span class="line"> </span><br><span class="line">   <span class="comment"># 元素开始事件处理</span></span><br><span class="line">   <span class="keyword">def</span> <span class="title function_">startElement</span>(<span class="params">self, tag, attributes</span>):</span><br><span class="line">      self.CurrentData = tag</span><br><span class="line">      <span class="keyword">if</span> tag == <span class="string">&quot;movie&quot;</span>:</span><br><span class="line">         <span class="built_in">print</span> <span class="string">&quot;*****Movie*****&quot;</span></span><br><span class="line">         title = attributes[<span class="string">&quot;title&quot;</span>]</span><br><span class="line">         <span class="built_in">print</span> <span class="string">&quot;Title:&quot;</span>, title</span><br><span class="line"> </span><br><span class="line">   <span class="comment"># 元素结束事件处理</span></span><br><span class="line">   <span class="keyword">def</span> <span class="title function_">endElement</span>(<span class="params">self, tag</span>):</span><br><span class="line">      <span class="keyword">if</span> self.CurrentData == <span class="string">&quot;type&quot;</span>:</span><br><span class="line">         <span class="built_in">print</span> <span class="string">&quot;Type:&quot;</span>, self.<span class="built_in">type</span></span><br><span class="line">      <span class="keyword">elif</span> self.CurrentData == <span class="string">&quot;format&quot;</span>:</span><br><span class="line">         <span class="built_in">print</span> <span class="string">&quot;Format:&quot;</span>, self.<span class="built_in">format</span></span><br><span class="line">      <span class="keyword">elif</span> self.CurrentData == <span class="string">&quot;year&quot;</span>:</span><br><span class="line">         <span class="built_in">print</span> <span class="string">&quot;Year:&quot;</span>, self.year</span><br><span class="line">      <span class="keyword">elif</span> self.CurrentData == <span class="string">&quot;rating&quot;</span>:</span><br><span class="line">         <span class="built_in">print</span> <span class="string">&quot;Rating:&quot;</span>, self.rating</span><br><span class="line">      <span class="keyword">elif</span> self.CurrentData == <span class="string">&quot;stars&quot;</span>:</span><br><span class="line">         <span class="built_in">print</span> <span class="string">&quot;Stars:&quot;</span>, self.stars</span><br><span class="line">      <span class="keyword">elif</span> self.CurrentData == <span class="string">&quot;description&quot;</span>:</span><br><span class="line">         <span class="built_in">print</span> <span class="string">&quot;Description:&quot;</span>, self.description</span><br><span class="line">      self.CurrentData = <span class="string">&quot;&quot;</span></span><br><span class="line"> </span><br><span class="line">   <span class="comment"># 内容事件处理</span></span><br><span class="line">   <span class="keyword">def</span> <span class="title function_">characters</span>(<span class="params">self, content</span>):</span><br><span class="line">      <span class="keyword">if</span> self.CurrentData == <span class="string">&quot;type&quot;</span>:</span><br><span class="line">         self.<span class="built_in">type</span> = content</span><br><span class="line">      <span class="keyword">elif</span> self.CurrentData == <span class="string">&quot;format&quot;</span>:</span><br><span class="line">         self.<span class="built_in">format</span> = content</span><br><span class="line">      <span class="keyword">elif</span> self.CurrentData == <span class="string">&quot;year&quot;</span>:</span><br><span class="line">         self.year = content</span><br><span class="line">      <span class="keyword">elif</span> self.CurrentData == <span class="string">&quot;rating&quot;</span>:</span><br><span class="line">         self.rating = content</span><br><span class="line">      <span class="keyword">elif</span> self.CurrentData == <span class="string">&quot;stars&quot;</span>:</span><br><span class="line">         self.stars = content</span><br><span class="line">      <span class="keyword">elif</span> self.CurrentData == <span class="string">&quot;description&quot;</span>:</span><br><span class="line">         self.description = content</span><br><span class="line">  </span><br><span class="line"><span class="keyword">if</span> ( __name__ == <span class="string">&quot;__main__&quot;</span>):</span><br><span class="line">   </span><br><span class="line">   <span class="comment"># 创建一个 XMLReader</span></span><br><span class="line">   parser = xml.sax.make_parser()</span><br><span class="line">   <span class="comment"># turn off namepsaces</span></span><br><span class="line">   parser.setFeature(xml.sax.handler.feature_namespaces, <span class="number">0</span>)</span><br><span class="line"> </span><br><span class="line">   <span class="comment"># 重写 ContextHandler</span></span><br><span class="line">   Handler = MovieHandler()</span><br><span class="line">   parser.setContentHandler( Handler )</span><br><span class="line">   </span><br><span class="line">   parser.parse(<span class="string">&quot;movies.xml&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/06/30/%E8%BF%9B%E7%A8%8B%E7%AE%A1%E7%90%86(%E4%B8%80)%E8%BF%9B%E7%A8%8B%E5%92%8C%E7%BA%BF%E7%A8%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="yhcs">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/06/30/%E8%BF%9B%E7%A8%8B%E7%AE%A1%E7%90%86(%E4%B8%80)%E8%BF%9B%E7%A8%8B%E5%92%8C%E7%BA%BF%E7%A8%8B/" class="post-title-link" itemprop="url">进程管理(一)：进程和线程</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2024-06-30 01:13:47 / 修改时间：01:28:33" itemprop="dateCreated datePublished" datetime="2024-06-30T01:13:47+08:00">2024-06-30</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" itemprop="url" rel="index"><span itemprop="name">操作系统</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="2-1-1进程的概念、组成、特征"><a href="#2-1-1进程的概念、组成、特征" class="headerlink" title="2.1.1进程的概念、组成、特征"></a>2.1.1进程的概念、组成、特征</h3><h4 id="进程vs程序"><a href="#进程vs程序" class="headerlink" title="进程vs程序"></a>进程vs程序</h4><ul>
+<li>程序：静态的 可执行文件</li>
+<li>进程：动态的 程序的一次执行过程</li>
+</ul>
+<h4 id="进程的组成"><a href="#进程的组成" class="headerlink" title="进程的组成"></a>进程的组成</h4><ol>
+<li><strong>PCB&#x2F;进程控制块：</strong>操作系统个管理进程所需要的信息，都记录在这，组成<ol>
+<li>进程描述信息<ul>
+<li>PID：进程唯一的身份标识</li>
+<li>UID：进程所属用户ID</li>
+</ul>
+</li>
+<li>进程控制和管理信息<ul>
+<li>CPU、磁盘、网络流量使用情况统计</li>
+<li>进程当前状态</li>
+</ul>
+</li>
+<li>资源分配清单<ul>
+<li>正在使用哪些文件、正在使用哪些内存区域、正在使用哪些I&#x2F;O设备</li>
+</ul>
+</li>
+<li>处理机相关信息<ul>
+<li>如PSW、PC等等寄存器的值——&gt;用来实现进程切换</li>
+</ul>
+</li>
+</ol>
+</li>
+<li><strong>程序段：</strong>程序的代码</li>
+<li><strong>数据段：</strong>运行过程当中产生的各种数据</li>
+</ol>
+<blockquote>
+<p>PCB是给操作系统用的——方便操作系统管理</p>
+<p>程序段、数据段是给进程自己用的</p>
+</blockquote>
+<h4 id="程序的运行过程"><a href="#程序的运行过程" class="headerlink" title="程序的运行过程"></a>程序的运行过程</h4><p><img src="/../assets/%E8%BF%9B%E7%A8%8B%E7%AE%A1%E7%90%86(%E4%B8%80)%E8%BF%9B%E7%A8%8B%E5%92%8C%E7%BA%BF%E7%A8%8B/image-20240629204733795.png" alt="image-20240629204733795"></p>
+<ol>
+<li>代码经过编译链接形成可执行文件&#x3D;&#x3D;一系列指令</li>
+<li>运行时将指令读入内存，创建对应的进程（创建对应的PCB）</li>
+<li>cpu从内存的程序段中读取指令、执行</li>
+<li>运行过程中产生的数据保存在数据段</li>
+</ol>
+<p><strong>进程是系统进行资源分配和调度的一个独立单位</strong></p>
+<h4 id="进程的特征："><a href="#进程的特征：" class="headerlink" title="进程的特征："></a>进程的特征：</h4><ol>
+<li>动态性</li>
+<li>并发性</li>
+<li>独立性：进程是能独立运行、独立获得资源、独立接受调度的基本单位</li>
+<li>异步性：各进程按照各自独立的、不可预知的速度向前推进，操作系统要提供“进程同步机制”来解决异步问题</li>
+<li>结构性：进程——&gt;PCB+程序段+数据段</li>
+</ol>
+<h3 id="2-1-2进程的状态和转换"><a href="#2-1-2进程的状态和转换" class="headerlink" title="2.1.2进程的状态和转换"></a>2.1.2进程的状态和转换</h3><h4 id="进程的状态转换"><a href="#进程的状态转换" class="headerlink" title="进程的状态转换"></a><strong>进程的状态转换</strong></h4><p><img src="/../assets/%E8%BF%9B%E7%A8%8B%E7%AE%A1%E7%90%86(%E4%B8%80)%E8%BF%9B%E7%A8%8B%E5%92%8C%E7%BA%BF%E7%A8%8B/image-20240630011111138.png" alt="image-20240630011111138"></p>
+<h4 id="进程的组织"><a href="#进程的组织" class="headerlink" title="进程的组织"></a><strong>进程的组织</strong></h4><h5 id="链接方式："><a href="#链接方式：" class="headerlink" title="链接方式："></a>链接方式：</h5><p>执行指针—&gt;PCB1(指向当前处于运行态的进程，多少个cpu&#x3D;最多有多少个进程处于运行态)</p>
+<p>就绪队列指针—&gt;PCB2—&gt;PCB3—&gt;PCB4(指向当前处于就绪态的进程，通常会把优先级高的进程放在队头)</p>
+<p>阻塞队列指针—&gt;PCB5—&gt;PCB6</p>
+<blockquote>
+<p>操作系统还会根据阻塞原因不同再分为多个阻塞队列，比如说：等待打印机的阻塞队列，等待磁盘的阻塞队列</p>
+</blockquote>
+<h5 id="索引方式-较少用"><a href="#索引方式-较少用" class="headerlink" title="索引方式(较少用)"></a>索引方式(较少用)</h5><p><img src="/../assets/%E8%BF%9B%E7%A8%8B%E7%AE%A1%E7%90%86(%E4%B8%80)%E8%BF%9B%E7%A8%8B%E5%92%8C%E7%BA%BF%E7%A8%8B/image-20240630004846720.png" alt="image-20240630004846720"></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/06/24/KMP%E7%AE%97%E6%B3%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="yhcs">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/06/24/KMP%E7%AE%97%E6%B3%95/" class="post-title-link" itemprop="url">算法：KMP</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2024-06-24 23:43:31 / 修改时间：23:44:39" itemprop="dateCreated datePublished" datetime="2024-06-24T23:43:31+08:00">2024-06-24</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%AE%97%E6%B3%95%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">算法学习</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="KMP算法"><a href="#KMP算法" class="headerlink" title="KMP算法"></a>KMP算法</h2><p><strong>KMP算法：</strong>查找连续子串，返回值：str1中str2开始的位置&#x2F;-1</p>
+<p>例：str1：ABCD1234de</p>
+<p>​		str2：1234 	返回值：4</p>
+<p>​		str3：1234e	返回值：-1</p>
+<p><u>暴力解法：</u>遍历str1，看每个开头能否配出str2</p>
+<p>时间复杂度：O（mn）</p>
+<p><strong>KMP算法基础：</strong>next数组</p>
+<p>——str2中每个字符对应一个信息：最长公共前后缀（该字符前面的字符串相等前缀和后缀的最大长度，并且不能取到整体）</p>
+<p>例：abbabb k	k&#x3D;&#x3D;&gt;3</p>
+<table>
+<thead>
+<tr>
+<th>长度</th>
+<th>1</th>
+<th>2</th>
+<th>3</th>
+<th>4</th>
+<th>5</th>
+<th>6</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>前缀</td>
+<td>a</td>
+<td>ab</td>
+<td>abb</td>
+<td>abba</td>
+<td>abbab</td>
+<td>不讨论</td>
+</tr>
+<tr>
+<td>后缀</td>
+<td>b</td>
+<td>bb</td>
+<td>abb</td>
+<td>babb</td>
+<td>bbabb</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>!&#x3D;</td>
+<td>!&#x3D;</td>
+<td>&#x3D;&#x3D;</td>
+<td>!&#x3D;</td>
+<td>!&#x3D;</td>
+<td></td>
+</tr>
+</tbody></table>
+<p>所以str2对应一个<code>next arr</code>&#x3D;&#x3D;》用来加速匹配过程</p>
+<p>例：str2&#x3D;{a,a,b,a,a,b,s}</p>
+<p>next&#x3D;{-1,0,1,0,1,2,3}	ps：<strong>next[0]&#x3D;-1</strong>(人为规定)，next[1]&#x3D;0</p>
+<p><strong>KMP算法实现原理</strong></p>
+<p>——目的：让i跳的尽可能快（经典：i&#x3D;i+1）</p>
+<p><img src="/../assets/KMP%E7%AE%97%E6%B3%95/image-20240624223723044.png" alt="image-20240624223723044"></p>
+<blockquote>
+<p>（2）的证明通过反证法：设k在i~j之间，k开始能配出str2……推出跟最长公共前后缀矛盾</p>
+</blockquote>
+<p><strong>next数组的求法</strong></p>
+<p>求next[i]</p>
+<p>找next[i-1]&#x3D;&#x3D;》前缀的下一位？&#x3D;next[i-1]</p>
+<p>相等：next[i]&#x3D;next[i-1]+1</p>
+<p>不相等：cur再往前跳，来到cur对应前缀的下一位（next[cur]），判断跟str[i-1]是否相等</p>
+<p><strong>完整代码</strong></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;cstring&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="comment">//O(M)</span></span><br><span class="line"><span class="function">vector&lt;<span class="type">int</span>&gt; <span class="title">getNextArray</span><span class="params">(string str)</span> </span>&#123;</span><br><span class="line">	<span class="type">int</span> size = str.<span class="built_in">size</span>();</span><br><span class="line">	<span class="keyword">if</span> (size == <span class="number">1</span>) &#123;</span><br><span class="line">		<span class="keyword">return</span> &#123; <span class="number">-1</span> &#125;;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function">vector&lt;<span class="type">int</span>&gt; <span class="title">next</span><span class="params">(size)</span></span>;</span><br><span class="line">	next[<span class="number">0</span>] = <span class="number">-1</span>;</span><br><span class="line">	next[<span class="number">1</span>] = <span class="number">0</span>;</span><br><span class="line">	<span class="type">int</span> i = <span class="number">2</span>;<span class="comment">//当前要求next数组位置</span></span><br><span class="line">	<span class="type">int</span> cur = <span class="number">0</span>;<span class="comment">//跟i位置比较的位置，0：next[1]=0(cur=next[i-1])</span></span><br><span class="line">	<span class="keyword">while</span> (i &lt; size) &#123;</span><br><span class="line">		<span class="keyword">if</span> (str[i - <span class="number">1</span>] == str[cur]) &#123;</span><br><span class="line">			<span class="comment">//next[i] = cur + 1;//next[i-1]+1</span></span><br><span class="line">			<span class="comment">//i++;</span></span><br><span class="line">			<span class="comment">//cur = cur + 1;</span></span><br><span class="line">			next[i++] = ++cur;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span> (cur &gt; <span class="number">0</span>) &#123;</span><br><span class="line">			cur = next[cur];</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span> &#123;</span><br><span class="line">			next[i++] = <span class="number">0</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> next;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//str1长N，str2长M,N&gt;=M</span></span><br><span class="line"><span class="comment">//时间复杂度：O（N）</span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">KMP</span><span class="params">(string str1, string str2)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (str1.<span class="built_in">empty</span>() || str2.<span class="built_in">empty</span>() || str1.<span class="built_in">size</span>() &lt; str2.<span class="built_in">size</span>()) &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	vector&lt;<span class="type">int</span>&gt; next = <span class="built_in">getNextArray</span>(str2);<span class="comment">//O(M)</span></span><br><span class="line">	<span class="type">int</span> ptr1 = <span class="number">0</span>, ptr2 = <span class="number">0</span>;</span><br><span class="line">	<span class="comment">//O(N)</span></span><br><span class="line">	<span class="keyword">while</span> (ptr1 &lt; str1.<span class="built_in">size</span>() &amp;&amp; ptr2 &lt; str2.<span class="built_in">size</span>()) &#123;</span><br><span class="line">		<span class="keyword">if</span> (str1[ptr1] == str2[ptr2]) &#123;</span><br><span class="line">			ptr1++;</span><br><span class="line">			ptr2++;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span> (ptr2 == <span class="number">0</span>) &#123;<span class="comment">//相当于next[ptr2]=-1</span></span><br><span class="line">			<span class="comment">//str2[ptr2]!=str1[ptr1],str1第一个都不匹配</span></span><br><span class="line">			ptr1++;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span> &#123;</span><br><span class="line">			ptr2 = next[ptr2];</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">//ptr1越界—-1，ptr2越界—匹配完成</span></span><br><span class="line">	<span class="keyword">return</span> ptr2 == str2.<span class="built_in">size</span>() ? ptr1 - ptr2 : <span class="number">-1</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	string str1 = <span class="string">&quot;abcd1234&quot;</span>;</span><br><span class="line">	string str2 = <span class="string">&quot;1234&quot;</span>;</span><br><span class="line">	string str3 = <span class="string">&quot;1234e&quot;</span>;</span><br><span class="line">	cout &lt;&lt; <span class="built_in">KMP</span>(str1, str2) &lt;&lt; endl;</span><br><span class="line">	cout &lt;&lt; <span class="built_in">KMP</span>(str1, str3);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/2024/06/21/%E5%93%88%E5%B8%8C%E5%87%BD%E6%95%B0%E5%92%8C%E5%93%88%E5%B8%8C%E8%A1%A8/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1012,858 +1604,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/05/08/next%E4%B8%BB%E9%A2%98%E6%B7%BB%E5%8A%A0%E5%88%86%E7%B1%BB/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="yhcs">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hexo">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2024/05/08/next%E4%B8%BB%E9%A2%98%E6%B7%BB%E5%8A%A0%E5%88%86%E7%B1%BB/" class="post-title-link" itemprop="url">next主题添加分类</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2024-05-08 21:42:34 / 修改时间：21:59:49" itemprop="dateCreated datePublished" datetime="2024-05-08T21:42:34+08:00">2024-05-08</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E5%8D%9A%E5%AE%A2%E7%BB%B4%E6%8A%A4/" itemprop="url" rel="index"><span itemprop="name">博客维护</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h4 id="1-在主题里把分类选项打开"><a href="#1-在主题里把分类选项打开" class="headerlink" title="1.在主题里把分类选项打开"></a>1.在主题里把分类选项打开</h4><p>打开文件<code>\themes\next\_config.yml</code>,搜索<code>menu</code>，找到如下代码段</p>
-<p><img src="/../assets/next%E4%B8%BB%E9%A2%98%E6%B7%BB%E5%8A%A0%E5%88%86%E7%B1%BB/image-20240508214604038.png" alt="image-20240508214604038"></p>
-<p>去掉<code>categories: /categories/ || fa fa-th</code>行的注释</p>
-<h4 id="2-创建分类目录文件"><a href="#2-创建分类目录文件" class="headerlink" title="2.创建分类目录文件"></a>2.创建分类目录文件</h4><p>在博客文件夹下打开git bash，输入以下命令</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo new page categories</span><br></pre></td></tr></table></figure>
-
-<p>成功后：<img src="/../assets/next%E4%B8%BB%E9%A2%98%E6%B7%BB%E5%8A%A0%E5%88%86%E7%B1%BB/image-20240508214818388.png" alt="image-20240508214818388"></p>
-<h4 id="3-打开生成的index-md文件"><a href="#3-打开生成的index-md文件" class="headerlink" title="3.打开生成的index.md文件"></a>3.打开生成的index.md文件</h4><p>打开后内容如下</p>
-<p><img src="/../assets/next%E4%B8%BB%E9%A2%98%E6%B7%BB%E5%8A%A0%E5%88%86%E7%B1%BB/image-20240508215002707.png" alt="image-20240508215002707"></p>
-<p>加上 <code>type: &quot;categories&quot;</code></p>
-<p><img src="/../assets/next%E4%B8%BB%E9%A2%98%E6%B7%BB%E5%8A%A0%E5%88%86%E7%B1%BB/image-20240508215029274.png" alt="image-20240508215029274"></p>
-<h4 id="4-给文章设置分类属性"><a href="#4-给文章设置分类属性" class="headerlink" title="4.给文章设置分类属性"></a>4.给文章设置分类属性</h4><p>添加以下内容就设置好分类了</p>
-<p>注意：”-“跟类别名之间有一个<strong>空格</strong>！</p>
-<p><img src="/../assets/next%E4%B8%BB%E9%A2%98%E6%B7%BB%E5%8A%A0%E5%88%86%E7%B1%BB/image-20240508215850772.png" alt="image-20240508215850772"></p>
-<p>如果需要二级分类：</p>
-<p><img src="/../assets/next%E4%B8%BB%E9%A2%98%E6%B7%BB%E5%8A%A0%E5%88%86%E7%B1%BB/image-20240508215842702.png" alt="image-20240508215842702"></p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/05/07/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E2%80%94%E2%80%94%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="yhcs">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hexo">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2024/05/07/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E2%80%94%E2%80%94%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/" class="post-title-link" itemprop="url">操作系统——文件系统</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2024-05-07 21:23:44 / 修改时间：21:27:09" itemprop="dateCreated datePublished" datetime="2024-05-07T21:23:44+08:00">2024-05-07</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="文件系统"><a href="#文件系统" class="headerlink" title="文件系统"></a>文件系统</h3><h4 id="文件系统的组成"><a href="#文件系统的组成" class="headerlink" title="文件系统的组成"></a>文件系统的组成</h4><h5 id="文件系统的概念"><a href="#文件系统的概念" class="headerlink" title="文件系统的概念"></a>文件系统的概念</h5><ul>
-<li><p>文件系统是操作系统中负责把用户的文件存到磁盘硬件中</p>
-<ul>
-<li>负责管理持久数据的子系统</li>
-</ul>
-</li>
-<li><p>基本数据单位：文件</p>
-<ul>
-<li>目的：对磁盘上的文件进行组织管理</li>
-</ul>
-</li>
-<li><p>“万物皆文件”</p>
-<ul>
-<li>普通的文件和目录、管道、块设备、socket都是统一由文件系统管理</li>
-</ul>
-</li>
-</ul>
-<h5 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h5><ul>
-<li><p><strong>为每个文件分配两个数据结构</strong></p>
-<ul>
-<li><p><strong>索引节点inode</strong></p>
-<ul>
-<li><p>记录：文件的元信息</p>
-<ul>
-<li><p>inode编号、文件大小、访问权限、创建&#x2F;修改时间</p>
-</li>
-<li><p>数据在磁盘中的位置</p>
-</li>
-</ul>
-</li>
-<li><p>索引节点是文件的唯一标识</p>
-<ul>
-<li>跟文件一一对应<ul>
-<li>同样存储在硬盘中</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p><strong>目录项dentry</strong></p>
-<ul>
-<li><p>记录：文件的名字、索引节点指针、与其他目录项的层级关联关系</p>
-<ul>
-<li><p>不只是表示目录</p>
-</li>
-<li><p>也可以表示文件</p>
-</li>
-</ul>
-</li>
-<li><p>目录项是由内核维护的一个数据结构</p>
-<ul>
-<li>存放在内存中</li>
-</ul>
-</li>
-<li><p>目录也是文件</p>
-<ul>
-<li><p>普通文件保存文件数据</p>
-</li>
-<li><p>目录文件保存子目录或者文件</p>
-</li>
-</ul>
-</li>
-<li><p>目录项vs目录</p>
-<ul>
-<li><p>区别</p>
-<ul>
-<li><p>目录是文件，存放在硬盘里</p>
-</li>
-<li><p>目录项是内核的一个数据结构，缓存在内存中</p>
-</li>
-</ul>
-</li>
-<li><p>关系</p>
-<ul>
-<li><p>查询目录频繁从磁盘读，效率低</p>
-</li>
-<li><p>内核把读过的目录用目录项这个数据结构缓存在内存中</p>
-<ul>
-<li>下次读到相同目录，直接从内存读</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p><strong>关系</strong></p>
-<ul>
-<li><p>目录项和索引节点是多对一的关系</p>
-<ul>
-<li>一个文件可以有多个别字</li>
-</ul>
-</li>
-<li><p>区别</p>
-<ul>
-<li><p>索引节点存放在硬盘</p>
-</li>
-<li><p>目录项存放在内存</p>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p><strong>文件数据如何存储在磁盘</strong></p>
-<ul>
-<li><p>逻辑块&#x2F;数据块</p>
-<ul>
-<li><p>磁盘读写的最小单位是扇区(512B)，读写效率低</p>
-</li>
-<li><p>文件系统把多个扇区组成了一个数据块</p>
-<ul>
-<li><p>每次读写的最小单位就是逻辑块</p>
-</li>
-<li><p>linux中逻辑块大小为4KB(一次性读写8个扇区)</p>
-<ul>
-<li>提高读写效率</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>加速文件访问：把索引节点加载到内存</p>
-<ul>
-<li><p>磁盘格式化后的存储区域</p>
-<ul>
-<li><p>超级块</p>
-<ul>
-<li>存储文件系统的详细信息<ul>
-<li>块个数、块大小、空闲块等</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>索引节点区</p>
-<ul>
-<li>存储索引节点</li>
-</ul>
-</li>
-<li><p>数据块区</p>
-<ul>
-<li>存储文件或者目录数据</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>加载策略：只有需要的时候加载进内存</p>
-<ul>
-<li><p>超级块：文件系统挂载时加载进内存</p>
-</li>
-<li><p>索引节点区：当文件被访问时加载进内存</p>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<h4 id="虚拟文件系统"><a href="#虚拟文件系统" class="headerlink" title="虚拟文件系统"></a>虚拟文件系统</h4><h4 id="文件的使用"><a href="#文件的使用" class="headerlink" title="文件的使用"></a>文件的使用</h4><h4 id="文件的存储"><a href="#文件的存储" class="headerlink" title="文件的存储"></a>文件的存储</h4><h4 id="文件系统的结构"><a href="#文件系统的结构" class="headerlink" title="文件系统的结构"></a>文件系统的结构</h4><h4 id="目录的存储"><a href="#目录的存储" class="headerlink" title="目录的存储"></a>目录的存储</h4><h4 id="软链接和硬链接"><a href="#软链接和硬链接" class="headerlink" title="软链接和硬链接"></a>软链接和硬链接</h4><h4 id="文件I-O"><a href="#文件I-O" class="headerlink" title="文件I&#x2F;O"></a>文件I&#x2F;O</h4>
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/05/02/TME-0429%E9%9D%A2%E7%BB%8F/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="yhcs">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hexo">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2024/05/02/TME-0429%E9%9D%A2%E7%BB%8F/" class="post-title-link" itemprop="url">0429TME面经</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2024-05-02 14:26:26" itemprop="dateCreated datePublished" datetime="2024-05-02T14:26:26+08:00">2024-05-02</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-07-22 23:25:53" itemprop="dateModified" datetime="2024-07-22T23:25:53+08:00">2024-07-22</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="腾讯音乐4-29-客户端开发面经"><a href="#腾讯音乐4-29-客户端开发面经" class="headerlink" title="腾讯音乐4.29 客户端开发面经"></a>腾讯音乐4.29 客户端开发面经</h3><h5 id="面试流程："><a href="#面试流程：" class="headerlink" title="面试流程："></a>面试流程：</h5><ol>
-<li>面试官介绍部门情况</li>
-<li>自我介绍（面试官要求介绍项目什么的）</li>
-<li>问答环节</li>
-</ol>
-<h5 id="问题："><a href="#问题：" class="headerlink" title="问题："></a>问题：</h5><h6 id="tcp建立连接是3次握手，断开连接是4次挥手，为什么会有这个差异？"><a href="#tcp建立连接是3次握手，断开连接是4次挥手，为什么会有这个差异？" class="headerlink" title="tcp建立连接是3次握手，断开连接是4次挥手，为什么会有这个差异？"></a>tcp建立连接是3次握手，断开连接是4次挥手，为什么会有这个差异？</h6><p>断开连接为什么要4次，而不是3次？</p>
-<ul>
-<li><strong>TCP连接为什么要三次握手</strong>？<ol>
-<li>原因：<ol>
-<li>客户端发出SYN，并收到ACK，这就是两次网络传输了。</li>
-<li>同样服务器端也发出SYN，且等待对方回复，这也是两次网络传输。</li>
-<li>加起来难道不是四次吗？实际上<strong>服务器端将对客户端 SYN(1) 的回复和自己 SYN(1) 的请求合并了</strong>，所以建立一个 TCP 连接最少只需要经过三次网络传输</li>
-</ol>
-</li>
-<li>举例：已失效的连接请求报文</li>
-</ol>
-</li>
-<li><strong>TCP断开连接为什么需要四次挥手？</strong><ol>
-<li>原因：<ol>
-<li>发起断开方发出FIN，并收到ACK，这就是两次网络传输了。</li>
-<li>同样被断开方也发出FIN，且等待对方回复，这也是两次网络传输。</li>
-<li>为什么服务端返回ACK的时候不一起发送FIN？因为在收到FIN时，服务端可能还有数据要发送，等到数据传输完时再发送FIN</li>
-</ol>
-</li>
-</ol>
-</li>
-</ul>
-<h6 id="ping命令使用过吗？traceroute跟它其实差不多，但是那个traceroute为什么能够探索到服务器的各个节点。"><a href="#ping命令使用过吗？traceroute跟它其实差不多，但是那个traceroute为什么能够探索到服务器的各个节点。" class="headerlink" title="ping命令使用过吗？traceroute跟它其实差不多，但是那个traceroute为什么能够探索到服务器的各个节点。"></a>ping命令使用过吗？traceroute跟它其实差不多，但是那个traceroute为什么能够探索到服务器的各个节点。</h6><blockquote>
-<p><code>traceroute</code>是linux&#x2F;unix系统中用于分析本地到目标网络地址间的路由转发路径的工具，也常用于诊断网络链路不通或异常的发生位置。windows下命令为<code>tracert www.baidu.com</code></p>
-</blockquote>
-<p><img src="/../assets/TME-0429%E9%9D%A2%E7%BB%8F/image-20240502142938707-17150891457311.png" alt="image-20240502142938707"></p>
-<blockquote>
-<ol>
-<li>每一跳的IP和时延信息是怎么得到的？</li>
-<li>为什么每一跳有3个时延信息，有时还会显示2个或者3个IP地址？</li>
-<li>为什么有些跳数显示的结果是请求超时？为什么有节点请求超时了还能到达后续的节点？</li>
-</ol>
-</blockquote>
-<p><strong><code>traceroute/tracert</code>的原理</strong></p>
-<ol>
-<li>向目标IP发送3个TTL&#x3D;n（n起始值为1）的ICMP ping request报文，等待回应</li>
-<li>如果收到<code>ICMP ping response</code>报文，则说明路由成功，通过n跳可以到达目标IP，traceroute工作完成。request和response的时间间隔就是时延，由于发送了3个request，因此有3个时延信息。</li>
-<li>如果收到<code>ICMP TTL exceeded</code>报文，则说明第n跳路由到达了这个报文的发送节点。IP报文的TTL字段每经过一次路由转发就会减1，当减到0时当前的转发节点就会向报文的源IP发送一个ICMP TTL exceeded报文，因此发送了这个报文的节点就是第n跳的路由节点。由于发送了3个request，因此会返回3个报文和对应的时延信息。由于到目标IP的路由路径不一定是唯一的，因此报文在第n跳时到达的节点不一定是同一个，就有可能会输出多个第n跳节点地址。</li>
-<li>如果在request发出3秒（默认超时时间）后仍然没有收到任何回应，则这轮<strong>检测超时</strong>。但这并<u>不意味着目标IP不可达</u>，而很可能是因为第n跳到达的节点<u>不允许发送TTL exceeded报文</u>。因此traceroute会继续后面的探测过程。</li>
-<li>将TTL加1，回到第1步继续探测。</li>
-</ol>
-<h6 id="为什么https比http更安全？答：因为https在http的基础上使用了tls协议进行加密。"><a href="#为什么https比http更安全？答：因为https在http的基础上使用了tls协议进行加密。" class="headerlink" title="为什么https比http更安全？答：因为https在http的基础上使用了tls协议进行加密。"></a>为什么https比http更安全？答：因为https在http的基础上使用了tls协议进行加密。</h6><ul>
-<li>讲一讲整个加密过程</li>
-<li>所以密钥本身是对称加密的，还是那个非对称加密？</li>
-</ul>
-<h6 id="tcp三次握手成功以后，比方说给对方发1k的数据，对方会有什么下一步的动作？"><a href="#tcp三次握手成功以后，比方说给对方发1k的数据，对方会有什么下一步的动作？" class="headerlink" title="tcp三次握手成功以后，比方说给对方发1k的数据，对方会有什么下一步的动作？"></a>tcp三次握手成功以后，比方说给对方发1k的数据，对方会有什么下一步的动作？</h6><h6 id="tcp报文头多少字节-20-60B"><a href="#tcp报文头多少字节-20-60B" class="headerlink" title="tcp报文头多少字节 20~60B"></a>tcp报文头多少字节 20~60B</h6><blockquote>
-<p>udp报文头部为8B</p>
-</blockquote>
-<h6 id="stl的vector是线程安全的吗？"><a href="#stl的vector是线程安全的吗？" class="headerlink" title="stl的vector是线程安全的吗？"></a>stl的vector是线程安全的吗？</h6><p>是，所有操作加了同步锁，不支持多线程操作</p>
-<blockquote>
-<p>vector特点：</p>
-<p>1.动态分配空间，当空间不足时，会执行分配新空间——复制元素——释放原空间；</p>
-<p>2.在末端插入和删除执行效率高，在其他位置插入和删除效率低(为保持原有相对次序，插入和删除点之后的元素需要整体后移)；</p>
-<p>3.删除数据并不会释放已分配的空间，因此vector的capacity(容量)大于vector的size(元素个数);</p>
-<p>4.支持随机访问，且执行效率高；</p>
-<p>5.vector是线程安全的，所有操作加了同步锁，不支持多线程操作</p>
-<p>#vector跟数组的差别</p>
-<p>区别<br>1.大小固定 vs 大小可变：</p>
-<p>数组是一个具有<strong>固定大小</strong>的连续内存块，一旦定义后，其大小无法改变。<br>vector是一个<strong>动态数组</strong>，它使用了自动扩容机制，可以根据需要动态调整大小。可以通过添加或删除元素来改变vector的大小。<br>2.初始化：</p>
-<p>数组的<strong>大小在定义时必须确定</strong>，并且可以使用初始化列表或循环初始化等方式进行初始化。<br>vector的大小可以在定义时指定，也可以在后续使用push_back()、emplace_back()等函数插入元素进行初始化。<br>3.访问元素：</p>
-<p>数组通过索引直接访问元素，可以使用下标运算符[]或指针运算符*来访问特定位置的元素。<br>vector也可以使用下标运算符[]访问元素，还可以使用at()函数进行边界检查。<br>4.自动内存管理：</p>
-<p>数组需要<strong>手动管理内存</strong>，包括分配和释放内存。<br>vector自动处理内存管理，会自动增加或减少内存以适应元素的数量。<br>5.功能差异：</p>
-<p>vector提供了许多方便的成员函数，如push_back()、pop_back()、insert()、erase()等，用于在尾部或指定位置添加、删除元素。<br>数组本身没有提供这些功能，需要手动编写代码来实现。</p>
-</blockquote>
-<h6 id="map底层的红黑树的实现原理"><a href="#map底层的红黑树的实现原理" class="headerlink" title="map底层的红黑树的实现原理"></a>map底层的红黑树的实现原理</h6><h6 id="C-虚函数跟普通的函数有什么区别吗？"><a href="#C-虚函数跟普通的函数有什么区别吗？" class="headerlink" title="C++虚函数跟普通的函数有什么区别吗？"></a>C++虚函数跟普通的函数有什么区别吗？</h6><h6 id="虚函数表是在什么阶段，可以知道它自己的指针是多少。"><a href="#虚函数表是在什么阶段，可以知道它自己的指针是多少。" class="headerlink" title="虚函数表是在什么阶段，可以知道它自己的指针是多少。"></a>虚函数表是在什么阶段，可以知道它自己的指针是多少。</h6><h6 id="utf16，包括utf32，讲一下他们的差异。"><a href="#utf16，包括utf32，讲一下他们的差异。" class="headerlink" title="utf16，包括utf32，讲一下他们的差异。"></a>utf16，包括utf32，讲一下他们的差异。</h6><ul>
-<li><p><strong>utf8</strong></p>
-<ol>
-<li><p>特点：使用<strong>变长字节数</strong></p>
-<p>原因：可以理解为按需分配，节省存储空间</p>
-<p>优势：节省空间；劣势：不利于程序内部处理</p>
-<blockquote>
-<p>而UTF-32这样<strong>等长码元序列</strong>(即等宽码元序列)的编码方式就比较适合程序处理，当然，缺点是比较耗费存储空间</p>
-</blockquote>
-</li>
-<li><p>编码方式：最短为一个字节，通过utf8首字节就能判断编码有几个字节</p>
-<ol>
-<li>如果首字节以0开头，肯定是单字节编码(即单个单字节码元)；</li>
-<li>如果首字节以110开头，肯定是双字节编码(即由两个单字节码元所组成的双码元序列)；</li>
-<li>如果首字节以1110开头，肯定是三字节编码(即由三个单字节码元所组成的三码元序列)，以此类推。</li>
-</ol>
-<ul>
-<li><p>这里的0相当于终结标志</p>
-</li>
-<li><p>前缀码的作用：区分和标识</p>
-</li>
-<li><p>除了单字节编码外，由多个单字节码元所组成的多字节编码其首字节以外的后续字节均以10开头(以区别于单字节编码以及多字节编码的首字节)。</p>
-</li>
-</ul>
-</li>
-</ol>
-</li>
-<li><p><strong>utf16</strong></p>
-<ol>
-<li><p>特点：2字节或者4字节（<strong>没有办法兼容ASCII编码</strong>，ASCII编码使用1 Byte来进行存储）</p>
-</li>
-<li><p>字节顺序问题：如某字符为十六进制编码<code>4E59</code>，按两个字节拆分为<code>4E</code>和<code>59</code></p>
-<table>
-<thead>
-<tr>
-<th align="left">-</th>
-<th align="left">读取顺序</th>
-<th align="left">显示字符</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="left">Windows</td>
-<td align="left">4E 59</td>
-<td align="left">奎</td>
-</tr>
-<tr>
-<td align="left">Mac</td>
-<td align="left">59 4E</td>
-<td align="left">乙</td>
-</tr>
-</tbody></table>
-<p>引入：字节顺序标记<strong>（英语：byte-order mark，BOM）</strong>来标记是大端序还是小端序。</p>
-</li>
-<li><p>BOM：是一个有特殊含义的统一码字符，码点为<code>U+FEFF</code>。当以UTF-16或UTF-32来将UCS&#x2F;统一码字符所组成的字符串编码时，这个字符被用来标示其字节序。</p>
-<p><strong>字符<code>U+FEFF</code>如果出现在字节流的开头，则用来标识该字节流的字节序，是高位在前还是低位在前。</strong></p>
-</li>
-</ol>
-</li>
-</ul>
-<h6 id="空的class大小是多少？"><a href="#空的class大小是多少？" class="headerlink" title="空的class大小是多少？"></a>空的class大小是多少？</h6><ol>
-<li>空类大小&#x3D;1，因为编译器需要安插进去一个 <code>char</code>，使得这个 class 对象得以在内存中被配置独一无二的地址。</li>
-<li>某个类A继承该空类<ol>
-<li>如果A为空，<code>sizeof(A)=1</code></li>
-<li>如果A不为空，<code>sizeof(A)=真实大小</code></li>
-</ol>
-</li>
-<li>如果一个类没有成员变量，但是含虚函数&#x2F;虚继承别的类，则会生成一个<code>vptr</code>，<code>sizeof(A)=4/8</code></li>
-</ol>
-<blockquote>
-<p><strong>虚继承</strong></p>
-<ol>
-<li><p>多继承：多个直接基类中产生派生类，存在问题：多个基类相互交织</p>
-<p><img src="/../assets/TME-0429%E9%9D%A2%E7%BB%8F/image-20240505011615000-17150891823763.png" alt="image-20240505011615000"></p>
-<p>假如类 A 有一个成员变量 a，那么在类 D 中直接访问 a 就会产生歧义，编译器不知道它究竟来自 A –&gt;B–&gt;D 这条路径，还是来自 A–&gt;C–&gt;D 这条路径。</p>
-</li>
-<li><p>虚继承：为了解决多继承时的命名冲突和冗余数据问题，C++ 提出了虚继承，使得在派生类中只保留一份间接基类的成员。</p>
-<p>目的：让某个类做出声明，承诺愿意共享它的基类。</p>
-<p><img src="/../assets/TME-0429%E9%9D%A2%E7%BB%8F/image-20240505011755261-17150891900515.png" alt="image-20240505011755261"></p>
-<p>本例中的 A 就是一个虚基类。在这种机制下，不论虚基类在继承体系中出现了多少次，在派生类中都只包含一份虚基类的成员。</p>
-</li>
-</ol>
-</blockquote>
-<blockquote>
-<p>计算类的大小，还要考虑字节对齐</p>
-</blockquote>
-<h6 id="定义一个结构体，里面可能有很多的数据类型。在不同的编译器，不同的系统下，结构体大小可能会有不同的大小。你觉得是因为什么？（字节对齐）"><a href="#定义一个结构体，里面可能有很多的数据类型。在不同的编译器，不同的系统下，结构体大小可能会有不同的大小。你觉得是因为什么？（字节对齐）" class="headerlink" title="定义一个结构体，里面可能有很多的数据类型。在不同的编译器，不同的系统下，结构体大小可能会有不同的大小。你觉得是因为什么？（字节对齐）"></a>定义一个结构体，里面可能有很多的数据类型。在不同的编译器，不同的系统下，结构体大小可能会有不同的大小。你觉得是因为什么？（字节对齐）</h6><ol>
-<li>内存对齐（Padding）：<br>为了提高数据访问的效率，许多处理器和编译器会要求数据按照特定的边界对齐，不同的编译器可能会有不同的默认对齐设置或对齐策略。例如，某些处理器可能要求一个<code>int</code>类型的变量在4字节边界上对齐。如果结构体中的某个成员不满足这个对齐要求，编译器会在成员之间插入额外的空间（填充字节），以达到所需的对齐。这会导致结构体的大小在不同系统或编译器下有所不同。</li>
-<li>数据类型的大小：<br>虽然标准数据类型（如<code>int</code>、<code>long</code>等）在大多数系统上都有固定的大小，但在某些系统或编译器下，它们的大小可能会有所不同。</li>
-</ol>
-<h6 id="C-的加锁方式"><a href="#C-的加锁方式" class="headerlink" title="C++的加锁方式"></a>C++的加锁方式</h6><h6 id="C-子类跟基类的构造顺序和析构顺序，为什么？"><a href="#C-子类跟基类的构造顺序和析构顺序，为什么？" class="headerlink" title="C++子类跟基类的构造顺序和析构顺序，为什么？"></a>C++子类跟基类的构造顺序和析构顺序，为什么？</h6><h6 id="局部变量在进程内存的哪一块里面"><a href="#局部变量在进程内存的哪一块里面" class="headerlink" title="局部变量在进程内存的哪一块里面"></a>局部变量在进程内存的哪一块里面</h6><p>一般全局变量存放在数据区，局部变量存放在栈区，<br>动态变量存放在堆区，函数代码放在代码区。</p>
-<h6 id="函数的参数的压栈顺序：参数从右到左入栈"><a href="#函数的参数的压栈顺序：参数从右到左入栈" class="headerlink" title="函数的参数的压栈顺序：参数从右到左入栈"></a>函数的参数的压栈顺序：参数从右到左入栈</h6><p>例：<code>void func(int a,int b,int c)</code>，进栈顺序为：<code>c b a</code>.</p>
-<h6 id="网络的多路复用？"><a href="#网络的多路复用？" class="headerlink" title="网络的多路复用？"></a>网络的多路复用？</h6><h6 id="线程切换怎么保证切回来的时候，还能够按照原来流程继续走下去。"><a href="#线程切换怎么保证切回来的时候，还能够按照原来流程继续走下去。" class="headerlink" title="线程切换怎么保证切回来的时候，还能够按照原来流程继续走下去。"></a>线程切换怎么保证切回来的时候，还能够按照原来流程继续走下去。</h6><h6 id="算法问题：运营在线上搞了两个活动，回收数据的时候，a活动收了2千万的那个qq号，b活动他回收了那个5千万的qq号。求两个活动大概都参加的用户有多少。设计一个算法求a和b的交集。"><a href="#算法问题：运营在线上搞了两个活动，回收数据的时候，a活动收了2千万的那个qq号，b活动他回收了那个5千万的qq号。求两个活动大概都参加的用户有多少。设计一个算法求a和b的交集。" class="headerlink" title="算法问题：运营在线上搞了两个活动，回收数据的时候，a活动收了2千万的那个qq号，b活动他回收了那个5千万的qq号。求两个活动大概都参加的用户有多少。设计一个算法求a和b的交集。"></a>算法问题：运营在线上搞了两个活动，回收数据的时候，a活动收了2千万的那个qq号，b活动他回收了那个5千万的qq号。求两个活动大概都参加的用户有多少。设计一个算法求a和b的交集。</h6><h6 id="如果编写组件，提供接口定义入参和出参，为什么入参尽可能使用C的数据类型，而不是使用C"><a href="#如果编写组件，提供接口定义入参和出参，为什么入参尽可能使用C的数据类型，而不是使用C" class="headerlink" title="如果编写组件，提供接口定义入参和出参，为什么入参尽可能使用C的数据类型，而不是使用C++"></a>如果编写组件，提供接口定义入参和出参，为什么入参尽可能使用C的数据类型，而不是使用C++</h6><h6 id="共享屏幕做算法：解析http报文，实现传入参数key返回value"><a href="#共享屏幕做算法：解析http报文，实现传入参数key返回value" class="headerlink" title="共享屏幕做算法：解析http报文，实现传入参数key返回value"></a>共享屏幕做算法：解析http报文，实现传入参数key返回value</h6><h6 id="共享屏幕做算法：快排"><a href="#共享屏幕做算法：快排" class="headerlink" title="共享屏幕做算法：快排"></a>共享屏幕做算法：快排</h6>
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/04/30/Linux_Linux%E5%86%85%E6%A0%B8%E7%BA%A7%E5%AE%89%E5%85%A8%E5%BC%80%E5%8F%91%E5%9F%BA%E7%A1%80(1)Linux%E7%9A%84%E5%8A%A8%E6%80%81%E5%86%85%E6%A0%B8%E6%A8%A1%E5%9D%97%E6%9C%BA%E5%88%B6/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="yhcs">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hexo">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2024/04/30/Linux_Linux%E5%86%85%E6%A0%B8%E7%BA%A7%E5%AE%89%E5%85%A8%E5%BC%80%E5%8F%91%E5%9F%BA%E7%A1%80(1)Linux%E7%9A%84%E5%8A%A8%E6%80%81%E5%86%85%E6%A0%B8%E6%A8%A1%E5%9D%97%E6%9C%BA%E5%88%B6/" class="post-title-link" itemprop="url">Linux：Linux内核级安全开发基础(1)Linux的动态内核模块机制</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2024-04-30 00:29:28" itemprop="dateCreated datePublished" datetime="2024-04-30T00:29:28+08:00">2024-04-30</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-07-04 23:04:41" itemprop="dateModified" datetime="2024-07-04T23:04:41+08:00">2024-07-04</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="Linux内核级安全开发基础"><a href="#Linux内核级安全开发基础" class="headerlink" title="Linux内核级安全开发基础"></a>Linux内核级安全开发基础</h3><h4 id="1-1-Linux的动态内核模块机制"><a href="#1-1-Linux的动态内核模块机制" class="headerlink" title="1.1 Linux的动态内核模块机制"></a>1.1 Linux的动态内核模块机制</h4><h5 id="1-动态内核模块机制概述"><a href="#1-动态内核模块机制概述" class="headerlink" title="1.动态内核模块机制概述"></a><strong>1.动态内核模块机制概述</strong></h5><p>Linux内核：宏内核</p>
-<p>缺点：系统功能扩展性差，设计之初实现了较多冗余功能，影响操作系统的运行效率和系统稳定性</p>
-<p>解决办法：引入<strong>内核模块动态加载机制</strong>——通过内核模块的扩展和动态加载实现操作系统功能的扩充，当一些内核模块不再使用时可以卸载该模块，以保证操作系统的运行效率和系统稳定性。</p>
-<blockquote>
-<p>Linux内核&#x3D;基本内核+一系列内核模块</p>
-</blockquote>
-<p>​		系统启动——加载基本内核——用户按照需要动态加载系统内核模块——不需要时再从内核卸载</p>
-<p>​		<strong>好处：</strong>a.让内核保持很小的尺寸，同时又非常灵活；b.可以不通过重构内核并频繁重启的方式来尝试运行新内核代码，便于新设备驱动程序的编写和调试</p>
-<h5 id="2-linux内核模块的加载和卸载"><a href="#2-linux内核模块的加载和卸载" class="headerlink" title="2.linux内核模块的加载和卸载"></a><strong>2.linux内核模块的加载和卸载</strong></h5><p><strong>内核模块的加载方式</strong>有两种：</p>
-<ul>
-<li>使用<code>insmod</code>命令手工加载模块</li>
-<li>在需要时加载模块，即请求加载</li>
-</ul>
-<p><strong>符号表：</strong>所有能够被内核模块使用的资源（基本内核中定义的资源和新加载模块中定义的资源），被操作系统以内核输出符号表的形式统一管理。</p>
-<p><strong>内核模块加载过程：</strong></p>
-<ol>
-<li>在内核输出符号表中找到本模块用到的外部符号<ol>
-<li>找不到定义的外部符号，或者找到外部符号但是与所定义的类型不一致，系统拒绝加载该模块</li>
-</ol>
-</li>
-<li>加载成功——&gt;将本模块输出的符号添加到内核输出符号表中</li>
-</ol>
-<blockquote>
-<p>模块A输出的符号被模块B使用，则称模块B依赖于模块A，或者模块A被模块B引用</p>
-</blockquote>
-<p><strong>引用计数：</strong>新模块加载到内核过程中，内核会检查该模块使用的外部符号，增加这些外部符号所在模块的引用技术。可通过<code>lsmod</code>命令查看系统已加载的内核模块以及模块的引用计数。</p>
-<p><img src="/../assets/%E4%B8%80%E3%80%81Linux%E5%86%85%E6%A0%B8%E7%BA%A7%E5%AE%89%E5%85%A8%E5%BC%80%E5%8F%91%E5%9F%BA%E7%A1%80/image-20240430002656528.png" alt="image-20240430002656528"></p>
-<p><strong>内核模块的卸载：</strong>通过使用<code>rmmod</code>命令来卸载</p>
-<ul>
-<li>如果要卸载的内核模块正在被其他模块引用，即引用计数不为零，linux系统会拒绝卸载该模块</li>
-<li>一旦内核模块被成功卸载<ul>
-<li>linux从内核符号输出表中删除在该模块中定义的外部符号</li>
-<li>检查模块曾引用的外部符号所在的模块，引用计数减1</li>
-</ul>
-</li>
-</ul>
-<p>内核模块除了可以手动卸载以外，还支持自动卸载——内核模块的自动卸载工作由后台进程<code>kerneld</code>完成，<code>keneld</code>在相应定时器到期时检查，卸载不用的模块</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/04/27/How-to-build-a-personal-blog-on-GitHub/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="yhcs">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hexo">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2024/04/27/How-to-build-a-personal-blog-on-GitHub/" class="post-title-link" itemprop="url">使用GitHub搭建个人博客</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2024-04-27 19:50:22" itemprop="dateCreated datePublished" datetime="2024-04-27T19:50:22+08:00">2024-04-27</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-05-10 15:26:05" itemprop="dateModified" datetime="2024-05-10T15:26:05+08:00">2024-05-10</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E5%8D%9A%E5%AE%A2%E7%BB%B4%E6%8A%A4/" itemprop="url" rel="index"><span itemprop="name">博客维护</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="使用GitHub搭建个人博客"><a href="#使用GitHub搭建个人博客" class="headerlink" title="使用GitHub搭建个人博客"></a>使用GitHub搭建个人博客</h3><h4 id="1-安装nodejs"><a href="#1-安装nodejs" class="headerlink" title="1.安装nodejs"></a>1.安装nodejs</h4><p>下载地址：<a target="_blank" rel="noopener" href="http://nodejs.cn/download/">http://nodejs.cn/download/</a></p>
-<ul>
-<li>选择合适的包下载安装</li>
-</ul>
-<p><img src="/../assets/How-to-build-a-personal-blog-on-GitHub/image-20240426220019530.png" alt="image-20240426220019530"></p>
-<ul>
-<li><p>验证是否下载成功</p>
-<p>在git bash里面执行下面的命令</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">node -v</span><br><span class="line">npm -v</span><br></pre></td></tr></table></figure>
-
-<p><img src="/../assets/How-to-build-a-personal-blog-on-GitHub/image-20240426220150706.png" alt="image-20240426220150706"></p>
-</li>
-</ul>
-<h4 id="2-安装cnpm"><a href="#2-安装cnpm" class="headerlink" title="2.安装cnpm"></a>2.安装cnpm</h4><ul>
-<li><p>在git bash里面执行下面的命令</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install -g cnpm --registry=http://registry.npmmirror.com</span><br></pre></td></tr></table></figure>
-
-<p>检查是否安装成功</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cnpm -v</span><br></pre></td></tr></table></figure></li>
-</ul>
-<p><img src="/../assets/How-to-build-a-personal-blog-on-GitHub/image-20240426220719751.png" alt="image-20240426220719751"></p>
-<h4 id="3-安装hexo和初始化博客"><a href="#3-安装hexo和初始化博客" class="headerlink" title="3.安装hexo和初始化博客"></a>3.安装hexo和初始化博客</h4><h5 id="1-安装hexo"><a href="#1-安装hexo" class="headerlink" title="(1)安装hexo"></a>(1)安装hexo</h5><p>在git bash里面执行下面的命令安装hexo</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cnpm install hexo-cli -g</span><br></pre></td></tr></table></figure>
-
-<h5 id="2-初始化博客"><a href="#2-初始化博客" class="headerlink" title="(2)初始化博客"></a>(2)初始化博客</h5><p>新建或者选择一个文件夹，作为blog文件夹，在该文件夹下打开git bash</p>
-<p>然后执行</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo init</span><br></pre></td></tr></table></figure>
-
-<p>如果跟我一样遇到问题，可以更换淘宝镜像，再执行<code>hexo init</code></p>
-<p><del>当时输完命令就去吃饭了，</del>具体不知道跑了多久</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm config set registry http://registry.npmmirror.com</span><br></pre></td></tr></table></figure>
-
-<p><img src="/../assets/How-to-build-a-personal-blog-on-GitHub/image-20240427191601372.png" alt="image-20240427191601372">		</p>
-<p>然后执行</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cnpm install</span><br></pre></td></tr></table></figure>
-
-<p>接下来就可以预览博客啦</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo s</span><br></pre></td></tr></table></figure>
-
-<p>结果如下，访问这段http开头的网址就可以预览了</p>
-<p><strong>注意：不要结束命令或者关闭终端！！！所以复制网址的时候别直接ctrl+C</strong></p>
-<p><img src="/../assets/How-to-build-a-personal-blog-on-GitHub/image-20240427191954231.png" alt="image-20240427191954231"></p>
-<p><img src="/../assets/How-to-build-a-personal-blog-on-GitHub/image-20240427191939029.png" alt="image-20240427191939029"></p>
-<h4 id="4-更换主题"><a href="#4-更换主题" class="headerlink" title="4.更换主题"></a>4.更换主题</h4><p>如果不喜欢默认主题的话，可以更换为next主题（适合新手）</p>
-<ul>
-<li><p>下载主题</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/theme-next/hexo-theme-next.git themes/next</span><br></pre></td></tr></table></figure>
-
-<p><img src="/../assets/How-to-build-a-personal-blog-on-GitHub/image-20240427192416992.png" alt="image-20240427192416992"></p>
-</li>
-<li><p>修改配置文件</p>
-<p>在自定义的博客文件夹下找到<code>_config.yml</code>文件</p>
-<p>将<code>landscape</code>改为<code>next</code></p>
-<p><img src="/../assets/How-to-build-a-personal-blog-on-GitHub/image-20240427192533655.png" alt="image-20240427192533655"><img src="/../assets/How-to-build-a-personal-blog-on-GitHub/image-20240427192554514.png" alt="image-20240427192554514"></p>
-</li>
-<li><p>预览网站</p>
-<p>同样的执行<code>hexo s</code></p>
-<p><img src="/../assets/How-to-build-a-personal-blog-on-GitHub/image-20240427192750576.png" alt="image-20240427192750576"></p>
-</li>
-</ul>
-<h4 id="5-其他配置"><a href="#5-其他配置" class="headerlink" title="5.其他配置"></a>5.其他配置</h4><p>注意区分两个文件，名字都为<code>_config.yml</code></p>
-<ol>
-<li>站点配置文件：指的是根目录下的，比如<code>D:\blog\_config.yml</code></li>
-<li>主题配置文件：指的是具体主题下的，比如<code>D:\blog\themes\next\_config.yml</code></li>
-</ol>
-<h6 id="a-设置语言"><a href="#a-设置语言" class="headerlink" title="a.设置语言"></a>a.设置语言</h6><p>更改站点配置文件<code>D:\blog\_config.yml</code>，将language改为zh-CN</p>
-<p><img src="/../assets/How-to-build-a-personal-blog-on-GitHub/image-20240427193621611.png" alt="image-20240427193621611"></p>
-<h6 id="b-更改主题外观"><a href="#b-更改主题外观" class="headerlink" title="b.更改主题外观"></a>b.更改主题外观</h6><p>更改主题配置文件<code>D:\blog\themes\next\_config.yml</code></p>
-<p>根据需求更改</p>
-<p><img src="/../assets/How-to-build-a-personal-blog-on-GitHub/image-20240427193801777.png" alt="image-20240427193801777"></p>
-<p>你也可以查看文档修改其他值<a target="_blank" rel="noopener" href="https://hexo.io/docs/configuration.html">https://hexo.io/docs/configuration.html</a></p>
-<p>再执行<code>hexo s</code>预览网站，现在网站长这样啦！</p>
-<blockquote>
-<p>如果没有更新的话，可以关掉刚刚git bash的窗口，重新打开就可以看到刷新了</p>
-</blockquote>
-<p><img src="/../assets/How-to-build-a-personal-blog-on-GitHub/image-20240427194518821.png" alt="image-20240427194518821"></p>
-<h4 id="6-生成文章的编辑工具"><a href="#6-生成文章的编辑工具" class="headerlink" title="6.生成文章的编辑工具"></a>6.生成文章的编辑工具</h4><p>比如，你想创建一个名为“如何使用github搭建个人博客”的文章</p>
-<p>在博客根目录下执行</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo new &quot;How to build a personal blog on GitHub&quot;</span><br></pre></td></tr></table></figure>
-
-<p><img src="/../assets/How-to-build-a-personal-blog-on-GitHub/image-20240427195036268.png" alt="image-20240427195036268"></p>
-<p>就会生成对应的markdown文件啦</p>
-<p>打开文件如下，在这里你可以修改文章标题，在下面输入文章内容</p>
-<p><img src="/../assets/How-to-build-a-personal-blog-on-GitHub/image-20240427195223632.png" alt="image-20240427195223632"></p>
-<p>同样的，执行<code>hexo s</code>预览网站</p>
-<h4 id="7-将博客部署到网站上"><a href="#7-将博客部署到网站上" class="headerlink" title="7.将博客部署到网站上"></a>7.将博客部署到网站上</h4><p>现在只是本地预览，将博客部署到网站上，就可以通过域名访问了</p>
-<p>可以通过github部署，也可以通过coding部署</p>
-<p>我用的是github</p>
-<ul>
-<li><p>创建一个仓库 Create repository</p>
-<p><img src="/../assets/How-to-build-a-personal-blog-on-GitHub/image-20240427200514974.png" alt="image-20240427200514974"></p>
-</li>
-<li><p>仓库名为用户名+.github.io，勾选初始化README</p>
-<p><img src="/../assets/How-to-build-a-personal-blog-on-GitHub/image-20240427200739418.png" alt="image-20240427200739418"></p>
-</li>
-</ul>
-<blockquote>
-<p>进行其他配置，创建一个git密钥</p>
-</blockquote>
-<ul>
-<li>打开git bash，执行（更换为你的邮箱），一直回车</li>
-</ul>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh-keygen -t rsa -C “your_email@youremail.com“</span><br></pre></td></tr></table></figure>
-
-<p>​	然后执行<code>cat ~/.ssh/id_rsa.pub</code>，复制输出信息</p>
-<ul>
-<li><p>回到github，点击头像，打开Settings，打开SSH and GPG keys，点击new SSH key</p>
-<p>在Key那里粘贴密钥，点击Add SSH Key</p>
-</li>
-<li><p>打开git bash，执行：<code>ssh -T git@github.com</code>，输入yes回车</p>
-<p><img src="/../assets/How-to-build-a-personal-blog-on-GitHub/image-20240427201542974.png" alt="image-20240427201542974"></p>
-</li>
-<li><p>打开项目，点击Code—SSH，复制地址<img src="/../assets/How-to-build-a-personal-blog-on-GitHub/image-20240427201722320.png" alt="image-20240427201722320"></p>
-</li>
-<li><p>打开站点配置文件</p>
-<p>修改</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">deploy:</span><br><span class="line">  type: git</span><br><span class="line">  repo: git@github.com:yhcslin/yhcslin.github.io.git //更换为你的地址</span><br><span class="line">  branch: main</span><br></pre></td></tr></table></figure>
-
-<p><img src="/../assets/How-to-build-a-personal-blog-on-GitHub/image-20240427202617046.png" alt="image-20240427202617046"></p>
-</li>
-<li><p>在博客根目录下打开git bash，分别执行下面的命令，更换为你的名字和邮箱</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git config --global user.name &quot;yourname&quot;</span><br><span class="line">git config --global user.email &quot;youremail&quot;</span><br></pre></td></tr></table></figure>
-
-<p>安装上传插件</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cnpm install hexo-deployer-git --save</span><br></pre></td></tr></table></figure>
-
-<p>然后执行下面的命令上传</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hexo g -d</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>然后打开项目，点击Settings—Pages</p>
-<p>出现的就是你的网址</p>
-<p><img src="/../assets/How-to-build-a-personal-blog-on-GitHub/image-20240427202655378.png" alt="image-20240427202655378"></p>
-<h3 id="完结撒花！！！"><a href="#完结撒花！！！" class="headerlink" title="完结撒花！！！"></a>完结撒花！！！</h3></li>
-</ul>
-<blockquote>
-<p>参考链接</p>
-<ul>
-<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/huanhao/p/hexobase.html">https://www.cnblogs.com/huanhao/p/hexobase.html</a> 比我讲的要详细，但是有些在淘宝镜像那里的链接要更新</li>
-<li><a target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/article/2395526">https://cloud.tencent.com/developer/article/2395526</a> 上传图片有问题的可以看这里</li>
-</ul>
-</blockquote>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1933,7 +1673,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">41</span>
+          <span class="site-state-item-count">46</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

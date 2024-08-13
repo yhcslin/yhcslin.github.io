@@ -150,6 +150,591 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/07/13/Netfilter%E6%9C%BA%E5%88%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="yhcs">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/07/13/Netfilter%E6%9C%BA%E5%88%B6/" class="post-title-link" itemprop="url">Netfilter机制</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2024-07-13 16:52:11 / 修改时间：16:52:31" itemprop="dateCreated datePublished" datetime="2024-07-13T16:52:11+08:00">2024-07-13</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="防火墙实现基础：Netfilter机制"><a href="#防火墙实现基础：Netfilter机制" class="headerlink" title="防火墙实现基础：Netfilter机制"></a>防火墙实现基础：Netfilter机制</h1><p><code>Netfilter</code>机制的核心是一个开放式的IP数据包处理框架，对外提供了处理IP数据包的统一接口，编程人员可以利用该接口实现对IP数据包的控制和其他新的处理方式</p>
+<h3 id="1-Netfilter机制的运行原理"><a href="#1-Netfilter机制的运行原理" class="headerlink" title="1.Netfilter机制的运行原理"></a>1.Netfilter机制的运行原理</h3><p>核心思想：在网络IP协议层的IP数据包处理流程中，总结出几个关键点（即钩子点），提供了多种可能的IP数据包处理方式和开放接口。安全管理员不仅可以配置Netfilter以不同的处理方式处理IP数据包，也可以利用Netfilter所提供的开放接口在IP数据包的协议处理流程中实现新的IP数据包处理方式<br>在Netfilter机制中有五个钩子点：</p>
+<ol>
+<li><code>IP_PRE_ROUTING</code>:ip数据包刚刚从网络接口接收到</li>
+<li><code>IP_FORWARD</code>:ip数据包已经进行了路由处理，需要转发到下一跳但还没有进行转发</li>
+<li><code>IP_LOCAL_IN</code>:从网络接收的需要发往本机的数据包</li>
+<li><code>IP_LOCAL_OUT</code>:刚刚从本机发出还未进行路由处理的ip数据包</li>
+<li><code>IP_POST_ROUTING</code>:ip数据包将要离开本机发往下一跳之前</li>
+</ol>
+<h3 id="2-Netfilter功能种类"><a href="#2-Netfilter功能种类" class="headerlink" title="2.Netfilter功能种类"></a>2.Netfilter功能种类</h3><p>Netfilter在这些钩子点上所支持的不同报文处理方式可以分为两种：<br>1.内嵌处理方式：不用自己编写程序，通过配置Netfilter就可以实现相应的报文处理方式</p>
+<ul>
+<li>报文过滤方式</li>
+<li>报文重定向<br>2.开放处理方式：在Netfilter基础上自己开发新的报文处理，Netfilter将数据包的处理权交给新开发的报文处理</li>
+<li>钩子函数方式：在流过某钩子点时，注册在该钩子点的钩子函数将会被调用<ul>
+<li>内核模块可以在这些钩子点上注册钩子函数，将自定义的IP数据包处理函数挂接在相应的钩子上。</li>
+<li>当数据包经过Netfilter框架的某个钩子点时，内核会检测是否有内核模块对该钩子点进行了钩子函数注册。如果有注册，就调用相应的钩子函数，从而有机会检查和修改数据包，并返回处理结果给Netfilter框架。</li>
+<li>Netfilter根据钩子函数的返回结果来处理IP数据包，如丢弃数据包或按常规处理数据包。</li>
+<li>多个内核模块可以在同一个钩子点注册它们的钩子函数，Netfilter会按照优先级调用这些钩子函数。</li>
+</ul>
+</li>
+<li>队列输出方式：钩子函数方式需要进行复杂的Linux内核编程，对于安全管理员来说具有挑战性。<ul>
+<li>Netfilter提供了队列输出功能，使得经过的IP数据包可以直接交给应用层处理。</li>
+<li>安全管理员可以在应用层开发应用软件，对数据包进行自主处理，如丢弃或修改。</li>
+<li>处理后的数据包可以再通过Netfilter的队列输出功能发送给IP协议层进行后续协议处理。</li>
+</ul>
+</li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/07/13/%E7%BD%91%E7%BB%9C%E9%98%B2%E7%81%AB%E5%A2%99%E5%8A%9F%E8%83%BD%E4%B8%8E%E7%BB%93%E6%9E%84%E8%A7%A3%E6%9E%90/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="yhcs">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/07/13/%E7%BD%91%E7%BB%9C%E9%98%B2%E7%81%AB%E5%A2%99%E5%8A%9F%E8%83%BD%E4%B8%8E%E7%BB%93%E6%9E%84%E8%A7%A3%E6%9E%90/" class="post-title-link" itemprop="url">网络防火墙功能与结构解析</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2024-07-13 16:50:45 / 修改时间：16:51:20" itemprop="dateCreated datePublished" datetime="2024-07-13T16:50:45+08:00">2024-07-13</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="网络防火墙功能与结构解析"><a href="#网络防火墙功能与结构解析" class="headerlink" title="网络防火墙功能与结构解析"></a>网络防火墙功能与结构解析</h1><h3 id="1-网络防火墙的基本概念"><a href="#1-网络防火墙的基本概念" class="headerlink" title="1.网络防火墙的基本概念"></a>1.网络防火墙的基本概念</h3><p>网络防火墙一般部署在内部网络接入Internet的出口处，通过对网间所传递的数据进行分析和控制，只有被认定为正常的网络协议数据才能通过防火墙</p>
+<h3 id="2-网络防火墙的网络访问控制功能"><a href="#2-网络防火墙的网络访问控制功能" class="headerlink" title="2.网络防火墙的网络访问控制功能"></a>2.网络防火墙的网络访问控制功能</h3><p>网络防火墙最核心的基本功能：<strong>网络访问的管理和控制</strong><br>实现关键：甄别网络访问是否正当——访问控制的<strong>决策</strong>过程，涉及到三方面：</p>
+<ol>
+<li>访问控制规则的设计</li>
+<li>访问控制决策的形成</li>
+<li>访问控制决策的实施</li>
+</ol>
+<h3 id="3-访问控制功能的实现要素"><a href="#3-访问控制功能的实现要素" class="headerlink" title="3.访问控制功能的实现要素"></a>3.访问控制功能的实现要素</h3><p>网络防火墙完成完整的访问控制功能，需要三个基本的功能要素：</p>
+<ol>
+<li>访问控制规则的配置</li>
+<li>基于访问控制规则的访问判决</li>
+<li>访问判决的实施</li>
+</ol>
+<h4 id="3-1-访问控制规则的配置"><a href="#3-1-访问控制规则的配置" class="headerlink" title="3.1 访问控制规则的配置"></a>3.1 访问控制规则的配置</h4><p>访问控制规则所依赖的要素：</p>
+<ol>
+<li>网络访问参量：网络访问属性，例如数据包的源ip、源端口、目的ip等</li>
+<li>系统状态参量：全局性的系统状态变量，例如系统时间：工作日的9:00~17:00才能访问</li>
+<li>自定义参量</li>
+</ol>
+<p>访问控制规则&#x3D;多条规则组成的规则集合——&gt;规则冲突解决方案</p>
+<h4 id="3-2-基于访问控制规则的访问判决"><a href="#3-2-基于访问控制规则的访问判决" class="headerlink" title="3.2 基于访问控制规则的访问判决"></a>3.2 基于访问控制规则的访问判决</h4><p>根据访问属性执行相应的访问控制规则，得出具体的访问判决结构<br>基于访问控制规则的访问判决包含三个过程：</p>
+<ol>
+<li><p>控制规则选取阶段：预先知道网络访问的一些属性，才能选取相应的控制规则，比如说两条访问控制规则，分别用于TCP应用和UDP应用，则得先知道网络访问对应于哪种业务类型，tcp还是udp</p>
+</li>
+<li><p>单规则判决阶段：</p>
+<p>如何获得该规则中的参量：</p>
+<ol>
+<li>读取配置文件…</li>
+<li>全局状态参量：访问全局数据结构或状态查询函数</li>
+<li>网络访问参量值</li>
+</ol>
+</li>
+<li><p>冲突判决仲裁阶段：判决结果冲突，大多数防火墙采取“否定优先”的方式</p>
+</li>
+</ol>
+<h4 id="3-3-网络访问判决的实施"><a href="#3-3-网络访问判决的实施" class="headerlink" title="3.3 网络访问判决的实施"></a>3.3 网络访问判决的实施</h4><p>要对一个网络访问进行控制，首先需要在机制上保证网络防火墙能够截获到该网路访问，如截获一个TCP连接。也就是说，网络防火墙必须运行在网络访问所经的结点或者至少有一个模块运行在相应的节点上。<br>详细见3.5</p>
+<h3 id="4-网络防火墙的逻辑结构"><a href="#4-网络防火墙的逻辑结构" class="headerlink" title="4.网络防火墙的逻辑结构"></a>4.网络防火墙的逻辑结构</h3><p>网络防火墙在逻辑上可以分为三大模块：</p>
+<ol>
+<li>访问控制规则配置模块：提供一个接口，供网络管理员配置相应的访问控制规则，并将配置结果保存在访问控制规则库中</li>
+<li>网络访问截获和控制模块：截获网络访问，向网络访问判决模块询问如何处理该网络访问，待网络访问判决模块返回判决结果后，依据所得到的判决结果对该网络访问实施访问控制，放行还是阻断该网络访问</li>
+<li>网络访问判决模块：针对网络访问截获和控制模块提交来的访问判决请求，依据访问控制规则形成访问判决，并将判决结果返回给网络访问截获和控制模块。<br>此外还需要一个保存访问控制规则的数据库</li>
+</ol>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/07/13/HTTP%E5%8D%8F%E8%AE%AE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="yhcs">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/07/13/HTTP%E5%8D%8F%E8%AE%AE/" class="post-title-link" itemprop="url">HTTP协议</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2024-07-13 16:48:56 / 修改时间：16:49:31" itemprop="dateCreated datePublished" datetime="2024-07-13T16:48:56+08:00">2024-07-13</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="HTTP"><a href="#HTTP" class="headerlink" title="HTTP"></a>HTTP</h2><h3 id="HTTP基本概念"><a href="#HTTP基本概念" class="headerlink" title="HTTP基本概念"></a>HTTP基本概念</h3><h4 id="HTTP是什么"><a href="#HTTP是什么" class="headerlink" title="HTTP是什么"></a>HTTP是什么</h4><p>HTTP 超文本传输协议</p>
+<ol>
+<li>传输：两点之间，可以是本地浏览器和服务器，也可以是服务器和服务器</li>
+<li>超文本：文字、图片、视频等文本的混合体，并且有超链接，能从一个超文本跳转到另一个超文本</li>
+</ol>
+<h4 id="HTTP常见状态码"><a href="#HTTP常见状态码" class="headerlink" title="HTTP常见状态码"></a>HTTP常见状态码</h4><p>五大类HTTP状态码</p>
+<ol>
+<li><p>1XX：提示信息，表示协议处理的一种中间状态</p>
+</li>
+<li><p>2XX：报文已经被收到并被正确处理</p>
+<ul>
+<li>200 OK：表示一切正常，如果是非 HEAD 请求，服务器返回的响应头都会有 body 数据。</li>
+<li>204 No Content：与 200 OK 基本相同，但响应头没有 body 数据</li>
+<li>206 Partical Content：应用于 HTTP <strong>分块下载或断点续传</strong>，表示响应返回的 body 数据并不是资源的全部，而是其中的一部分，也是服务器处理成功的状态。</li>
+</ul>
+</li>
+<li><p>3XX：客户端请求的资源发生了变动，需要客户端用新的 URL 重新发送请求获取资源，也就是<strong>重定向</strong></p>
+<ul>
+<li>301 Moved Permanently：永久重定向，说明请求的资源已经不存在了，需改用新的 URL 再次访问</li>
+<li>302 Found：临时重定向，说明请求的资源还在，但暂时需要用另一个 URL 来访问</li>
+</ul>
+<blockquote>
+<p>301 和 302 都会在响应头里使用字段 Location，指明后续要跳转的 URL，浏览器会自动重定向新的 URL</p>
+</blockquote>
+<ul>
+<li>304 Not Modified: 不具有跳转的含义，表示资源未修改，重定向已存在的缓冲文件，也称<strong>缓存重定向</strong>（返回客户端上的缓存），也就是告诉客户端可以继续使用缓存资源，用于缓存控制</li>
+</ul>
+</li>
+<li><p>4XX：客户端发送的报文有误，服务器无法处理</p>
+<ul>
+<li>400 Bad Request：客户端请求的报文有误，笼统的错误码</li>
+<li>403 Forbidden：客户端请求的资源是服务器禁止访问的</li>
+<li>404 Not Found：请求的资源的在服务器上不存在或未找到</li>
+</ul>
+</li>
+<li><p>5XX：客户端请求报文正确，但是服务器处理时内部发生错误</p>
+<ul>
+<li>500 Internal Server Error：笼统的错误码，表示服务器发生错误，发生什么错误不知道</li>
+<li>501 Not Implemented：客户端请求的功能还不支持，“即将开业，敬请期待”</li>
+<li>502 Bad Gateway：服务器作为网关或者代理时返回的错误码，表示服务器自身工作正常，访问后端服务器时发生了错误</li>
+<li>503 Service Unavailable：表示服务器当前正忙，暂时无法响应，“网络服务正忙，请稍后再试”</li>
+</ul>
+</li>
+</ol>
+<h4 id="HTTP常见字段"><a href="#HTTP常见字段" class="headerlink" title="HTTP常见字段"></a>HTTP常见字段</h4><ul>
+<li><code>host</code>：客户端发送请求时，指定服务器的域名</li>
+<li><code>Content-Length</code>：本次回应数据的长度，解决“粘包”</li>
+</ul>
+<blockquote>
+<p>HTTP协议解决粘包的方法：1. 设置回车符、换行符作为http header的边界；2.通过<code>Conten-Length</code>字段作为http body的边界</p>
+</blockquote>
+<ul>
+<li><code>Connection</code>：用于客户端要求服务器使用“HTTP长连接”机制，以便其他请求复用</li>
+</ul>
+<blockquote>
+<p>HTTP长连接的特点：只要任意一端没有明确提出断开连接，则保持TCP连接状态<br>HTTP&#x2F;1.1版本默认使用长连接，为了兼容旧版本，所以设定<code>Connection</code>字段的值为<code>Keep-Alive</code><br>ps：注意 HTTP Keep-Alive 和 TCP Keepalive 不是一个东西</p>
+</blockquote>
+<ul>
+<li><code>Accept</code>：客户端请求的时候，声明自己可以接受哪些数据格式，<code>Accept: */*</code>:客户端声明自己可以接受任何格式的数据</li>
+<li><code>Content-Type</code>：服务器回应时，告诉客户端，本次数据是什么格式，<code>Content-Type: text/html; Charset=utf-8</code>：表明，发送的是网页，而且编码是UTF-8</li>
+<li><code>Accept-Encoding</code>:客户端在请求时，说明自己可以接受哪些压缩方法,<code>Accept-Encoding: gzip, deflate</code></li>
+<li><code>Content-Encoding</code>：说明数据的压缩方法,表示服务器返回的数据使用了什么压缩格式,<code>Content-Encoding: gzip</code></li>
+</ul>
+<h3 id="GET与POST"><a href="#GET与POST" class="headerlink" title="GET与POST"></a>GET与POST</h3><h4 id="GET和POST的区别"><a href="#GET和POST的区别" class="headerlink" title="GET和POST的区别"></a>GET和POST的区别</h4><ul>
+<li><p>GET和POST的语义区别</p>
+<p>（根据RFC规范）</p>
+<ul>
+<li>GET：从服务器获取指定的资源，请求的<strong>参数位置</strong>一般是写在 URL 中，URL 规定只能支持 ASCII，所以 GET 请求的参数只允许 ASCII 字符 ，而且浏览器会对 URL 的长度有限制（HTTP协议本身对 URL长度并没有做任何规定）。</li>
+<li>POST：根据请求负荷（报文body）对指定的资源做出处理，POST 请求携带<strong>数据的位置</strong>一般是写在报文 body 中，body 中的数据可以是任意格式的数据，只要客户端与服务端协商好即可，而且浏览器不会对 body 大小做限制</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>安全和幂等的概念：</p>
+<ul>
+<li>安全：HTTP协议里所谓的安全是请求方法不会破坏服务器上的资源</li>
+<li>幂等：多次执行相同的操作，结果都是相同的</li>
+</ul>
+</blockquote>
+<ul>
+<li><p>GET 和 POST 方法是否安全和幂等</p>
+<p>（RFC 规范定义）</p>
+<ul>
+<li>GET 方法就是安全且幂等的，因为它是<strong>只读</strong>操作，无论操作多少次，服务器上的数据都是安全的，且每次的结果都是相同的。所以，可以对 GET 请求的数据<strong>做缓存</strong>，这个缓存可以做到浏览器本身上（彻底避免浏览器发请求），也可以做到代理上（如nginx），而且在浏览器中 GET 请求可以保存为书签</li>
+<li>POST 因为是<strong>新增或提交数据</strong>的操作，会修改服务器上的资源，所以是<strong>不安全</strong>的，且多次提交数据就会创建多个资源，所以不是幂等的。所以，浏览器一般<strong>不会缓存</strong> POST 请求，也不能把 POST 请求保存为书签。</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>注意： 上面是从 RFC 规范定义的语义来分析的，但是实际过程中，开发者不一定会按照 RFC 规范定义的语义来实现 GET 和 POST 方法。比如：</p>
+<ul>
+<li>可以用 GET 方法实现新增或删除数据的请求，这样实现的 GET 方法自然就不是安全和幂等。</li>
+<li>可以用 POST 方法实现查询数据的请求，这样实现的 POST 方法自然就是安全和幂等。</li>
+</ul>
+</blockquote>
+<p>Q：GET 请求可以带 body 吗？<br>A：RFC 规范并没有规定 GET 请求不能带 body 的。理论上，任何请求都可以带 body 的。只是因为 RFC 规范定义的 GET 请求是获取资源，所以根据这个语义不需要用到 body。</p>
+<p>另外，URL 中的查询参数也不是 GET 所独有的，POST 请求的 URL 中也可以有参数的</p>
+<h3 id="HTTP缓存技术"><a href="#HTTP缓存技术" class="headerlink" title="HTTP缓存技术"></a>HTTP缓存技术</h3><h4 id="HTTP缓存的实现方式"><a href="#HTTP缓存的实现方式" class="headerlink" title="HTTP缓存的实现方式"></a>HTTP缓存的实现方式</h4><p>重复性的HTTP请求，每次都会得到相同的结果——&gt;[请求-响应]——&gt;缓存在本地，下次直接从缓存读取，不用通过网络从服务器获取，提升性能<br>HTTP缓存的实现方式：1.强制缓存；2.协商缓存</p>
+<h5 id="强制缓存"><a href="#强制缓存" class="headerlink" title="强制缓存"></a>强制缓存</h5><p>强制缓存：浏览器判断缓存没有过期，则直接使用浏览器的本地缓存，主动权在浏览器<br><strong>实现字段：</strong><br><code>Cache-Control</code>：相对时间，优先级更高，建议使用<br><code>Expires</code>：绝对时间<br><strong>实现流程：</strong></p>
+<ol>
+<li>浏览器第一次请求访问时，服务器返回资源的同时，在响应报文头部加上<code>Cache-Control</code>，设置了过期时间的大小</li>
+<li>浏览器再次请求访问资源时，先通过请求资源的时间和过期时间，判断资源是否过期，如果没过期就使用缓存，否则重新请求服务器</li>
+<li>服务器再次返回资源时，会更新response头部的<code>Cache-Control</code></li>
+</ol>
+<h5 id="协商缓存"><a href="#协商缓存" class="headerlink" title="协商缓存"></a>协商缓存</h5><p>响应码304：告诉浏览器可以使用本地缓存<br>协商缓存：通过服务器告知客户端是否可以使用缓存，即浏览器和服务端协商之后，通过协商结果判断是否使用本地缓存<br>注意：协商缓存这两个字段都需要配合强制缓存中 Cache-Control 字段来使用，只有在未能命中强制缓存的时候，才能发起带有协商缓存字段的请求。<br><strong>实现字段：</strong></p>
+<ol>
+<li>请求头部中的 <code>If-Modified-Since</code> 和响应头部中的 <code>Last-Modified</code> 字段实现<br>a. <code>If-Modified-Since</code>：资源过期，发现响应头中具有 <code>Last-Modified</code> 声明，则再次发起请求的时候带上 <code>Last-Modified</code> 的时间，服务器收到请求后发现有 <code>If-Modified-Since</code> 则与被请求资源的最后修改时间进行对比（<code>Last-Modified</code>），如果最后修改时间较新（大），说明资源又被改过，则返回最新资源，HTTP 200 OK；如果最后修改时间较旧（小），说明资源无新修改，响应 HTTP 304 缓存。<br>b. <code>Last-Modified</code>：响应资源的最后修改时间</li>
+</ol>
+<p>2.请求头部中的 <code>If-None-Match</code> 字段与响应头部中的 <code>ETag</code> 字段<br>a. <code>ETag</code>：唯一标识响应资源<br>b. <code>If-None-Match</code>：资源过期时，浏览器发现响应头里有 Etag，则再次向服务器发起请求时，会将请求头 If-None-Match 值设置为 Etag 的值。服务器收到请求后进行比对，如果资源没有变化返回 304，如果资源变化了返回 200</p>
+<p>第一种实现方式是基于<strong>时间</strong>实现的，第二种实现方式是基于一个<strong>唯一标识</strong>实现的，相对来<strong>说后者可以更加准确</strong>地判断文件内容是否被修改，避免由于时间篡改导致的不可靠问题。</p>
+<p>如果在第一次请求资源的时候，服务端返回的 HTTP 响应头部同时有 Etag 和 Last-Modified 字段，那么客户端再下一次请求的时候，如果带上了 ETag 和 Last-Modified 字段信息给服务端，这时 Etag 的优先级更高，也就是服务端先<strong>会判断 Etag 是否变化</strong>了，如果 Etag 有变化就不用在判断 Last-Modified 了，如果 Etag 没有变化，然后再看 Last-Modified。</p>
+<p><strong>为什么 ETag 的优先级更高？</strong><br>这是因为 ETag 主要能解决 Last-Modified 几个比较难以解决的问题：</p>
+<ol>
+<li>在没有修改文件内容情况下文件的最后修改时间可能也会改变，这会导致客户端认为这文件被改动了，从而重新请求；</li>
+<li>可能有些文件是在秒级以内修改的，If-Modified-Since 能检查到的粒度是秒级的，使用 Etag就能够保证这种需求下客户端在 1 秒内能刷新多次；</li>
+<li>有些服务器不能精确获取文件的最后修改时间</li>
+</ol>
+<p>使用 ETag 字段实现的协商缓存的过程：</p>
+<ol>
+<li>当浏览器第一次请求访问服务器资源时，服务器会在返回这个资源的同时，在 Response 头部加上 ETag 唯一标识，这个唯一标识的值是根据当前请求的资源生成的；</li>
+<li>当浏览器再次请求访问服务器中的该资源时，首先会先检查强制缓存是否过期：<ul>
+<li>如果没有过期，则直接使用本地缓存；</li>
+<li>如果缓存过期了，会在 Request 头部加上 If-None-Match 字段，该字段的值就是 ETag 唯一标识；</li>
+</ul>
+</li>
+<li>服务器再次收到请求后，会根据请求中的 If-None-Match 值与当前请求的资源生成的唯一标识进行比较：<ul>
+<li>如果值相等，则返回 304 Not Modified，不会返回资源；</li>
+<li>如果不相等，则返回 200 状态码和返回资源，并在 Response 头部加上新的 ETag 唯一标识；</li>
+</ul>
+</li>
+<li>如果浏览器收到 304 的请求响应状态码，则会从本地缓存中加载资源，否则更新资源</li>
+</ol>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/07/07/python%E6%AF%94%E8%BE%83%E4%B8%A4%E4%B8%AA%E5%A4%8D%E6%9D%82%E5%AD%97%E5%85%B8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="yhcs">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/07/07/python%E6%AF%94%E8%BE%83%E4%B8%A4%E4%B8%AA%E5%A4%8D%E6%9D%82%E5%AD%97%E5%85%B8/" class="post-title-link" itemprop="url">python比较两个复杂字典</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2024-07-07 22:51:56" itemprop="dateCreated datePublished" datetime="2024-07-07T22:51:56+08:00">2024-07-07</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-07-13 16:58:16" itemprop="dateModified" datetime="2024-07-13T16:58:16+08:00">2024-07-13</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index"><span itemprop="name">python</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h4 id=""><a href="#" class="headerlink" title=""></a></h4><h4 id="字典结构"><a href="#字典结构" class="headerlink" title="字典结构"></a>字典结构</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">dict</span> = &#123;</span><br><span class="line">        <span class="string">&quot;family&quot;</span>: &#123;</span><br><span class="line">            <span class="string">&quot;grandfather&quot;</span>: [</span><br><span class="line">                <span class="string">&quot;John&quot;</span>,</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="string">&quot;father&quot;</span>: <span class="string">&quot;Michael&quot;</span>,</span><br><span class="line">                    <span class="string">&quot;kids&quot;</span>: [</span><br><span class="line">                        &#123;<span class="string">&quot;kid&quot;</span>: (<span class="string">&quot;Tom&quot;</span>, <span class="number">10</span>, <span class="string">&quot;M&quot;</span>, <span class="string">&quot;123 Street&quot;</span>)&#125;,</span><br><span class="line">                        &#123;<span class="string">&quot;kid&quot;</span>: (<span class="string">&quot;Lucy&quot;</span>, <span class="number">12</span>, <span class="string">&quot;F&quot;</span>, <span class="string">&quot;456 Street&quot;</span>)&#125;</span><br><span class="line">                    ]</span><br><span class="line">                &#125;</span><br><span class="line">            ]</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">compare_dicts</span>(<span class="params">dict1, dict2, path=<span class="string">&quot;&quot;</span></span>):</span><br><span class="line">    differences = []</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Check for keys in dict1 not in dict2</span></span><br><span class="line">    <span class="keyword">for</span> key <span class="keyword">in</span> dict1:</span><br><span class="line">        <span class="keyword">if</span> key <span class="keyword">not</span> <span class="keyword">in</span> dict2:</span><br><span class="line">            differences.append(<span class="string">f&quot;Key <span class="subst">&#123;path + <span class="built_in">str</span>(key)&#125;</span> is missing in the second dictionary&quot;</span>)</span><br><span class="line">        <span class="keyword">else</span>:</span><br><span class="line">            <span class="keyword">if</span> <span class="built_in">isinstance</span>(dict1[key], <span class="built_in">dict</span>) <span class="keyword">and</span> <span class="built_in">isinstance</span>(dict2[key], <span class="built_in">dict</span>):</span><br><span class="line">                differences.extend(compare_dicts(dict1[key], dict2[key], path + <span class="built_in">str</span>(key) + <span class="string">&quot;-&gt;&quot;</span>))</span><br><span class="line">            <span class="keyword">elif</span> <span class="built_in">isinstance</span>(dict1[key], <span class="built_in">list</span>) <span class="keyword">and</span> <span class="built_in">isinstance</span>(dict2[key], <span class="built_in">list</span>):</span><br><span class="line">                <span class="keyword">if</span> <span class="built_in">len</span>(dict1[key]) != <span class="built_in">len</span>(dict2[key]):</span><br><span class="line">                    differences.append(<span class="string">f&quot;List length mismatch at <span class="subst">&#123;path + <span class="built_in">str</span>(key)&#125;</span>&quot;</span>)</span><br><span class="line">                <span class="keyword">else</span>:</span><br><span class="line">                    <span class="keyword">for</span> i, (item1, item2) <span class="keyword">in</span> <span class="built_in">enumerate</span>(<span class="built_in">zip</span>(dict1[key], dict2[key])):</span><br><span class="line">                        <span class="keyword">if</span> <span class="built_in">isinstance</span>(item1, <span class="built_in">dict</span>) <span class="keyword">and</span> <span class="built_in">isinstance</span>(item2, <span class="built_in">dict</span>):</span><br><span class="line">                            differences.extend(compare_dicts(item1, item2, path + <span class="built_in">str</span>(key) + <span class="string">f&quot;[<span class="subst">&#123;i&#125;</span>]-&gt;&quot;</span>))</span><br><span class="line">                        <span class="keyword">elif</span> item1 != item2:</span><br><span class="line">                            differences.append(<span class="string">f&quot;List item mismatch at <span class="subst">&#123;path + <span class="built_in">str</span>(key)&#125;</span>[<span class="subst">&#123;i&#125;</span>]: <span class="subst">&#123;item1&#125;</span> != <span class="subst">&#123;item2&#125;</span>&quot;</span>)</span><br><span class="line">            <span class="keyword">elif</span> <span class="built_in">isinstance</span>(dict1[key], <span class="built_in">tuple</span>) <span class="keyword">and</span> <span class="built_in">isinstance</span>(dict2[key], <span class="built_in">tuple</span>):</span><br><span class="line">                <span class="keyword">if</span> dict1[key] != dict2[key]:</span><br><span class="line">                    differences.append(<span class="string">f&quot;Tuple mismatch at <span class="subst">&#123;path + <span class="built_in">str</span>(key)&#125;</span>: <span class="subst">&#123;dict1[key]&#125;</span> != <span class="subst">&#123;dict2[key]&#125;</span>&quot;</span>)</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                <span class="keyword">if</span> dict1[key] != dict2[key]:</span><br><span class="line">                    differences.append(<span class="string">f&quot;Value mismatch at <span class="subst">&#123;path + <span class="built_in">str</span>(key)&#125;</span>: <span class="subst">&#123;dict1[key]&#125;</span> != <span class="subst">&#123;dict2[key]&#125;</span>&quot;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Check for keys in dict2 not in dict1</span></span><br><span class="line">    <span class="keyword">for</span> key <span class="keyword">in</span> dict2:</span><br><span class="line">        <span class="keyword">if</span> key <span class="keyword">not</span> <span class="keyword">in</span> dict1:</span><br><span class="line">            differences.append(<span class="string">f&quot;Key <span class="subst">&#123;path + <span class="built_in">str</span>(key)&#125;</span> is missing in the first dictionary&quot;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> differences</span><br></pre></td></tr></table></figure>
+
+<h4 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">def</span> <span class="title function_">main</span>():</span><br><span class="line">    dict1 = &#123;</span><br><span class="line">        <span class="string">&quot;family&quot;</span>: &#123;</span><br><span class="line">            <span class="string">&quot;grandfather&quot;</span>: [</span><br><span class="line">                <span class="string">&quot;John&quot;</span>,</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="string">&quot;father&quot;</span>: <span class="string">&quot;Michael&quot;</span>,</span><br><span class="line">                    <span class="string">&quot;kids&quot;</span>: [</span><br><span class="line">                        &#123;<span class="string">&quot;kid&quot;</span>: (<span class="string">&quot;Tom&quot;</span>, <span class="number">10</span>, <span class="string">&quot;M&quot;</span>, <span class="string">&quot;123 Street&quot;</span>)&#125;,</span><br><span class="line">                        &#123;<span class="string">&quot;kid&quot;</span>: (<span class="string">&quot;Lucy&quot;</span>, <span class="number">12</span>, <span class="string">&quot;F&quot;</span>, <span class="string">&quot;456 Street&quot;</span>)&#125;</span><br><span class="line">                    ]</span><br><span class="line">                &#125;</span><br><span class="line">            ]</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    dict2 = &#123;</span><br><span class="line">        <span class="string">&quot;family&quot;</span>: &#123;</span><br><span class="line">            <span class="string">&quot;grandfather&quot;</span>: [</span><br><span class="line">                <span class="string">&quot;John&quot;</span>,</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="string">&quot;father&quot;</span>: <span class="string">&quot;Michael&quot;</span>,</span><br><span class="line">                    <span class="string">&quot;kids&quot;</span>: [</span><br><span class="line">                        &#123;<span class="string">&quot;kid&quot;</span>: (<span class="string">&quot;Tom&quot;</span>, <span class="number">10</span>, <span class="string">&quot;M&quot;</span>, <span class="string">&quot;123 Street&quot;</span>)&#125;,</span><br><span class="line">                        &#123;<span class="string">&quot;kid&quot;</span>: (<span class="string">&quot;Lucy&quot;</span>, <span class="number">13</span>, <span class="string">&quot;F&quot;</span>, <span class="string">&quot;456 Street&quot;</span>)&#125;</span><br><span class="line">                    ]</span><br><span class="line">                &#125;</span><br><span class="line">            ]</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    differences = compare_dicts(dict1, dict2)</span><br><span class="line">    <span class="keyword">if</span> <span class="keyword">not</span> differences:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;没有差异&quot;</span>)</span><br><span class="line">    <span class="keyword">else</span>:</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;差异如下：&quot;</span>)</span><br><span class="line">        <span class="keyword">for</span> diff <span class="keyword">in</span> differences:</span><br><span class="line">            <span class="built_in">print</span>(diff)</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    main()</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/07/04/Linux_Linux%E5%86%85%E6%A0%B8%E7%BA%A7%E5%AE%89%E5%85%A8%E5%BC%80%E5%8F%91%E5%9F%BA%E7%A1%80(2)%E5%86%85%E6%A0%B8%E6%A8%A1%E5%9D%97%E5%BC%80%E5%8F%91%E6%96%B9%E6%B3%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="yhcs">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/07/04/Linux_Linux%E5%86%85%E6%A0%B8%E7%BA%A7%E5%AE%89%E5%85%A8%E5%BC%80%E5%8F%91%E5%9F%BA%E7%A1%80(2)%E5%86%85%E6%A0%B8%E6%A8%A1%E5%9D%97%E5%BC%80%E5%8F%91%E6%96%B9%E6%B3%95/" class="post-title-link" itemprop="url">Linux：Linux内核级安全开发基础(2)内核模块开发方法</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2024-07-04 22:54:52 / 修改时间：23:07:11" itemprop="dateCreated datePublished" datetime="2024-07-04T22:54:52+08:00">2024-07-04</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="Linux内核级安全开发基础"><a href="#Linux内核级安全开发基础" class="headerlink" title="Linux内核级安全开发基础"></a>Linux内核级安全开发基础</h3><h4 id="1-2-内核模块开发方法"><a href="#1-2-内核模块开发方法" class="headerlink" title="1.2 内核模块开发方法"></a>1.2 内核模块开发方法</h4><h5 id="1-源代码组成"><a href="#1-源代码组成" class="headerlink" title="1.源代码组成"></a>1.源代码组成</h5><p>Linux动态内核模块一般需要包括三部分</p>
+<ol>
+<li><p>模块初始化部分：模块的注册、数据和变量的初始化</p>
+<p>该模块以初始化函数的形式存在，<strong>在模块加载到内核运行时</strong>，系统就会自动调用该函数完成模块的初始化</p>
+</li>
+<li><p>模块的注销部分：完成资源的释放</p>
+<p>该部分以注销函数的形式出现，<strong>在模块从内核卸载时</strong>，系统就会自动调用该函数完成模块的注销工作</p>
+</li>
+<li><p>模块的主体功能部分：用于实现模块的具体功能</p>
+<p>该部分通常以一组函数形式存在，不会自动运行，在需要的时候由用户通过系统调用或其他的功能模块调用</p>
+</li>
+</ol>
+<h5 id="2-外部符号引用"><a href="#2-外部符号引用" class="headerlink" title="2.外部符号引用"></a>2.外部符号引用</h5><ul>
+<li><p>应用程序vs内核模块的外部资源</p>
+<p><u>应用程序的开发</u>通常需要调用一些外部的资源，如库函数、系统调用等，以实现较为复杂同样 <u>Linux的内核模块编程</u>也经常需要使用外部资源，不同的是应用程序中使用的外部资源是库函数或者系统调用,而对内核模块而言,要使用的外部资源是在 Linux基本内核或其他内核模块中定义的资源(函数、全局变量等)等。</p>
+</li>
+<li><p>与应用程序编程所使用的库函数不同,基本内核或其他内核模块中定义的外部符号(简称为内核符号)缺乏相应的使用文档。比如 Linux 中可以通过 man(或 info)命令列出一个库函数详细的使用文档,包括函数名、兩数功能、返回值类型、参数个数,以及每个参数的类型等。而 Linux 中的内核符号没有详细的使用文档,这给内核模块开发人员造成了很大困难。</p>
+</li>
+</ul>
+<h5 id="3-编译和运行模式"><a href="#3-编译和运行模式" class="headerlink" title="3.编译和运行模式"></a>3.编译和运行模式</h5><p><strong>运行环：</strong>x86系列的处理器而言,存在<strong>4种运行模式</strong>,每种模式对应不同的执行权限级别,按执行权限级别从大到小的次序依次为0、1、2、3,由于这些级别的执行权限像同心圆一样存在严格的包含关系,这些执行权限级别常被人称为运行环,即0环至3环共4个环。</p>
+<ul>
+<li>当CPU运行于0环时具有最高的权限,能够执行所有的指令和特权操作,如访问控制寄存器等,运行于3环时则权限最低,无法执行任何特权指令,也无法访问硬件。在这些运行环中，通常只用到两个环,即0环和3环,并将 CPU 运行在0环时称为 CPU 处于特权态,而将CPU 运行在3环时称为 CPU 处于非特权态。</li>
+<li>操作系统的内核代码运行在特权态,特权态又称管态、系统态或内核态,而让运行在操作系统之上的应用程序代码运行在非特权态,该态一般又称为目标态或用户态。</li>
+</ul>
+<p><strong>cpu在不同模式运行的区别</strong></p>
+<ul>
+<li><p>CPU 运行在<strong>系统态</strong>时,能够执行所有的系统指令,如开中断、关中断指令等,在寻址方式上采用实地址模式。</p>
+</li>
+<li><p>CPU运行在<strong>用户</strong>态时,不能执行特权指令,如果所执行的应用程序代码中包含特权指令,CPU 运行时将会出错,此外 CPU在解析程序代码的指令地址和数据地址时采用虚地址方式。</p>
+<blockquote>
+<p>换言之,运行在不同 CPU模式下的程序代码特性也存在不同,一段拟在用户态运行的代码,将其在系统态运行会出错。</p>
+<p>内核模块的代码在加载到系统内核后,将在CPU 的系统态下执行。</p>
+</blockquote>
+</li>
+<li><p>从<u>源程序的角度</u>来看,系统态下的程序和用户态下的程序并没有本质的区别,只不过编译器会根据程序员的不同要求,生成适合系统态运行的目标代码,或生成适合在用户态运行的目标代码。</p>
+</li>
+<li><p>编制好内核模块对应的源程序后,在将源程序编译成目标代码模块 <em>.o(或</em>.ko)文件时,要<strong>告知编译器需要编译的是内核模块的代码</strong>。具体方式：<code>gcc</code>或<code>cc</code>选项中添加<code>D_MODULE</code>,这样就能生成适合在系统态运行的Linux内核模块。</p>
+</li>
+</ul>
+<h5 id="4-调试和信息输出"><a href="#4-调试和信息输出" class="headerlink" title="4.调试和信息输出"></a>4.调试和信息输出</h5><p>内核调试工具：KDB</p>
+<p>KDB以内核源程序补丁的形式存在，通过修改内核源程序将调试器的源代码嵌入到内核中，从而提供方便的调试手段。</p>
+<p>因此，使用KDB进行调试，需要重新编译内核，使编译后的内核中包含KDB的调试器代码</p>
+<blockquote>
+<p>其他调试方法：添加一些信息输出语句</p>
+<p>linux基本内核中，定义了一个格式化输出的全局函数<code>printk()</code>，将获得的进程信息输出到控制台或日志文件中，该函数在头文件<code>include/linux/printk.h</code>中声明。</p>
+</blockquote>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/2024/07/04/Linux_Linux%E5%86%85%E6%A0%B8%E7%BA%A7%E5%AE%89%E5%85%A8%E5%BC%80%E5%8F%91%E5%9F%BA%E7%A1%80(5)%E5%BA%94%E7%94%A8%E7%A8%8B%E5%BA%8F%E5%92%8C%E5%86%85%E6%A0%B8%E6%A8%A1%E5%9D%97%E7%9A%84%E4%BF%A1%E6%81%AF%E4%BA%A4%E4%BA%92%E6%96%B9%E5%BC%8F/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -697,598 +1282,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/07/01/python_%E8%A7%A3%E6%9E%90xml-3-ElementTree/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="yhcs">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hexo">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2024/07/01/python_%E8%A7%A3%E6%9E%90xml-3-ElementTree/" class="post-title-link" itemprop="url">python：解析xml(3):ElementTree</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2024-07-01 22:34:24" itemprop="dateCreated datePublished" datetime="2024-07-01T22:34:24+08:00">2024-07-01</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-07-13 16:58:12" itemprop="dateModified" datetime="2024-07-13T16:58:12+08:00">2024-07-13</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/python/" itemprop="url" rel="index"><span itemprop="name">python</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="XML-树和元素"><a href="#XML-树和元素" class="headerlink" title="XML 树和元素"></a>XML 树和元素</h3><p>XML 是一种继承性的分层数据格式，最自然的表示方法是使用树。 </p>
-<p>为此， <code>ET</code> 有两个类 </p>
-<ol>
-<li><a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.ElementTree"><code>ElementTree</code></a> 将整个XML文档表示为一个树</li>
-<li><a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.Element"><code>Element</code></a> 表示该树中的单个节点</li>
-</ol>
-<p> 与整个文档的交互（读写文件）通常在 <a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.ElementTree"><code>ElementTree</code></a> 级别完成。 与单个 XML 元素及其子元素的交互是在 <a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.Element"><code>Element</code></a> 级别完成的。</p>
-<h3 id="解析XML"><a href="#解析XML" class="headerlink" title="解析XML"></a>解析XML</h3><ol>
-<li><p>从文件中读取来导入数据</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> xml.etree.ElementTree <span class="keyword">as</span> ET</span><br><span class="line">tree = ET.parse(<span class="string">&#x27;country_data.xml&#x27;</span>)</span><br><span class="line">root = tree.getroot()</span><br></pre></td></tr></table></figure>
-
-<p><code>parse()</code>方法用来解析xml文档</p>
-</li>
-<li><p>直接从字符串中解析</p>
-<p><a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.fromstring"><code>fromstring()</code></a> 将 XML 从字符串直接解析为 <a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.Element"><code>Element</code></a> ，该元素是已解析树的根元素</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">root = ET.fromstring(country_data_as_string)</span><br></pre></td></tr></table></figure>
-
-<p>作为 <a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.Element"><code>Element</code></a> ， <code>root</code> 具有标签和属性字典:</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>root.tag</span><br><span class="line"><span class="string">&#x27;data&#x27;</span></span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>root.attrib</span><br><span class="line">&#123;&#125;</span><br></pre></td></tr></table></figure>
-
-<p>还有可以迭代的子节点：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> child <span class="keyword">in</span> root:</span><br><span class="line">    <span class="built_in">print</span>(child.tag, child.attrib)</span><br><span class="line"></span><br><span class="line">country &#123;<span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;Liechtenstein&#x27;</span>&#125;</span><br><span class="line">country &#123;<span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;Singapore&#x27;</span>&#125;</span><br><span class="line">country &#123;<span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;Panama&#x27;</span>&#125;</span><br></pre></td></tr></table></figure>
-
-<p>子级是可以嵌套的，我们可以通过索引访问特定的子级节点：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>root[<span class="number">0</span>][<span class="number">1</span>].text</span><br><span class="line"><span class="string">&#x27;2008&#x27;</span></span><br></pre></td></tr></table></figure></li>
-</ol>
-<h3 id="用于非阻塞解析的拉取-API"><a href="#用于非阻塞解析的拉取-API" class="headerlink" title="用于非阻塞解析的拉取 API"></a>用于非阻塞解析的拉取 API</h3><p>大多数解析函数都要求在返回任何结果之前<strong>一次性读取</strong>整个文档。 </p>
-<p> <a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.XMLParser"><code>XMLParser</code></a> ：以增量方式添加数据，但这是在回调目标上调用方法的推送式 API。 有时用户真正想要的是能够以增量方式解析 XML 而无需阻塞操作，同时享受完整的已构造 <a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.Element"><code>Element</code></a> 对象。</p>
-<p>针对此需求的最强大工具是 <a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.XMLPullParser"><code>XMLPullParser</code></a>。 它不要求通过<strong>阻塞式读取</strong>来获得 XML 数据，而是通过执行 <a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.XMLPullParser.feed"><code>XMLPullParser.feed()</code></a> 调用来增量式地添加数据。 要获得已解析的 XML 元素，应调用 <a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.XMLPullParser.read_events"><code>XMLPullParser.read_events()</code></a>。 </p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">parser = ET.XMLPullParser([<span class="string">&#x27;start&#x27;</span>, <span class="string">&#x27;end&#x27;</span>])</span><br><span class="line">parser.feed(<span class="string">&#x27;&lt;mytag&gt;sometext&#x27;</span>)</span><br><span class="line"><span class="built_in">list</span>(parser.read_events())</span><br><span class="line"></span><br><span class="line">parser.feed(<span class="string">&#x27; more text&lt;/mytag&gt;&#x27;</span>)</span><br><span class="line"><span class="keyword">for</span> event, elem <span class="keyword">in</span> parser.read_events():</span><br><span class="line">    <span class="built_in">print</span>(event)</span><br><span class="line">    <span class="built_in">print</span>(elem.tag, <span class="string">&#x27;text=&#x27;</span>, elem.text)</span><br></pre></td></tr></table></figure>
-
-<p>应用：针对以非阻塞方式进行的应用程序，其中 XML 是从套接字接收或从某些存储设备增量式读取的。 在这些用例中，阻塞式读取是不可接受的。</p>
-<p>缺点：因为其非常灵活，<a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.XMLPullParser"><code>XMLPullParser</code></a> 在更简单的用例中使用起来可能并不方便。</p>
-<p>其他方法：</p>
-<ul>
-<li><a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.iterparse"><code>iterparse()</code></a>：不介意你的应用程序在读取 XML 数据时造成阻塞但仍希望具有增量解析能力。 它在你读取大型 XML 文档并且不希望将它完全放去内存时会很适用。</li>
-<li><a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.XMLPullParser.flush"><code>XMLPullParser.flush()</code></a> ：有助于减少延迟，适用于需要通过事件获得<strong>即时反馈</strong>的场合</li>
-</ul>
-<h3 id="查找元素"><a href="#查找元素" class="headerlink" title="查找元素"></a>查找元素</h3><ul>
-<li><p><a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.Element.iter"><code>Element.iter()</code></a>:帮助递归遍历其下的所有子树（包括子级，子级的子级，等等）</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> neighbor <span class="keyword">in</span> root.<span class="built_in">iter</span>(<span class="string">&#x27;neighbor&#x27;</span>):</span><br><span class="line">    <span class="built_in">print</span>(neighbor.attrib)</span><br><span class="line"></span><br><span class="line">&#123;<span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;Austria&#x27;</span>, <span class="string">&#x27;direction&#x27;</span>: <span class="string">&#x27;E&#x27;</span>&#125;</span><br><span class="line">&#123;<span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;Switzerland&#x27;</span>, <span class="string">&#x27;direction&#x27;</span>: <span class="string">&#x27;W&#x27;</span>&#125;</span><br><span class="line">&#123;<span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;Malaysia&#x27;</span>, <span class="string">&#x27;direction&#x27;</span>: <span class="string">&#x27;N&#x27;</span>&#125;</span><br><span class="line">&#123;<span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;Costa Rica&#x27;</span>, <span class="string">&#x27;direction&#x27;</span>: <span class="string">&#x27;W&#x27;</span>&#125;</span><br><span class="line">&#123;<span class="string">&#x27;name&#x27;</span>: <span class="string">&#x27;Colombia&#x27;</span>, <span class="string">&#x27;direction&#x27;</span>: <span class="string">&#x27;E&#x27;</span>&#125;   </span><br></pre></td></tr></table></figure>
-</li>
-<li><p><a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.Element.findall"><code>Element.findall()</code></a> ：仅查找当前元素的直接子元素中带有指定标签的元素</p>
-</li>
-<li><p><a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.Element.find"><code>Element.find()</code></a> ：找带有特定标签的 <strong>第一个</strong> 子级</p>
-</li>
-</ul>
-<p>然后可以用 <a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.Element.text"><code>Element.text</code></a> 访问元素的文本内容。 <a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.Element.get"><code>Element.get</code></a> 访问元素的属性:</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> country <span class="keyword">in</span> root.findall(<span class="string">&#x27;country&#x27;</span>):</span><br><span class="line">    rank = country.find(<span class="string">&#x27;rank&#x27;</span>).text</span><br><span class="line">    name = country.get(<span class="string">&#x27;name&#x27;</span>)</span><br><span class="line">    <span class="built_in">print</span>(name, rank)</span><br><span class="line">    </span><br><span class="line">Liechtenstein <span class="number">1</span></span><br><span class="line">Singapore <span class="number">4</span></span><br><span class="line">Panama <span class="number">68</span></span><br></pre></td></tr></table></figure>
-
-<p>ps：通过使用 <a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/xml.etree.elementtree.html#elementtree-xpath">XPath</a> ，可以更精确地指定要查找的元素</p>
-<h3 id="修改XML文件"><a href="#修改XML文件" class="headerlink" title="修改XML文件"></a>修改XML文件</h3><p><a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.ElementTree"><code>ElementTree</code></a> 提供了一种构建XML文档并将其写入文件的简单方法。调用 <a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.ElementTree.write"><code>ElementTree.write()</code></a> 方法就可以实现。</p>
-<p>创建后可以直接操作 <a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.Element"><code>Element</code></a> 对象。例如：</p>
-<ul>
-<li>使用 <a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.Element.text"><code>Element.text</code></a> 修改文本字段</li>
-<li>使用 <a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.Element.set"><code>Element.set()</code></a> 方法添加和修改属性</li>
-<li>使用 <a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.Element.append"><code>Element.append()</code></a> 添加新的子元素。</li>
-</ul>
-<p>假设我们要为每个国家&#x2F;地区的中添加一个排名，并在排名元素中添加一个 <code>updated</code> 属性：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> rank <span class="keyword">in</span> root.<span class="built_in">iter</span>(<span class="string">&#x27;rank&#x27;</span>):</span><br><span class="line">    new_rank = <span class="built_in">int</span>(rank.text) + <span class="number">1</span></span><br><span class="line">    rank.text = <span class="built_in">str</span>(new_rank)</span><br><span class="line">    rank.<span class="built_in">set</span>(<span class="string">&#x27;updated&#x27;</span>, <span class="string">&#x27;yes&#x27;</span>)</span><br><span class="line"></span><br><span class="line">tree.write(<span class="string">&#x27;output.xml&#x27;</span>)</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li><p><a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.Element.remove"><code>Element.remove()</code></a> 删除元素</p>
-</li>
-<li><p>假设我们要删除排名高于50的所有国家&#x2F;地区:</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> country <span class="keyword">in</span> root.findall(<span class="string">&#x27;country&#x27;</span>):</span><br><span class="line">    <span class="comment"># using root.findall() to avoid removal during traversal</span></span><br><span class="line">    rank = <span class="built_in">int</span>(country.find(<span class="string">&#x27;rank&#x27;</span>).text)</span><br><span class="line">    <span class="keyword">if</span> rank &gt; <span class="number">50</span>:</span><br><span class="line">        root.remove(country)</span><br><span class="line"></span><br><span class="line">tree.write(<span class="string">&#x27;output.xml&#x27;</span>)</span><br></pre></td></tr></table></figure></li>
-</ul>
-<blockquote>
-<p>请注意在迭代时进行并发修改可能会导致问题，就像在迭代并修改 Python 列表或字典时那样。 因此，可以先通过 <code>root.findall()</code> 收集所有匹配的元素，在此之后再对匹配项列表进行迭代。</p>
-</blockquote>
-<h3 id="构建XML文档"><a href="#构建XML文档" class="headerlink" title="构建XML文档"></a>构建XML文档</h3><p><a target="_blank" rel="noopener" href="https://docs.python.org/zh-cn/3/library/xml.etree.elementtree.html#xml.etree.ElementTree.SubElement"><code>SubElement()</code></a> 函数还提供了一种便捷方法来为给定元素创建新的子元素</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&gt;&gt;&gt; </span>a = ET.Element(<span class="string">&#x27;a&#x27;</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>b = ET.SubElement(a, <span class="string">&#x27;b&#x27;</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>c = ET.SubElement(a, <span class="string">&#x27;c&#x27;</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>d = ET.SubElement(c, <span class="string">&#x27;d&#x27;</span>)</span><br><span class="line"><span class="meta">&gt;&gt;&gt; </span>ET.dump(a)</span><br><span class="line">&lt;a&gt;&lt;b /&gt;&lt;c&gt;&lt;d /&gt;&lt;/c&gt;&lt;/a&gt;</span><br></pre></td></tr></table></figure>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/07/01/python_%E8%A7%A3%E6%9E%90xml-2-DOM/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="yhcs">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hexo">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2024/07/01/python_%E8%A7%A3%E6%9E%90xml-2-DOM/" class="post-title-link" itemprop="url">python：解析xml(2):DOM</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2024-07-01 22:33:55" itemprop="dateCreated datePublished" datetime="2024-07-01T22:33:55+08:00">2024-07-01</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-07-13 16:58:07" itemprop="dateModified" datetime="2024-07-13T16:58:07+08:00">2024-07-13</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/python/" itemprop="url" rel="index"><span itemprop="name">python</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="使用xml-dom解析xml"><a href="#使用xml-dom解析xml" class="headerlink" title="使用xml.dom解析xml"></a>使用xml.dom解析xml</h3><ul>
-<li>文件对象模型（Document Object Model，简称DOM）</li>
-<li>一个 DOM 的解析器在解析一个 XML 文档时，<strong>一次性读取</strong>整个文档，把文档中所有元素保存在内存中的一个树结构里，之后你可以利用DOM 提供的不同的函数来读取或修改文档的内容和结构，也可以把修改过的内容写入xml文件。</li>
-<li>python中用xml.dom.minidom来解析xml文件</li>
-</ul>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/python</span></span><br><span class="line"><span class="comment"># -*- coding: UTF-8 -*-</span></span><br><span class="line"> </span><br><span class="line"><span class="keyword">from</span> xml.dom.minidom <span class="keyword">import</span> parse</span><br><span class="line"><span class="keyword">import</span> xml.dom.minidom</span><br><span class="line"> </span><br><span class="line"><span class="comment"># 使用minidom解析器打开 XML 文档</span></span><br><span class="line">DOMTree = xml.dom.minidom.parse(<span class="string">&quot;movies.xml&quot;</span>)</span><br><span class="line">collection = DOMTree.documentElement</span><br><span class="line"><span class="keyword">if</span> collection.hasAttribute(<span class="string">&quot;shelf&quot;</span>):</span><br><span class="line">   <span class="built_in">print</span> <span class="string">&quot;Root element : %s&quot;</span> % collection.getAttribute(<span class="string">&quot;shelf&quot;</span>)</span><br><span class="line"> </span><br><span class="line"><span class="comment"># 在集合中获取所有电影</span></span><br><span class="line">movies = collection.getElementsByTagName(<span class="string">&quot;movie&quot;</span>)</span><br><span class="line"> </span><br><span class="line"><span class="comment"># 打印每部电影的详细信息</span></span><br><span class="line"><span class="keyword">for</span> movie <span class="keyword">in</span> movies:</span><br><span class="line">   <span class="built_in">print</span> <span class="string">&quot;*****Movie*****&quot;</span></span><br><span class="line">   <span class="keyword">if</span> movie.hasAttribute(<span class="string">&quot;title&quot;</span>):</span><br><span class="line">      <span class="built_in">print</span> <span class="string">&quot;Title: %s&quot;</span> % movie.getAttribute(<span class="string">&quot;title&quot;</span>)</span><br><span class="line"> </span><br><span class="line">   <span class="built_in">type</span> = movie.getElementsByTagName(<span class="string">&#x27;type&#x27;</span>)[<span class="number">0</span>]</span><br><span class="line">   <span class="built_in">print</span> <span class="string">&quot;Type: %s&quot;</span> % <span class="built_in">type</span>.childNodes[<span class="number">0</span>].data</span><br><span class="line">   <span class="built_in">format</span> = movie.getElementsByTagName(<span class="string">&#x27;format&#x27;</span>)[<span class="number">0</span>]</span><br><span class="line">   <span class="built_in">print</span> <span class="string">&quot;Format: %s&quot;</span> % <span class="built_in">format</span>.childNodes[<span class="number">0</span>].data</span><br><span class="line">   rating = movie.getElementsByTagName(<span class="string">&#x27;rating&#x27;</span>)[<span class="number">0</span>]</span><br><span class="line">   <span class="built_in">print</span> <span class="string">&quot;Rating: %s&quot;</span> % rating.childNodes[<span class="number">0</span>].data</span><br><span class="line">   description = movie.getElementsByTagName(<span class="string">&#x27;description&#x27;</span>)[<span class="number">0</span>]</span><br><span class="line">   <span class="built_in">print</span> <span class="string">&quot;Description: %s&quot;</span> % description.childNodes[<span class="number">0</span>].data</span><br></pre></td></tr></table></figure>
-
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/07/01/python_%E8%A7%A3%E6%9E%90xml-1-SAX/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="yhcs">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hexo">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2024/07/01/python_%E8%A7%A3%E6%9E%90xml-1-SAX/" class="post-title-link" itemprop="url">python：解析xml(1):SAX</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2024-07-01 22:12:10" itemprop="dateCreated datePublished" datetime="2024-07-01T22:12:10+08:00">2024-07-01</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-07-13 16:58:02" itemprop="dateModified" datetime="2024-07-13T16:58:02+08:00">2024-07-13</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/python/" itemprop="url" rel="index"><span itemprop="name">python</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="XML"><a href="#XML" class="headerlink" title="XML"></a>XML</h3><p>xml：可扩展标记语言</p>
-<p>——&gt;用来传输和存储数据</p>
-<p>——没有预定义的标签</p>
-<p>——对html的补充</p>
-<p>描述：独立于软件和硬件的信息传输工具</p>
-<p><strong>python对xml的解析：</strong></p>
-<ol>
-<li>SAX：事件驱动模型，通过在解析XML的过程中触发一个个的事件并调用用户定义的回调函数来处理XML文件</li>
-<li>DOM：将 XML 数据在内存中解析成一个树，通过对树的操作来操作XML</li>
-<li>ElementTree：轻量级的DOM</li>
-</ol>
-<blockquote>
-<p>对比：DOM需要将XML数据映射到内存中的树，一是比较慢，二是比较耗内存，而SAX流式读取XML文件，比较快，占用内存少，但需要用户实现回调函数（handler）</p>
-</blockquote>
-<h3 id="python使用SAX解析xml"><a href="#python使用SAX解析xml" class="headerlink" title="python使用SAX解析xml"></a>python使用SAX解析xml</h3><p>SAX是一种基于事件驱动的 API，牵涉到两个部分: <strong>解析器</strong>和<strong>事件处理器</strong>。</p>
-<ol>
-<li>解析器：读取XML文档，并向事件处理器发送事件，如元素开始跟元素结束事件。</li>
-<li>事件处理器：负责对事件作出响应，对传递的XML数据进行处理。</li>
-</ol>
-<ul>
-<li><p>引入：<code>import xml.sax</code></p>
-</li>
-<li><p>继承基类，自定义相关的类</p>
-<ul>
-<li><code>init</code>方法</li>
-<li><code>ContebtHandler</code>类方法<ul>
-<li><code>characters(content)</code>：内容事件处理</li>
-<li><code>startDocument()</code> ：文档启动的时候调用</li>
-<li><code>endDocument()</code> ：解析器到达文档结尾时调用</li>
-<li><code>startElement(name, attrs)</code>：遇到XML开始标签时调用，name是标签的名字，attrs是标签的属性值字典</li>
-<li><code>endElement(name)</code> ：遇到XML结束标签时调用</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/python</span></span><br><span class="line"><span class="comment"># -*- coding: UTF-8 -*-</span></span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> xml.sax</span><br><span class="line"> </span><br><span class="line"><span class="keyword">class</span> <span class="title class_">MovieHandler</span>( xml.sax.ContentHandler ):</span><br><span class="line">   <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self</span>):</span><br><span class="line">      self.CurrentData = <span class="string">&quot;&quot;</span></span><br><span class="line">      self.<span class="built_in">type</span> = <span class="string">&quot;&quot;</span></span><br><span class="line">      self.<span class="built_in">format</span> = <span class="string">&quot;&quot;</span></span><br><span class="line">      self.year = <span class="string">&quot;&quot;</span></span><br><span class="line">      self.rating = <span class="string">&quot;&quot;</span></span><br><span class="line">      self.stars = <span class="string">&quot;&quot;</span></span><br><span class="line">      self.description = <span class="string">&quot;&quot;</span></span><br><span class="line"> </span><br><span class="line">   <span class="comment"># 元素开始事件处理</span></span><br><span class="line">   <span class="keyword">def</span> <span class="title function_">startElement</span>(<span class="params">self, tag, attributes</span>):</span><br><span class="line">      self.CurrentData = tag</span><br><span class="line">      <span class="keyword">if</span> tag == <span class="string">&quot;movie&quot;</span>:</span><br><span class="line">         <span class="built_in">print</span> <span class="string">&quot;*****Movie*****&quot;</span></span><br><span class="line">         title = attributes[<span class="string">&quot;title&quot;</span>]</span><br><span class="line">         <span class="built_in">print</span> <span class="string">&quot;Title:&quot;</span>, title</span><br><span class="line"> </span><br><span class="line">   <span class="comment"># 元素结束事件处理</span></span><br><span class="line">   <span class="keyword">def</span> <span class="title function_">endElement</span>(<span class="params">self, tag</span>):</span><br><span class="line">      <span class="keyword">if</span> self.CurrentData == <span class="string">&quot;type&quot;</span>:</span><br><span class="line">         <span class="built_in">print</span> <span class="string">&quot;Type:&quot;</span>, self.<span class="built_in">type</span></span><br><span class="line">      <span class="keyword">elif</span> self.CurrentData == <span class="string">&quot;format&quot;</span>:</span><br><span class="line">         <span class="built_in">print</span> <span class="string">&quot;Format:&quot;</span>, self.<span class="built_in">format</span></span><br><span class="line">      <span class="keyword">elif</span> self.CurrentData == <span class="string">&quot;year&quot;</span>:</span><br><span class="line">         <span class="built_in">print</span> <span class="string">&quot;Year:&quot;</span>, self.year</span><br><span class="line">      <span class="keyword">elif</span> self.CurrentData == <span class="string">&quot;rating&quot;</span>:</span><br><span class="line">         <span class="built_in">print</span> <span class="string">&quot;Rating:&quot;</span>, self.rating</span><br><span class="line">      <span class="keyword">elif</span> self.CurrentData == <span class="string">&quot;stars&quot;</span>:</span><br><span class="line">         <span class="built_in">print</span> <span class="string">&quot;Stars:&quot;</span>, self.stars</span><br><span class="line">      <span class="keyword">elif</span> self.CurrentData == <span class="string">&quot;description&quot;</span>:</span><br><span class="line">         <span class="built_in">print</span> <span class="string">&quot;Description:&quot;</span>, self.description</span><br><span class="line">      self.CurrentData = <span class="string">&quot;&quot;</span></span><br><span class="line"> </span><br><span class="line">   <span class="comment"># 内容事件处理</span></span><br><span class="line">   <span class="keyword">def</span> <span class="title function_">characters</span>(<span class="params">self, content</span>):</span><br><span class="line">      <span class="keyword">if</span> self.CurrentData == <span class="string">&quot;type&quot;</span>:</span><br><span class="line">         self.<span class="built_in">type</span> = content</span><br><span class="line">      <span class="keyword">elif</span> self.CurrentData == <span class="string">&quot;format&quot;</span>:</span><br><span class="line">         self.<span class="built_in">format</span> = content</span><br><span class="line">      <span class="keyword">elif</span> self.CurrentData == <span class="string">&quot;year&quot;</span>:</span><br><span class="line">         self.year = content</span><br><span class="line">      <span class="keyword">elif</span> self.CurrentData == <span class="string">&quot;rating&quot;</span>:</span><br><span class="line">         self.rating = content</span><br><span class="line">      <span class="keyword">elif</span> self.CurrentData == <span class="string">&quot;stars&quot;</span>:</span><br><span class="line">         self.stars = content</span><br><span class="line">      <span class="keyword">elif</span> self.CurrentData == <span class="string">&quot;description&quot;</span>:</span><br><span class="line">         self.description = content</span><br><span class="line">  </span><br><span class="line"><span class="keyword">if</span> ( __name__ == <span class="string">&quot;__main__&quot;</span>):</span><br><span class="line">   </span><br><span class="line">   <span class="comment"># 创建一个 XMLReader</span></span><br><span class="line">   parser = xml.sax.make_parser()</span><br><span class="line">   <span class="comment"># turn off namepsaces</span></span><br><span class="line">   parser.setFeature(xml.sax.handler.feature_namespaces, <span class="number">0</span>)</span><br><span class="line"> </span><br><span class="line">   <span class="comment"># 重写 ContextHandler</span></span><br><span class="line">   Handler = MovieHandler()</span><br><span class="line">   parser.setContentHandler( Handler )</span><br><span class="line">   </span><br><span class="line">   parser.parse(<span class="string">&quot;movies.xml&quot;</span>)</span><br></pre></td></tr></table></figure>
-
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/06/30/%E8%BF%9B%E7%A8%8B%E7%AE%A1%E7%90%86(%E4%B8%80)%E8%BF%9B%E7%A8%8B%E5%92%8C%E7%BA%BF%E7%A8%8B/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="yhcs">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hexo">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2024/06/30/%E8%BF%9B%E7%A8%8B%E7%AE%A1%E7%90%86(%E4%B8%80)%E8%BF%9B%E7%A8%8B%E5%92%8C%E7%BA%BF%E7%A8%8B/" class="post-title-link" itemprop="url">进程管理(一)：进程和线程</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2024-06-30 01:13:47 / 修改时间：01:28:33" itemprop="dateCreated datePublished" datetime="2024-06-30T01:13:47+08:00">2024-06-30</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" itemprop="url" rel="index"><span itemprop="name">操作系统</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="2-1-1进程的概念、组成、特征"><a href="#2-1-1进程的概念、组成、特征" class="headerlink" title="2.1.1进程的概念、组成、特征"></a>2.1.1进程的概念、组成、特征</h3><h4 id="进程vs程序"><a href="#进程vs程序" class="headerlink" title="进程vs程序"></a>进程vs程序</h4><ul>
-<li>程序：静态的 可执行文件</li>
-<li>进程：动态的 程序的一次执行过程</li>
-</ul>
-<h4 id="进程的组成"><a href="#进程的组成" class="headerlink" title="进程的组成"></a>进程的组成</h4><ol>
-<li><strong>PCB&#x2F;进程控制块：</strong>操作系统个管理进程所需要的信息，都记录在这，组成<ol>
-<li>进程描述信息<ul>
-<li>PID：进程唯一的身份标识</li>
-<li>UID：进程所属用户ID</li>
-</ul>
-</li>
-<li>进程控制和管理信息<ul>
-<li>CPU、磁盘、网络流量使用情况统计</li>
-<li>进程当前状态</li>
-</ul>
-</li>
-<li>资源分配清单<ul>
-<li>正在使用哪些文件、正在使用哪些内存区域、正在使用哪些I&#x2F;O设备</li>
-</ul>
-</li>
-<li>处理机相关信息<ul>
-<li>如PSW、PC等等寄存器的值——&gt;用来实现进程切换</li>
-</ul>
-</li>
-</ol>
-</li>
-<li><strong>程序段：</strong>程序的代码</li>
-<li><strong>数据段：</strong>运行过程当中产生的各种数据</li>
-</ol>
-<blockquote>
-<p>PCB是给操作系统用的——方便操作系统管理</p>
-<p>程序段、数据段是给进程自己用的</p>
-</blockquote>
-<h4 id="程序的运行过程"><a href="#程序的运行过程" class="headerlink" title="程序的运行过程"></a>程序的运行过程</h4><p><img src="/../assets/%E8%BF%9B%E7%A8%8B%E7%AE%A1%E7%90%86(%E4%B8%80)%E8%BF%9B%E7%A8%8B%E5%92%8C%E7%BA%BF%E7%A8%8B/image-20240629204733795.png" alt="image-20240629204733795"></p>
-<ol>
-<li>代码经过编译链接形成可执行文件&#x3D;&#x3D;一系列指令</li>
-<li>运行时将指令读入内存，创建对应的进程（创建对应的PCB）</li>
-<li>cpu从内存的程序段中读取指令、执行</li>
-<li>运行过程中产生的数据保存在数据段</li>
-</ol>
-<p><strong>进程是系统进行资源分配和调度的一个独立单位</strong></p>
-<h4 id="进程的特征："><a href="#进程的特征：" class="headerlink" title="进程的特征："></a>进程的特征：</h4><ol>
-<li>动态性</li>
-<li>并发性</li>
-<li>独立性：进程是能独立运行、独立获得资源、独立接受调度的基本单位</li>
-<li>异步性：各进程按照各自独立的、不可预知的速度向前推进，操作系统要提供“进程同步机制”来解决异步问题</li>
-<li>结构性：进程——&gt;PCB+程序段+数据段</li>
-</ol>
-<h3 id="2-1-2进程的状态和转换"><a href="#2-1-2进程的状态和转换" class="headerlink" title="2.1.2进程的状态和转换"></a>2.1.2进程的状态和转换</h3><h4 id="进程的状态转换"><a href="#进程的状态转换" class="headerlink" title="进程的状态转换"></a><strong>进程的状态转换</strong></h4><p><img src="/../assets/%E8%BF%9B%E7%A8%8B%E7%AE%A1%E7%90%86(%E4%B8%80)%E8%BF%9B%E7%A8%8B%E5%92%8C%E7%BA%BF%E7%A8%8B/image-20240630011111138.png" alt="image-20240630011111138"></p>
-<h4 id="进程的组织"><a href="#进程的组织" class="headerlink" title="进程的组织"></a><strong>进程的组织</strong></h4><h5 id="链接方式："><a href="#链接方式：" class="headerlink" title="链接方式："></a>链接方式：</h5><p>执行指针—&gt;PCB1(指向当前处于运行态的进程，多少个cpu&#x3D;最多有多少个进程处于运行态)</p>
-<p>就绪队列指针—&gt;PCB2—&gt;PCB3—&gt;PCB4(指向当前处于就绪态的进程，通常会把优先级高的进程放在队头)</p>
-<p>阻塞队列指针—&gt;PCB5—&gt;PCB6</p>
-<blockquote>
-<p>操作系统还会根据阻塞原因不同再分为多个阻塞队列，比如说：等待打印机的阻塞队列，等待磁盘的阻塞队列</p>
-</blockquote>
-<h5 id="索引方式-较少用"><a href="#索引方式-较少用" class="headerlink" title="索引方式(较少用)"></a>索引方式(较少用)</h5><p><img src="/../assets/%E8%BF%9B%E7%A8%8B%E7%AE%A1%E7%90%86(%E4%B8%80)%E8%BF%9B%E7%A8%8B%E5%92%8C%E7%BA%BF%E7%A8%8B/image-20240630004846720.png" alt="image-20240630004846720"></p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/06/24/KMP%E7%AE%97%E6%B3%95/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="yhcs">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hexo">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2024/06/24/KMP%E7%AE%97%E6%B3%95/" class="post-title-link" itemprop="url">算法：KMP</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2024-06-24 23:43:31 / 修改时间：23:44:39" itemprop="dateCreated datePublished" datetime="2024-06-24T23:43:31+08:00">2024-06-24</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E7%AE%97%E6%B3%95%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">算法学习</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="KMP算法"><a href="#KMP算法" class="headerlink" title="KMP算法"></a>KMP算法</h2><p><strong>KMP算法：</strong>查找连续子串，返回值：str1中str2开始的位置&#x2F;-1</p>
-<p>例：str1：ABCD1234de</p>
-<p>​		str2：1234 	返回值：4</p>
-<p>​		str3：1234e	返回值：-1</p>
-<p><u>暴力解法：</u>遍历str1，看每个开头能否配出str2</p>
-<p>时间复杂度：O（mn）</p>
-<p><strong>KMP算法基础：</strong>next数组</p>
-<p>——str2中每个字符对应一个信息：最长公共前后缀（该字符前面的字符串相等前缀和后缀的最大长度，并且不能取到整体）</p>
-<p>例：abbabb k	k&#x3D;&#x3D;&gt;3</p>
-<table>
-<thead>
-<tr>
-<th>长度</th>
-<th>1</th>
-<th>2</th>
-<th>3</th>
-<th>4</th>
-<th>5</th>
-<th>6</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>前缀</td>
-<td>a</td>
-<td>ab</td>
-<td>abb</td>
-<td>abba</td>
-<td>abbab</td>
-<td>不讨论</td>
-</tr>
-<tr>
-<td>后缀</td>
-<td>b</td>
-<td>bb</td>
-<td>abb</td>
-<td>babb</td>
-<td>bbabb</td>
-<td></td>
-</tr>
-<tr>
-<td></td>
-<td>!&#x3D;</td>
-<td>!&#x3D;</td>
-<td>&#x3D;&#x3D;</td>
-<td>!&#x3D;</td>
-<td>!&#x3D;</td>
-<td></td>
-</tr>
-</tbody></table>
-<p>所以str2对应一个<code>next arr</code>&#x3D;&#x3D;》用来加速匹配过程</p>
-<p>例：str2&#x3D;{a,a,b,a,a,b,s}</p>
-<p>next&#x3D;{-1,0,1,0,1,2,3}	ps：<strong>next[0]&#x3D;-1</strong>(人为规定)，next[1]&#x3D;0</p>
-<p><strong>KMP算法实现原理</strong></p>
-<p>——目的：让i跳的尽可能快（经典：i&#x3D;i+1）</p>
-<p><img src="/../assets/KMP%E7%AE%97%E6%B3%95/image-20240624223723044.png" alt="image-20240624223723044"></p>
-<blockquote>
-<p>（2）的证明通过反证法：设k在i~j之间，k开始能配出str2……推出跟最长公共前后缀矛盾</p>
-</blockquote>
-<p><strong>next数组的求法</strong></p>
-<p>求next[i]</p>
-<p>找next[i-1]&#x3D;&#x3D;》前缀的下一位？&#x3D;next[i-1]</p>
-<p>相等：next[i]&#x3D;next[i-1]+1</p>
-<p>不相等：cur再往前跳，来到cur对应前缀的下一位（next[cur]），判断跟str[i-1]是否相等</p>
-<p><strong>完整代码</strong></p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;cstring&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="comment">//O(M)</span></span><br><span class="line"><span class="function">vector&lt;<span class="type">int</span>&gt; <span class="title">getNextArray</span><span class="params">(string str)</span> </span>&#123;</span><br><span class="line">	<span class="type">int</span> size = str.<span class="built_in">size</span>();</span><br><span class="line">	<span class="keyword">if</span> (size == <span class="number">1</span>) &#123;</span><br><span class="line">		<span class="keyword">return</span> &#123; <span class="number">-1</span> &#125;;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="function">vector&lt;<span class="type">int</span>&gt; <span class="title">next</span><span class="params">(size)</span></span>;</span><br><span class="line">	next[<span class="number">0</span>] = <span class="number">-1</span>;</span><br><span class="line">	next[<span class="number">1</span>] = <span class="number">0</span>;</span><br><span class="line">	<span class="type">int</span> i = <span class="number">2</span>;<span class="comment">//当前要求next数组位置</span></span><br><span class="line">	<span class="type">int</span> cur = <span class="number">0</span>;<span class="comment">//跟i位置比较的位置，0：next[1]=0(cur=next[i-1])</span></span><br><span class="line">	<span class="keyword">while</span> (i &lt; size) &#123;</span><br><span class="line">		<span class="keyword">if</span> (str[i - <span class="number">1</span>] == str[cur]) &#123;</span><br><span class="line">			<span class="comment">//next[i] = cur + 1;//next[i-1]+1</span></span><br><span class="line">			<span class="comment">//i++;</span></span><br><span class="line">			<span class="comment">//cur = cur + 1;</span></span><br><span class="line">			next[i++] = ++cur;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span> (cur &gt; <span class="number">0</span>) &#123;</span><br><span class="line">			cur = next[cur];</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span> &#123;</span><br><span class="line">			next[i++] = <span class="number">0</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> next;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//str1长N，str2长M,N&gt;=M</span></span><br><span class="line"><span class="comment">//时间复杂度：O（N）</span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">KMP</span><span class="params">(string str1, string str2)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (str1.<span class="built_in">empty</span>() || str2.<span class="built_in">empty</span>() || str1.<span class="built_in">size</span>() &lt; str2.<span class="built_in">size</span>()) &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	vector&lt;<span class="type">int</span>&gt; next = <span class="built_in">getNextArray</span>(str2);<span class="comment">//O(M)</span></span><br><span class="line">	<span class="type">int</span> ptr1 = <span class="number">0</span>, ptr2 = <span class="number">0</span>;</span><br><span class="line">	<span class="comment">//O(N)</span></span><br><span class="line">	<span class="keyword">while</span> (ptr1 &lt; str1.<span class="built_in">size</span>() &amp;&amp; ptr2 &lt; str2.<span class="built_in">size</span>()) &#123;</span><br><span class="line">		<span class="keyword">if</span> (str1[ptr1] == str2[ptr2]) &#123;</span><br><span class="line">			ptr1++;</span><br><span class="line">			ptr2++;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span> (ptr2 == <span class="number">0</span>) &#123;<span class="comment">//相当于next[ptr2]=-1</span></span><br><span class="line">			<span class="comment">//str2[ptr2]!=str1[ptr1],str1第一个都不匹配</span></span><br><span class="line">			ptr1++;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span> &#123;</span><br><span class="line">			ptr2 = next[ptr2];</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">//ptr1越界—-1，ptr2越界—匹配完成</span></span><br><span class="line">	<span class="keyword">return</span> ptr2 == str2.<span class="built_in">size</span>() ? ptr1 - ptr2 : <span class="number">-1</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	string str1 = <span class="string">&quot;abcd1234&quot;</span>;</span><br><span class="line">	string str2 = <span class="string">&quot;1234&quot;</span>;</span><br><span class="line">	string str3 = <span class="string">&quot;1234e&quot;</span>;</span><br><span class="line">	cout &lt;&lt; <span class="built_in">KMP</span>(str1, str2) &lt;&lt; endl;</span><br><span class="line">	cout &lt;&lt; <span class="built_in">KMP</span>(str1, str3);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1358,7 +1351,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">41</span>
+          <span class="site-state-item-count">46</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
