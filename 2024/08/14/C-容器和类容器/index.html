@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="容器和类容器string1.string不是容器，但是有跟序列容器类似的成员函数  begin和end empty size swap（支持交换） 支持&#x3D;&#x3D;、&lt;等比较运算  2.string的内存布局    h e l l o ! \0    begin      end   front     back     begin和end是迭代器，类似于指针，end指向末尾+1 front和bac">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C++:容器和类容器">
+<meta property="og:url" content="http://example.com/2024/08/14/C-%E5%AE%B9%E5%99%A8%E5%92%8C%E7%B1%BB%E5%AE%B9%E5%99%A8/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="容器和类容器string1.string不是容器，但是有跟序列容器类似的成员函数  begin和end empty size swap（支持交换） 支持&#x3D;&#x3D;、&lt;等比较运算  2.string的内存布局    h e l l o ! \0    begin      end   front     back     begin和end是迭代器，类似于指针，end指向末尾+1 front和bac">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/assets/C-%E5%AE%B9%E5%99%A8%E5%92%8C%E7%B1%BB%E5%AE%B9%E5%99%A8/image-20240814142205726.png">
+<meta property="og:image" content="http://example.com/assets/C-%E5%AE%B9%E5%99%A8%E5%92%8C%E7%B1%BB%E5%AE%B9%E5%99%A8/image-20240814144709712.png">
+<meta property="article:published_time" content="2024-08-14T07:58:21.000Z">
+<meta property="article:modified_time" content="2024-08-14T07:58:58.636Z">
+<meta property="article:author" content="yhcs">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/assets/C-%E5%AE%B9%E5%99%A8%E5%92%8C%E7%B1%BB%E5%AE%B9%E5%99%A8/image-20240814142205726.png">
+
+<link rel="canonical" href="http://example.com/2024/08/14/C-%E5%AE%B9%E5%99%A8%E5%92%8C%E7%B1%BB%E5%AE%B9%E5%99%A8/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>C++:容器和类容器 | Hexo</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Hexo</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/08/14/C-%E5%AE%B9%E5%99%A8%E5%92%8C%E7%B1%BB%E5%AE%B9%E5%99%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="yhcs">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          C++:容器和类容器
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2024-08-14 15:58:21 / 修改时间：15:58:58" itemprop="dateCreated datePublished" datetime="2024-08-14T15:58:21+08:00">2024-08-14</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C++</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="容器和类容器"><a href="#容器和类容器" class="headerlink" title="容器和类容器"></a>容器和类容器</h2><h3 id="string"><a href="#string" class="headerlink" title="string"></a>string</h3><p>1.<code>string</code>不是容器，但是有跟序列容器类似的成员函数</p>
+<ul>
+<li><code>begin</code>和<code>end</code></li>
+<li><code>empty</code></li>
+<li><code>size</code></li>
+<li><code>swap</code>（支持交换）</li>
+<li>支持<code>==、&lt;</code>等比较运算</li>
+</ul>
+<p>2.<code>string</code>的内存布局</p>
+<table>
+<thead>
+<tr>
+<th>h</th>
+<th>e</th>
+<th>l</th>
+<th>l</th>
+<th>o</th>
+<th>!</th>
+<th>\0</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>begin</code></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td><code>end</code></td>
+</tr>
+<tr>
+<td><code>front</code></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td><code>back</code></td>
+<td></td>
+</tr>
+</tbody></table>
+<ul>
+<li><code>begin</code>和<code>end</code>是迭代器，类似于指针，<code>end</code>指向末尾+1</li>
+<li><code>front</code>和<code>back</code>是引用</li>
+</ul>
+<p>3.<code>string</code>其他用法</p>
+<ul>
+<li><code>size()</code>的复杂度是O(1)，<code>strlen()</code>的复杂度是O(N)</li>
+<li>支持字符串的拼接和查找</li>
+<li><code>nops</code>是一个string的常数，当查找不存在的字符时会返回 <code>nops</code></li>
+<li>支持到数字的互转： <code>stoi()</code>和 <code>to_string</code></li>
+</ul>
+<h3 id="序列容器"><a href="#序列容器" class="headerlink" title="序列容器"></a>序列容器</h3><h4 id="array"><a href="#array" class="headerlink" title="array"></a><code>array</code></h4><p><code>array</code>的特点：</p>
+<ol>
+<li><p>和C数组一样在栈上分配，性能方面没有差异</p>
+</li>
+<li><p>需要编译期确定数组大小</p>
+</li>
+<li><p>提供了 <code>begin</code>、 <code>end</code>、 <code>size</code>等通用成员函数</p>
+</li>
+<li><p>解决了C数组的怪异行为</p>
+<ul>
+<li><p>不能按值拷贝，具体表现：</p>
+<p>a. 直接赋值：在C中，不能直接将一个数组赋值给另一个数组，<code>int a[5] = &#123;1, 2, 3, 4, 5&#125;; int b[5]; b = a;</code>是非法的，<code>array&lt;int, 5&gt; a = &#123;1, 2, 3, 4, 5&#125;; array&lt;int, 5&gt; b; b = a;</code>是合法的</p>
+<p>b. 函数传参：数组作为函数参数，实际上传递的是指向数组的指针，而不是整个数组的拷贝</p>
+</li>
+<li><p>作为参数有退化行为，被调用函数不能获得C数组的长度</p>
+</li>
+</ul>
+</li>
+<li><p>支持 <code>==</code> <code>&lt;</code>等比较运算（原生数组不能直接使用比较运算符，此时比较的是两个数组的地址，<code>array</code>、<code>vector</code>会自动逐元素比较数组）</p>
+</li>
+</ol>
+<h4 id="vector"><a href="#vector" class="headerlink" title="vector"></a><code>vector</code></h4><ul>
+<li>最常用的序列容器</li>
+<li>大小可变的动态数组</li>
+<li>为尾部增删元素而优化</li>
+</ul>
+<p><strong>vector的内存布局</strong></p>
+<p><img src="/../assets/C-%E5%AE%B9%E5%99%A8%E5%92%8C%E7%B1%BB%E5%AE%B9%E5%99%A8/image-20240814142205726.png" alt="image-20240814142205726"></p>
+<ul>
+<li>begin、end：指针、迭代器</li>
+<li>front、back：引用</li>
+</ul>
+<p><strong>异常安全要求</strong></p>
+<p>当 <code>vector</code> 空间不够时，扩容时希望在内存重分配时使用元素的移动构造函数的话，必须声明为 <code>noexcept</code></p>
+<p>否则容器会使用拷贝构造函数</p>
+<p>原因：保证强异常安全性，在 <code>vector</code>的 <code>insert、push_back</code>等操作中保证强异常安全性，怎么实现：如果插入的时候空间不够会扩容，在新的内存块中相应的位置构造要求插入的成员，如果失败的话，抛异常并释放内存，如果成功的话，将原先的内存拷贝或者移动过去。如果在移动过程中出现异常，新的内存块没构造完成，旧的内存块被移走，就没办法保证强安全性。 <code>vector</code>保证强异常安全性是指：如果操作失败，能够保证完整的回退到当前插入操作之前的状态。</p>
+<p>示例程序：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Obj1</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">Obj1</span>()</span><br><span class="line">    &#123;</span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;Obj1()&quot;</span> &lt;&lt; endl;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">Obj1</span>(<span class="type">const</span> Obj1 &amp;)</span><br><span class="line">    &#123;</span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;Obj1(const Obj1&amp;)&quot;</span> &lt;&lt; endl;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">Obj1</span>(Obj1 &amp;&amp;)</span><br><span class="line">    &#123;</span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;Obj1(Obj1&amp;&amp;)&quot;</span> &lt;&lt; endl;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Obj2</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">Obj2</span>()</span><br><span class="line">    &#123;</span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;Obj2()&quot;</span> &lt;&lt; endl;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">Obj2</span>(<span class="type">const</span> Obj2 &amp;)</span><br><span class="line">    &#123;</span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;Obj2(const Obj2&amp;)&quot;</span> &lt;&lt; endl;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">Obj2</span>(Obj2 &amp;&amp;) <span class="keyword">noexcept</span></span><br><span class="line">    &#123;</span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;Obj2(Obj2&amp;&amp;)&quot;</span> &lt;&lt; endl;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">// 区别：Obj2的移动构造函数声明为noexcept</span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    vector&lt;Obj1&gt; v1;</span><br><span class="line">    v1.<span class="built_in">reserve</span>(<span class="number">2</span>);</span><br><span class="line">    v1.<span class="built_in">emplace_back</span>();</span><br><span class="line">    v1.<span class="built_in">emplace_back</span>();</span><br><span class="line">    v1.<span class="built_in">emplace_back</span>();</span><br><span class="line"></span><br><span class="line">    vector&lt;Obj2&gt; v2;</span><br><span class="line">    v2.<span class="built_in">reserve</span>(<span class="number">2</span>);</span><br><span class="line">    v2.<span class="built_in">emplace_back</span>();</span><br><span class="line">    v2.<span class="built_in">emplace_back</span>();</span><br><span class="line">    v2.<span class="built_in">emplace_back</span>();</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Obj1()</span><br><span class="line">Obj1()</span><br><span class="line">Obj1()</span><br><span class="line">Obj1(const Obj1&amp;)</span><br><span class="line">Obj1(const Obj1&amp;)</span><br><span class="line">Obj2()</span><br><span class="line">Obj2()</span><br><span class="line">Obj2()</span><br><span class="line">Obj2(Obj2&amp;&amp;)</span><br><span class="line">Obj2(Obj2&amp;&amp;)</span><br></pre></td></tr></table></figure>
+
+<p>运行结果：Obj1扩容使用拷贝构造，Obj2扩容使用移动构造</p>
+<h4 id="deque"><a href="#deque" class="headerlink" title="deque"></a><code>deque</code></h4><ul>
+<li>双端队列</li>
+<li>为头尾高效增删元素而优化</li>
+</ul>
+<p><strong>deque的内存布局</strong></p>
+<p><img src="/../assets/C-%E5%AE%B9%E5%99%A8%E5%92%8C%E7%B1%BB%E5%AE%B9%E5%99%A8/image-20240814144709712.png" alt="image-20240814144709712"></p>
+<p>跟 <code>vector</code> 相比的优点：头尾插入的时候不会涉及额外的移动操作，只需要创建一个新的内存块，只有当索引存储不够时才需要移动索引存储，所以当需要在头尾频繁插入数据时，<code>deque</code>是一个性能很高的选择</p>
+<p><strong>deque的特点</strong></p>
+<ol>
+<li>只从头尾进行增删时，容器里的对象永远不需要移动</li>
+<li>容器里的元素只是部分连续</li>
+<li>元素的存储大部分仍然连续，遍历性能较高</li>
+<li>支持使用<strong>下标</strong>访问容器元素，仍能保持O(1)</li>
+</ol>
+<h4 id="list"><a href="#list" class="headerlink" title="list"></a><code>list</code></h4><ul>
+<li>双向链表</li>
+<li>为任意位置插入和删除优化</li>
+</ul>
+<p><strong>list内存布局</strong>：同理，begin和front指向首，back指向尾，end指向尾+1</p>
+<p><strong>list的特点</strong></p>
+<ol>
+<li>提供高效的、O(1)复杂度的任意位置的插入和删除操作</li>
+<li>不支持使用下标访问元素</li>
+<li>不支持 <code>sort</code> 算法，但能使用其成员函数 <code>sort</code>，例：<code>sort(list.begin(),list.end())</code>错误，正确：<code>list.sort()</code></li>
+</ol>
+<h4 id="forward-list"><a href="#forward-list" class="headerlink" title="forward_list"></a><code>forward_list</code></h4><ul>
+<li>单向链表</li>
+<li>比 <code>list</code>少了前继结点，比 <code>list</code> 内存占用少</li>
+</ul>
+<h3 id="容器适配器"><a href="#容器适配器" class="headerlink" title="容器适配器"></a>容器适配器</h3><h4 id="queue"><a href="#queue" class="headerlink" title="queue"></a><code>queue</code></h4><ul>
+<li>先进先出的容器适配器</li>
+<li>底层默认使用 <code>deque</code>，也可以是 <code>list</code></li>
+<li>不能按下标访问，只能从首部弹出，尾部添加</li>
+</ul>
+<h4 id="stack"><a href="#stack" class="headerlink" title="stack"></a><code>stack</code></h4><ul>
+<li>后进先出的容器适配器</li>
+<li>底层默认使用 <code>deque</code>，也可以是 <code>list</code>、<code>vector</code></li>
+</ul>
+<h4 id="priority-queue"><a href="#priority-queue" class="headerlink" title="priority_queue"></a><code>priority_queue</code></h4><ul>
+<li><p>优先级队列（部分排序的队列），排序的部分在顶部</p>
+</li>
+<li><p>默认使用 <code>less</code> 排序</p>
+</li>
+<li><p>排序的末项在顶部，默认是大根堆</p>
+</li>
+<li><pre><code class="C++">模板参数:
+_Tp – Type of element.
+_Sequence – Type of underlying sequence, defaults to vector&lt;_Tp&gt;.
+_Compare – Comparison function object type, defaults to less&lt;_Sequence::value_type&gt;.
+
+priority_queue&lt;int,vector&lt;int&gt;,my_greater&gt; que; // 函数 &quot;my_greater&quot; 不是类型名C/C++(757)
+// 所以这里的参数也只能是函数对象
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">------</span><br><span class="line"></span><br><span class="line">**函数对象 `less`**</span><br><span class="line"></span><br><span class="line">```c++</span><br><span class="line">template &lt;class T&gt;</span><br><span class="line">struct less:binary_function&lt;T,T,bool&gt;&#123;</span><br><span class="line">    bool operator()(const T&amp; x,const T&amp; y)&#123;</span><br><span class="line">        return x&lt;y;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</code></pre>
+</li>
+</ul>
+<p>函数对象：在<code>class</code>或<code>struct</code>中实现 <code>operator()</code> 的对象，生成这样一个对象之后，可以使用 <code>()</code> 来调用函数，行为跟普通函数有点区别</p>
+<p>注意：<code>sort</code>可以接受函数指针作为参数，但是 <code>map</code> <code>set</code>只能接受函数对象</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">bool</span> <span class="title">my_greater</span><span class="params">(<span class="type">int</span> x, <span class="type">int</span> y)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> x &gt; y;</span><br><span class="line">&#125;</span><br><span class="line">vector&lt;<span class="type">int</span>&gt; vec = &#123;<span class="number">4</span>, <span class="number">5</span>, <span class="number">2</span>, <span class="number">3</span>&#125;;</span><br><span class="line"><span class="built_in">sort</span>(vec.<span class="built_in">begin</span>(), vec.<span class="built_in">end</span>(), my_greater);</span><br><span class="line"><span class="comment">// 5 4 3 2 </span></span><br><span class="line"><span class="built_in">sort</span>(vec.<span class="built_in">begin</span>(), vec.<span class="built_in">end</span>(), <span class="built_in">less</span>&lt;<span class="type">int</span>&gt;());</span><br><span class="line"><span class="comment">// 2 3 4 5</span></span><br><span class="line"></span><br><span class="line">set&lt;<span class="type">int</span>, less&lt;<span class="type">int</span>&gt;&gt; set&#123;<span class="number">5</span>, <span class="number">3</span>, <span class="number">2</span>, <span class="number">4</span>&#125;;</span><br><span class="line"><span class="comment">// 2 3 4 5 </span></span><br><span class="line">set&lt;<span class="type">int</span>, my_greater&gt; set&#123;<span class="number">5</span>, <span class="number">3</span>, <span class="number">2</span>, <span class="number">4</span>&#125;;</span><br><span class="line"><span class="comment">// 报错：函数 &quot;my_greater&quot; 不是类型名C/C++(757)</span></span><br><span class="line">模板参数:</span><br><span class="line">_Key – Type of key objects.</span><br><span class="line">_Compare – Comparison function object type, defaults to less&lt;_Key&gt;.</span><br><span class="line">_Alloc – Allocator type, defaults to allocator&lt;_Key&gt;.</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="关联容器"><a href="#关联容器" class="headerlink" title="关联容器"></a>关联容器</h3><ul>
+<li>有序的容器，默认使用 <code>less</code></li>
+<li><code>set、map、multiset、multimap</code>：key是否可重复</li>
+<li>查找、插入和删除的时间复杂度都是 <code>O(log N)</code></li>
+</ul>
+<h3 id="无序关联容器"><a href="#无序关联容器" class="headerlink" title="无序关联容器"></a>无序关联容器</h3><ul>
+<li><p>容器元素间没有顺序关系</p>
+</li>
+<li><p>默认使用 <code>hash</code>，也可以使用自定义的函数对象</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">hash</span>&lt;complex&lt;T&gt;&gt;&#123;</span><br><span class="line">    <span class="function"><span class="type">size_t</span> <span class="title">operator</span><span class="params">()</span><span class="params">(<span class="type">const</span> complex&lt;T&gt; &amp;v)</span><span class="type">const</span> <span class="keyword">noexcept</span></span>&#123;</span><br><span class="line">        hash&lt;T&gt; h;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">h</span>(v.<span class="built_in">real</span>())+<span class="built_in">h</span>(v.<span class="built_in">imag</span>());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>unordered_set、unordered_map、unordered_multiset、unordered_multimap</code>：key是否可重复</p>
+</li>
+</ul>
+<h3 id=""><a href="#" class="headerlink" title=""></a></h3>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2024/08/13/%E5%9B%BE/" rel="prev" title="图">
+      <i class="fa fa-chevron-left"></i> 图
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%B9%E5%99%A8%E5%92%8C%E7%B1%BB%E5%AE%B9%E5%99%A8"><span class="nav-number">1.</span> <span class="nav-text">容器和类容器</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#string"><span class="nav-number">1.1.</span> <span class="nav-text">string</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BA%8F%E5%88%97%E5%AE%B9%E5%99%A8"><span class="nav-number">1.2.</span> <span class="nav-text">序列容器</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#array"><span class="nav-number">1.2.1.</span> <span class="nav-text">array</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#vector"><span class="nav-number">1.2.2.</span> <span class="nav-text">vector</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#deque"><span class="nav-number">1.2.3.</span> <span class="nav-text">deque</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#list"><span class="nav-number">1.2.4.</span> <span class="nav-text">list</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#forward-list"><span class="nav-number">1.2.5.</span> <span class="nav-text">forward_list</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%B9%E5%99%A8%E9%80%82%E9%85%8D%E5%99%A8"><span class="nav-number">1.3.</span> <span class="nav-text">容器适配器</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#queue"><span class="nav-number">1.3.1.</span> <span class="nav-text">queue</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#stack"><span class="nav-number">1.3.2.</span> <span class="nav-text">stack</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#priority-queue"><span class="nav-number">1.3.3.</span> <span class="nav-text">priority_queue</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%B3%E8%81%94%E5%AE%B9%E5%99%A8"><span class="nav-number">1.4.</span> <span class="nav-text">关联容器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%97%A0%E5%BA%8F%E5%85%B3%E8%81%94%E5%AE%B9%E5%99%A8"><span class="nav-number">1.5.</span> <span class="nav-text">无序关联容器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link"><span class="nav-number">1.6.</span> <span class="nav-text"></span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">yhcs</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">47</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">yhcs</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://pisces.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
