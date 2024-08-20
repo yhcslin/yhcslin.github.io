@@ -150,6 +150,123 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/08/13/%E7%AE%80%E5%8D%95%E6%8E%92%E5%BA%8F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="yhcs">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/08/13/%E7%AE%80%E5%8D%95%E6%8E%92%E5%BA%8F/" class="post-title-link" itemprop="url">简单排序</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2024-08-13 16:24:16 / 修改时间：16:27:10" itemprop="dateCreated datePublished" datetime="2024-08-13T16:24:16+08:00">2024-08-13</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%AE%97%E6%B3%95%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">算法学习</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="简单排序"><a href="#简单排序" class="headerlink" title="简单排序"></a>简单排序</h2><h3 id="选择排序"><a href="#选择排序" class="headerlink" title="选择排序"></a>选择排序</h3><p>时间复杂度：O(N^2)</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> minidx,temp;</span><br><span class="line"><span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>;i&lt;n;i++)&#123;</span><br><span class="line">    minidx=i;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> j=i;j&lt;n;j++)&#123;</span><br><span class="line">        <span class="keyword">if</span>(arr[minidx]&gt;arr[j]) minidx=j;</span><br><span class="line">    &#125;</span><br><span class="line">    temp=arr[i];</span><br><span class="line">    arr[i]=arr[minidx];</span><br><span class="line">    arr[minidx]=temp;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="冒泡排序"><a href="#冒泡排序" class="headerlink" title="冒泡排序"></a>冒泡排序</h3><p>时间复杂度：O(N^2)</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">bool</span> flag=<span class="number">0</span>;<span class="comment">//是否冒泡</span></span><br><span class="line"><span class="keyword">for</span>(<span class="type">int</span> i=n<span class="number">-1</span>;i&gt;=<span class="number">0</span>;i--)&#123;</span><br><span class="line">    flag=<span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> j=<span class="number">0</span>;j&lt;i;j++)&#123;</span><br><span class="line">        <span class="keyword">if</span>(arr[j]&gt;arr[j+<span class="number">1</span>])&#123;</span><br><span class="line">            temp=arr[j];</span><br><span class="line">            arr[j]=arr[j+<span class="number">1</span>];</span><br><span class="line">            arr[j+<span class="number">1</span>]=temp;</span><br><span class="line">            flag=<span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span>(!flag) <span class="keyword">break</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<ul>
+<li><p>异或：相同为0，不同为1 &#x3D; 不进位相加</p>
+</li>
+<li><p>性质：</p>
+<ol>
+<li><p>0^N &#x3D; N ;N^N &#x3D; 0</p>
+</li>
+<li><p>满足交换律和结合律 a^b&#x3D;b^a;a^b^c&#x3D;a^(b^c)</p>
+<p><code>a=a^b;b=a^b;a=a^b;</code> </p>
+<p>跑完的结果：a、b交换；前提：a和b在内存中是两块独立的空间，即a指向的内存 !&#x3D; b指向的内存</p>
+<p>eg:<code>a[0]=a[0]^a[0];a[0]=a[0]^a[0];a[0]=a[0]^a[0];</code></p>
+<p>结果：a[0]变成0</p>
+</li>
+</ol>
+<p>	</p>
+</li>
+<li><p>异或相关题目</p>
+<p>Q：在一个整型数组中，只有一个数出现了奇数次，其他数都出现了偶数次</p>
+<p>要求：时间复杂度O（N），空间复杂度O（1）：即使用有限几个变量</p>
+<ol>
+<li><p>怎么找到这个这个出现了奇数次的数</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//全部异或</span></span><br><span class="line"><span class="type">int</span> answer=arr[<span class="number">0</span>];</span><br><span class="line"><span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">1</span>;i&lt;n;i++)&#123;</span><br><span class="line">    answer=answer^arr[i];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>若只有两个数出现了奇数次呢</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> temp=<span class="number">0</span>;</span><br><span class="line"><span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>;i&lt;n;i++)&#123;</span><br><span class="line">    temp=temp^arr[i];</span><br><span class="line">&#125;<span class="comment">//temp=a^b!=0——&gt;temp至少有一位是1</span></span><br><span class="line"><span class="type">int</span> rightOne=temp&amp;(~temp+<span class="number">1</span>);<span class="comment">//原码&amp;补码得到最右侧的1</span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> temp1=<span class="number">0</span>;</span><br><span class="line"><span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>;i&lt;n;i++)&#123;</span><br><span class="line">    <span class="keyword">if</span>((arr[i]&amp;rightOne)==rightOne)&#123;<span class="comment">//在某位上为1的才参加异或</span></span><br><span class="line">        temp1=temp1^arr[i];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="type">int</span> answer1=temp1;</span><br><span class="line"><span class="type">int</span> answer2=temp^temp1;</span><br></pre></td></tr></table></figure>
+
+<p>ps：<code>int rightOne=temp&amp;(~temp+1);</code>&#x2F;&#x2F;原码&amp;补码得到最右侧的1</p>
+</li>
+</ol>
+</li>
+</ul>
+</blockquote>
+<h3 id="插入排序"><a href="#插入排序" class="headerlink" title="插入排序"></a>插入排序</h3><p>思想：将新的数插到原来有序数组中合适的位置</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> tmp;</span><br><span class="line"><span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">1</span>;i&lt;n;i++)&#123;</span><br><span class="line">    <span class="comment">//0~i-1为有序，0~i为想有序</span></span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> j=i<span class="number">-1</span>;j&gt;=<span class="number">0</span>&amp;&amp;arr[j]&gt;arr[j+<span class="number">1</span>];j--)&#123;</span><br><span class="line">        tmp=arr[j];</span><br><span class="line">        arr[j]=arr[j+<span class="number">1</span>];</span><br><span class="line">        arr[j+<span class="number">1</span>]=tmp;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="二分法"><a href="#二分法" class="headerlink" title="二分法"></a>二分法</h3><h4 id="有序数组中找某个数是否存在"><a href="#有序数组中找某个数是否存在" class="headerlink" title="有序数组中找某个数是否存在"></a>有序数组中找某个数是否存在</h4><p>二分查找，时间复杂度 O（log N）</p>
+<h4 id="有序数组中找-某个数最左侧的位置"><a href="#有序数组中找-某个数最左侧的位置" class="headerlink" title="有序数组中找&gt;&#x3D;某个数最左侧的位置"></a>有序数组中找&gt;&#x3D;某个数最左侧的位置</h4><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> aim=<span class="number">4</span>;<span class="comment">//找到大于等于3最左侧的索引</span></span><br><span class="line"><span class="type">int</span> low,mid,high,idx=n;<span class="comment">//idx记录答案索引</span></span><br><span class="line">low=<span class="number">0</span>;high=n;</span><br><span class="line"><span class="keyword">while</span>(low&lt;=high)&#123;</span><br><span class="line">    mid=(low+high)/<span class="number">2</span>;</span><br><span class="line">    <span class="keyword">if</span>(a[mid]&lt;aim)&#123;</span><br><span class="line">        low=mid+<span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(mid&lt;idx) idx=mid;</span><br><span class="line">        high=mid<span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="局部最小值问题"><a href="#局部最小值问题" class="headerlink" title="局部最小值问题"></a>局部最小值问题</h4><p>arr中，无序但任意相邻数不相等，求一个局部最小的位置，要求时间复杂度好于O（N）</p>
+<p>局部最小def：0位置比1位置小 &#x2F; n-1位置比n-2位置小 &#x2F; i位置比i-1和i+1位置小</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">判断<span class="number">0</span>位置和n<span class="number">-1</span>位置是否为局部最小</span><br><span class="line">若不存在，则<span class="number">0</span>↘↙n<span class="number">-1</span>，则<span class="number">0</span>~n<span class="number">-1</span>之间必存在局部最小 </span><br><span class="line">判断中间位置是否为局部最小，</span><br><span class="line">    若是则直接返回</span><br><span class="line">    若不是，</span><br><span class="line">    	<span class="keyword">if</span>(m<span class="number">-1</span>↗m↖m+<span class="number">1</span>) 则左右侧都存在局部最小</span><br><span class="line">        <span class="keyword">if</span>(m<span class="number">-1</span>↗m↗m+<span class="number">1</span>) 则左侧一定存在局部最小</span><br><span class="line">        <span class="keyword">if</span>(m<span class="number">-1</span>↘m↘m+<span class="number">1</span>) 则右侧一定存在局部最小</span><br></pre></td></tr></table></figure>
+
+<p>所以，二分法不一定只能用于有序数组，取决于研究的问题</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/2024/08/13/%E5%B9%B6%E6%9F%A5%E9%9B%86/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1590,84 +1707,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/07/22/DMA/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="yhcs">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hexo">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2024/07/22/DMA/" class="post-title-link" itemprop="url">DMA</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2024-07-22 23:23:47 / 修改时间：23:24:43" itemprop="dateCreated datePublished" datetime="2024-07-22T23:23:47+08:00">2024-07-22</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="DMA"><a href="#DMA" class="headerlink" title="DMA"></a>DMA</h1><h4 id="1-为什么要有DMA？"><a href="#1-为什么要有DMA？" class="headerlink" title="1. 为什么要有DMA？"></a>1. 为什么要有DMA？</h4><p><strong>没有DMA的情况</strong></p>
-<ol>
-<li>用户进程通过<code>read()</code>系统调用，进入内核态；</li>
-<li>由CPU向磁盘发送I&#x2F;O请求</li>
-<li>磁盘收到CPU指令后，将数据放到磁盘控制器的缓冲区，然后发起中断</li>
-<li>CPU收到中断，将数据从磁盘控制器的缓冲区拷贝到PageCache（磁盘高速缓存）</li>
-<li>CPU再将数据从PageCache拷贝到用户缓冲区</li>
-<li><code>read()</code>调用返回</li>
-</ol>
-<p>问题：在整个数据传输过程中，CPU一直参与数据搬运的工作，没有办法做其他事情</p>
-<h4 id="2-什么是DMA？"><a href="#2-什么是DMA？" class="headerlink" title="2. 什么是DMA？"></a>2. 什么是DMA？</h4><p>DMA就是<strong>“直接内存访问”</strong>，也就是在I&#x2F;O设备和内存的数据传输的时候，数据搬运的工作全部交给DMA控制器，而CPU不参与数据搬运的工作，从而可以做其他事情。</p>
-<h4 id="3-DMA怎么工作"><a href="#3-DMA怎么工作" class="headerlink" title="3. DMA怎么工作"></a>3. DMA怎么工作</h4><ol>
-<li>用户进程通过<code>read()</code>向CPU发起I&#x2F;O请求，进入阻塞状态</li>
-<li>CPU收到I&#x2F;O请求后，将I&#x2F;O请求发送给DMA控制器之后，执行其他任务</li>
-<li>DMA接收I&#x2F;O请求后，向磁盘发送I&#x2F;O请求</li>
-<li>磁盘接收到请求后，将数据读到磁盘控制器的缓冲区，当磁盘控制器缓冲区读满后，向DMA发起中断</li>
-<li>DMA收到中断后，将数据从磁盘控制器的缓冲区拷贝到内核缓冲区</li>
-<li>当DMA读取了足够多的数据，就向CPU发送中断信号</li>
-<li>CPU收到信号后，知道数据已经准备好了，将数据从内核缓冲区拷贝到用户空间，系统调用返回</li>
-</ol>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1737,7 +1776,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">51</span>
+          <span class="site-state-item-count">52</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
