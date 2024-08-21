@@ -150,6 +150,155 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/08/13/%E4%BA%8C%E5%8F%89%E6%A0%91/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="yhcs">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/08/13/%E4%BA%8C%E5%8F%89%E6%A0%91/" class="post-title-link" itemprop="url">二叉树</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2024-08-13 16:25:51" itemprop="dateCreated datePublished" datetime="2024-08-13T16:25:51+08:00">2024-08-13</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-08-14 17:22:30" itemprop="dateModified" datetime="2024-08-14T17:22:30+08:00">2024-08-14</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%AE%97%E6%B3%95%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">算法学习</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="树"><a href="#树" class="headerlink" title="树"></a>树</h2><h3 id="基础遍历"><a href="#基础遍历" class="headerlink" title="基础遍历"></a>基础遍历</h3><h4 id="递归遍历"><a href="#递归遍历" class="headerlink" title="递归遍历"></a>递归遍历</h4><p>例：         1</p>
+<p>​			2		3</p>
+<p>​	4		5	6		7	</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">Order</span><span class="params">(node *head)</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(head==null) <span class="keyword">return</span>;</span><br><span class="line">    <span class="comment">//(1)</span></span><br><span class="line">    <span class="built_in">Order</span>(head-&gt;left);</span><br><span class="line">    <span class="comment">//(2)</span></span><br><span class="line">    <span class="built_in">Order</span>(head-&gt;right);</span><br><span class="line">    <span class="comment">//(3)</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>递归序(访问结点的顺序)：1 2 4 4 4 2 5 5 5 2 1 3 6 6 6 3 7 7 7 1</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cout&lt;&lt;head-&gt;data&lt;&lt;<span class="string">&quot; &quot;</span>;<span class="comment">//打印语句位置</span></span><br></pre></td></tr></table></figure>
+
+<p>先序遍历：第一次访问打印 (1)</p>
+<p>中序遍历：第二次访问打印(2)</p>
+<p>后序遍历：第三次访问打印(3)</p>
+<h4 id="迭代遍历"><a href="#迭代遍历" class="headerlink" title="迭代遍历"></a>迭代遍历</h4><p>三种遍历都是用的栈</p>
+<h5 id="先序遍历"><a href="#先序遍历" class="headerlink" title="先序遍历"></a>先序遍历</h5><p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/binary-tree-preorder-traversal/">144. 二叉树的前序遍历</a></p>
+<ol>
+<li>头先进栈</li>
+<li>当栈不为空，弹出cur<ol>
+<li>打印cur</li>
+<li>cur右进栈，左进栈</li>
+</ol>
+</li>
+</ol>
+<h5 id="后序遍历"><a href="#后序遍历" class="headerlink" title="后序遍历"></a>后序遍历</h5><p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/binary-tree-postorder-traversal/">145. 二叉树的后序遍历</a></p>
+<ol>
+<li>头先进栈</li>
+<li>当栈不为空，弹出cur<ol>
+<li>打印cur</li>
+<li>cur左进栈，右进栈</li>
+</ol>
+</li>
+<li>翻转数组</li>
+</ol>
+<h5 id="中序遍历"><a href="#中序遍历" class="headerlink" title="中序遍历"></a>中序遍历</h5><p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/binary-tree-inorder-traversal/">94. 二叉树的中序遍历</a></p>
+<ol>
+<li>整棵树左边界进栈</li>
+<li>弹出，打印cur</li>
+<li>cur右子树的左边界进栈</li>
+</ol>
+<h3 id="宽度优先遍历-层次遍历"><a href="#宽度优先遍历-层次遍历" class="headerlink" title="宽度优先遍历&#x2F;层次遍历"></a>宽度优先遍历&#x2F;层次遍历</h3><p>宽度优先遍历用队列</p>
+<ol>
+<li>头结点先进队</li>
+<li>循环<ol>
+<li>弹出就打印cur</li>
+<li>先放左再放右</li>
+</ol>
+</li>
+</ol>
+<h4 id="求二叉树最大宽度"><a href="#求二叉树最大宽度" class="headerlink" title="求二叉树最大宽度"></a>求二叉树最大宽度</h4><ul>
+<li><p>法1：哈希表：（head，1）&#x2F;&#x2F;第一层</p>
+<p>curlevel,curlevelnode,max</p>
+<p>弹出结点&#x3D;当前层，node++</p>
+<p>else 说明进入下一层了</p>
+<p>——&gt;需要一个哈希表，进队列的时候(left，level+1);</p>
+</li>
+<li><p>法2：队列</p>
+</li>
+</ul>
+<h3 id="常见概念"><a href="#常见概念" class="headerlink" title="常见概念"></a>常见概念</h3><h4 id="搜索二叉树"><a href="#搜索二叉树" class="headerlink" title="搜索二叉树"></a>搜索二叉树</h4><p>每一个节点大于左子树，小于右子树</p>
+<p>判断：中序遍历，输出一定是升序</p>
+<p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/validate-binary-search-tree/">98. 验证二叉搜索树</a></p>
+<h4 id="完全二叉树"><a href="#完全二叉树" class="headerlink" title="完全二叉树"></a>完全二叉树</h4><p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/check-completeness-of-a-binary-tree/">958. 二叉树的完全性检验</a></p>
+<h4 id="满二叉树"><a href="#满二叉树" class="headerlink" title="满二叉树"></a>满二叉树</h4><h4 id="平衡二叉树"><a href="#平衡二叉树" class="headerlink" title="平衡二叉树"></a>平衡二叉树</h4><p>任何节点左树和右树的高度差都不超过1</p>
+<h3 id="二叉树的递归套路"><a href="#二叉树的递归套路" class="headerlink" title="二叉树的递归套路"></a>二叉树的递归套路</h3><ol>
+<li>列出所有的可能性</li>
+<li>整理需要左树、右树提供的信息，封装为结构体，作为返回值（左右子树返回值得是一样的）</li>
+<li>函数结构<ol>
+<li>空树情况（如果情况比较奇怪，返回NULL，调用的时候再讨论）</li>
+<li>处理左树，处理右树</li>
+<li>根据左右子树信息，处理本树</li>
+<li>返回</li>
+</ol>
+</li>
+</ol>
+<blockquote>
+<p>递归套路可以解决一切树型dp问题：问题可以通过向左子树和右子树要信息解决</p>
+<p>但要具体问题具体分析，也不是所有问题都能用套路</p>
+</blockquote>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/2024/08/13/%E9%93%BE%E8%A1%A8/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1710,90 +1859,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/07/22/C-constexpr/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="yhcs">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hexo">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2024/07/22/C-constexpr/" class="post-title-link" itemprop="url">C++：constexpr</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2024-07-22 23:26:20 / 修改时间：23:30:44" itemprop="dateCreated datePublished" datetime="2024-07-22T23:26:20+08:00">2024-07-22</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C++</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="constexpr"><a href="#constexpr" class="headerlink" title="constexpr"></a>constexpr</h1><h3 id="1-constexpr"><a href="#1-constexpr" class="headerlink" title="1. constexpr"></a>1. constexpr</h3><h4 id="1-1-const"><a href="#1-1-const" class="headerlink" title="1.1 const"></a>1.1 const</h4><p>在C++11之前只有<code>const</code>关键字，从功能上来说这个关键字有双重语义：1.变量可读；2.修饰常量<br><code>void func(const int num)</code>表示这个变量是可读的，但不是常量；<br><code>const int num=24</code>表示这个变量是常量<br>注意：变量只读不等于常量<br>例：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">const</span> <span class="type">int</span> &amp;num=a;</span><br><span class="line">num=b;<span class="comment">//错误，b是一个常量的引用，所以b引用的变量是不能修改的</span></span><br><span class="line">a=<span class="number">10</span>;<span class="comment">//但是const对于变量a是没有影响的，a值变了b值也就变了</span></span><br><span class="line"><span class="comment">//所以引用b是只读的，但不能保证它的值不可改变，也就是说它不是常量</span></span><br></pre></td></tr></table></figure>
-<h4 id="1-2-constexpr"><a href="#1-2-constexpr" class="headerlink" title="1.2 constexpr"></a>1.2 constexpr</h4><p>C++11的新关键字，作用：修饰常量表达式<br>常量表达式：由多个常量组成并且在编译过程中就得到计算结果的表达式  </p>
-<blockquote>
-<p>非常量表达式只能在程序运行阶段计算出结果<br>但是常量表达式的计算往往发生在程序的编译阶段，可以提高程序的执行效率，因为表达式只要在编译阶段计算一次，节省了每次程序运行时都需要计算一次的时间</p>
-</blockquote>
-<p>编译器如何识别常量表达式？<code>constexpr</code><br><code>const</code>vs<code>constexpr</code>：使用中建议区分开，<code>const</code>表达只读语义，<code>constexpr</code>表达常量<br>在定义常量时，<code>const</code>和<code>constexpr</code>是等价的，都可以在程序编译阶段计算出结果</p>
-<h3 id="2-常量表达式函数"><a href="#2-常量表达式函数" class="headerlink" title="2. 常量表达式函数"></a>2. 常量表达式函数</h3><p>使用<code>constexpr</code>修饰函数的返回值，这种函数叫做常量表达式函数，主要包括：1.普通函数&#x2F;成员函数；2.类的构造函数；3.模板函数</p>
-<h4 id="2-1-修饰普通函数-成员函数"><a href="#2-1-修饰普通函数-成员函数" class="headerlink" title="2.1 修饰普通函数&#x2F;成员函数"></a>2.1 修饰普通函数&#x2F;成员函数</h4><p>常量表达式函数的几个条件：  </p>
-<ol>
-<li>函数必须有返回值，而且返回值必须是常量表达式</li>
-<li>函数在使用前必须有对应的定义语句</li>
-<li>整个函数的函数体中，不能出现非常量表达式之外的语句（using 指令、typedef 语句以及 static_assert 断言、return语句除外）</li>
-</ol>
-<h4 id="2-2-修饰模板函数"><a href="#2-2-修饰模板函数" class="headerlink" title="2.2 修饰模板函数"></a>2.2 修饰模板函数</h4><p><code>constexpr</code>可以修饰函数模板,如果<code>constexpr</code>修饰的模板函数实例化结果不满足常量表达式函数的要求，则<code>constexpr</code>会被自动忽略，即该函数就等同于一个普通函数  </p>
-<h4 id="2-3-修饰构造函数"><a href="#2-3-修饰构造函数" class="headerlink" title="2.3 修饰构造函数"></a>2.3 修饰构造函数</h4><p>如果想得到一个常量对象，也可以使用<code>constexpr</code>修饰构造函数——常量构造函数有一个要求：构造函数的函数体必须为空，并且必须采用初始化列表的方式为各个成员赋值<br>如果不这么做的话，当定义一个常量对象时会报错</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Student</span>&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">Student</span>(<span class="type">int</span> age):<span class="built_in">age</span>(age)&#123;&#125;</span><br><span class="line">    <span class="type">int</span> age;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">constexpr</span> Student <span class="title">stu</span><span class="params">(<span class="number">12</span>)</span></span>;</span><br><span class="line">    cout&lt;&lt;stu.age;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1863,7 +1928,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">54</span>
+          <span class="site-state-item-count">55</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

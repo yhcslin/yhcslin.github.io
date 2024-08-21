@@ -150,6 +150,86 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/07/01/python_%E8%A7%A3%E6%9E%90xml-2-DOM/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="yhcs">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/07/01/python_%E8%A7%A3%E6%9E%90xml-2-DOM/" class="post-title-link" itemprop="url">python：解析xml(2):DOM</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2024-07-01 22:33:55" itemprop="dateCreated datePublished" datetime="2024-07-01T22:33:55+08:00">2024-07-01</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-07-13 16:58:07" itemprop="dateModified" datetime="2024-07-13T16:58:07+08:00">2024-07-13</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index"><span itemprop="name">python</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="使用xml-dom解析xml"><a href="#使用xml-dom解析xml" class="headerlink" title="使用xml.dom解析xml"></a>使用xml.dom解析xml</h3><ul>
+<li>文件对象模型（Document Object Model，简称DOM）</li>
+<li>一个 DOM 的解析器在解析一个 XML 文档时，<strong>一次性读取</strong>整个文档，把文档中所有元素保存在内存中的一个树结构里，之后你可以利用DOM 提供的不同的函数来读取或修改文档的内容和结构，也可以把修改过的内容写入xml文件。</li>
+<li>python中用xml.dom.minidom来解析xml文件</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/python</span></span><br><span class="line"><span class="comment"># -*- coding: UTF-8 -*-</span></span><br><span class="line"> </span><br><span class="line"><span class="keyword">from</span> xml.dom.minidom <span class="keyword">import</span> parse</span><br><span class="line"><span class="keyword">import</span> xml.dom.minidom</span><br><span class="line"> </span><br><span class="line"><span class="comment"># 使用minidom解析器打开 XML 文档</span></span><br><span class="line">DOMTree = xml.dom.minidom.parse(<span class="string">&quot;movies.xml&quot;</span>)</span><br><span class="line">collection = DOMTree.documentElement</span><br><span class="line"><span class="keyword">if</span> collection.hasAttribute(<span class="string">&quot;shelf&quot;</span>):</span><br><span class="line">   <span class="built_in">print</span> <span class="string">&quot;Root element : %s&quot;</span> % collection.getAttribute(<span class="string">&quot;shelf&quot;</span>)</span><br><span class="line"> </span><br><span class="line"><span class="comment"># 在集合中获取所有电影</span></span><br><span class="line">movies = collection.getElementsByTagName(<span class="string">&quot;movie&quot;</span>)</span><br><span class="line"> </span><br><span class="line"><span class="comment"># 打印每部电影的详细信息</span></span><br><span class="line"><span class="keyword">for</span> movie <span class="keyword">in</span> movies:</span><br><span class="line">   <span class="built_in">print</span> <span class="string">&quot;*****Movie*****&quot;</span></span><br><span class="line">   <span class="keyword">if</span> movie.hasAttribute(<span class="string">&quot;title&quot;</span>):</span><br><span class="line">      <span class="built_in">print</span> <span class="string">&quot;Title: %s&quot;</span> % movie.getAttribute(<span class="string">&quot;title&quot;</span>)</span><br><span class="line"> </span><br><span class="line">   <span class="built_in">type</span> = movie.getElementsByTagName(<span class="string">&#x27;type&#x27;</span>)[<span class="number">0</span>]</span><br><span class="line">   <span class="built_in">print</span> <span class="string">&quot;Type: %s&quot;</span> % <span class="built_in">type</span>.childNodes[<span class="number">0</span>].data</span><br><span class="line">   <span class="built_in">format</span> = movie.getElementsByTagName(<span class="string">&#x27;format&#x27;</span>)[<span class="number">0</span>]</span><br><span class="line">   <span class="built_in">print</span> <span class="string">&quot;Format: %s&quot;</span> % <span class="built_in">format</span>.childNodes[<span class="number">0</span>].data</span><br><span class="line">   rating = movie.getElementsByTagName(<span class="string">&#x27;rating&#x27;</span>)[<span class="number">0</span>]</span><br><span class="line">   <span class="built_in">print</span> <span class="string">&quot;Rating: %s&quot;</span> % rating.childNodes[<span class="number">0</span>].data</span><br><span class="line">   description = movie.getElementsByTagName(<span class="string">&#x27;description&#x27;</span>)[<span class="number">0</span>]</span><br><span class="line">   <span class="built_in">print</span> <span class="string">&quot;Description: %s&quot;</span> % description.childNodes[<span class="number">0</span>].data</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/2024/07/01/python_%E8%A7%A3%E6%9E%90xml-1-SAX/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1462,227 +1542,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/05/07/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E2%80%94%E2%80%94%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="yhcs">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hexo">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2024/05/07/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E2%80%94%E2%80%94%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/" class="post-title-link" itemprop="url">操作系统——文件系统</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2024-05-07 21:23:44 / 修改时间：21:27:09" itemprop="dateCreated datePublished" datetime="2024-05-07T21:23:44+08:00">2024-05-07</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="文件系统"><a href="#文件系统" class="headerlink" title="文件系统"></a>文件系统</h3><h4 id="文件系统的组成"><a href="#文件系统的组成" class="headerlink" title="文件系统的组成"></a>文件系统的组成</h4><h5 id="文件系统的概念"><a href="#文件系统的概念" class="headerlink" title="文件系统的概念"></a>文件系统的概念</h5><ul>
-<li><p>文件系统是操作系统中负责把用户的文件存到磁盘硬件中</p>
-<ul>
-<li>负责管理持久数据的子系统</li>
-</ul>
-</li>
-<li><p>基本数据单位：文件</p>
-<ul>
-<li>目的：对磁盘上的文件进行组织管理</li>
-</ul>
-</li>
-<li><p>“万物皆文件”</p>
-<ul>
-<li>普通的文件和目录、管道、块设备、socket都是统一由文件系统管理</li>
-</ul>
-</li>
-</ul>
-<h5 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h5><ul>
-<li><p><strong>为每个文件分配两个数据结构</strong></p>
-<ul>
-<li><p><strong>索引节点inode</strong></p>
-<ul>
-<li><p>记录：文件的元信息</p>
-<ul>
-<li><p>inode编号、文件大小、访问权限、创建&#x2F;修改时间</p>
-</li>
-<li><p>数据在磁盘中的位置</p>
-</li>
-</ul>
-</li>
-<li><p>索引节点是文件的唯一标识</p>
-<ul>
-<li>跟文件一一对应<ul>
-<li>同样存储在硬盘中</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p><strong>目录项dentry</strong></p>
-<ul>
-<li><p>记录：文件的名字、索引节点指针、与其他目录项的层级关联关系</p>
-<ul>
-<li><p>不只是表示目录</p>
-</li>
-<li><p>也可以表示文件</p>
-</li>
-</ul>
-</li>
-<li><p>目录项是由内核维护的一个数据结构</p>
-<ul>
-<li>存放在内存中</li>
-</ul>
-</li>
-<li><p>目录也是文件</p>
-<ul>
-<li><p>普通文件保存文件数据</p>
-</li>
-<li><p>目录文件保存子目录或者文件</p>
-</li>
-</ul>
-</li>
-<li><p>目录项vs目录</p>
-<ul>
-<li><p>区别</p>
-<ul>
-<li><p>目录是文件，存放在硬盘里</p>
-</li>
-<li><p>目录项是内核的一个数据结构，缓存在内存中</p>
-</li>
-</ul>
-</li>
-<li><p>关系</p>
-<ul>
-<li><p>查询目录频繁从磁盘读，效率低</p>
-</li>
-<li><p>内核把读过的目录用目录项这个数据结构缓存在内存中</p>
-<ul>
-<li>下次读到相同目录，直接从内存读</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p><strong>关系</strong></p>
-<ul>
-<li><p>目录项和索引节点是多对一的关系</p>
-<ul>
-<li>一个文件可以有多个别字</li>
-</ul>
-</li>
-<li><p>区别</p>
-<ul>
-<li><p>索引节点存放在硬盘</p>
-</li>
-<li><p>目录项存放在内存</p>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p><strong>文件数据如何存储在磁盘</strong></p>
-<ul>
-<li><p>逻辑块&#x2F;数据块</p>
-<ul>
-<li><p>磁盘读写的最小单位是扇区(512B)，读写效率低</p>
-</li>
-<li><p>文件系统把多个扇区组成了一个数据块</p>
-<ul>
-<li><p>每次读写的最小单位就是逻辑块</p>
-</li>
-<li><p>linux中逻辑块大小为4KB(一次性读写8个扇区)</p>
-<ul>
-<li>提高读写效率</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>加速文件访问：把索引节点加载到内存</p>
-<ul>
-<li><p>磁盘格式化后的存储区域</p>
-<ul>
-<li><p>超级块</p>
-<ul>
-<li>存储文件系统的详细信息<ul>
-<li>块个数、块大小、空闲块等</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>索引节点区</p>
-<ul>
-<li>存储索引节点</li>
-</ul>
-</li>
-<li><p>数据块区</p>
-<ul>
-<li>存储文件或者目录数据</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>加载策略：只有需要的时候加载进内存</p>
-<ul>
-<li><p>超级块：文件系统挂载时加载进内存</p>
-</li>
-<li><p>索引节点区：当文件被访问时加载进内存</p>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-<h4 id="虚拟文件系统"><a href="#虚拟文件系统" class="headerlink" title="虚拟文件系统"></a>虚拟文件系统</h4><h4 id="文件的使用"><a href="#文件的使用" class="headerlink" title="文件的使用"></a>文件的使用</h4><h4 id="文件的存储"><a href="#文件的存储" class="headerlink" title="文件的存储"></a>文件的存储</h4><h4 id="文件系统的结构"><a href="#文件系统的结构" class="headerlink" title="文件系统的结构"></a>文件系统的结构</h4><h4 id="目录的存储"><a href="#目录的存储" class="headerlink" title="目录的存储"></a>目录的存储</h4><h4 id="软链接和硬链接"><a href="#软链接和硬链接" class="headerlink" title="软链接和硬链接"></a>软链接和硬链接</h4><h4 id="文件I-O"><a href="#文件I-O" class="headerlink" title="文件I&#x2F;O"></a>文件I&#x2F;O</h4>
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1752,7 +1611,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">54</span>
+          <span class="site-state-item-count">55</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
