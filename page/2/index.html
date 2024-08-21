@@ -150,6 +150,220 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/08/13/O-Nlog-N-%E7%9A%84%E6%8E%92%E5%BA%8F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="yhcs">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/08/13/O-Nlog-N-%E7%9A%84%E6%8E%92%E5%BA%8F/" class="post-title-link" itemprop="url">O(Nlog N)的排序</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2024-08-13 16:24:47 / 修改时间：16:27:58" itemprop="dateCreated datePublished" datetime="2024-08-13T16:24:47+08:00">2024-08-13</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E7%AE%97%E6%B3%95%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">算法学习</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="O-NlogN-的排序"><a href="#O-NlogN-的排序" class="headerlink" title="O(NlogN)的排序"></a>O(NlogN)的排序</h2><h3 id="归并排序"><a href="#归并排序" class="headerlink" title="归并排序"></a>归并排序</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">mergeSort</span><span class="params">(<span class="type">int</span> arr[],<span class="type">int</span> n)</span></span>&#123;</span><br><span class="line">	<span class="built_in">sort</span>(arr,<span class="number">0</span>,n<span class="number">-1</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">sort</span><span class="params">(<span class="type">int</span> arr[],<span class="type">int</span> l,<span class="type">int</span> r)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(l==r) <span class="keyword">return</span>;</span><br><span class="line">	<span class="type">int</span> mid=l+((r-l)&gt;&gt;<span class="number">1</span>);</span><br><span class="line">	<span class="built_in">sort</span>(arr,l,mid);</span><br><span class="line">	<span class="built_in">sort</span>(arr,mid+<span class="number">1</span>,r);</span><br><span class="line">	<span class="built_in">merge</span>(arr,l,mid,r);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">merge</span><span class="params">(<span class="type">int</span> arr[],<span class="type">int</span> left,<span class="type">int</span> mid,<span class="type">int</span> right)</span></span>&#123;</span><br><span class="line">	<span class="type">int</span> p1=left,p2=mid+<span class="number">1</span>,current=<span class="number">0</span>;</span><br><span class="line">	<span class="type">int</span> result[right-left+<span class="number">1</span>];</span><br><span class="line">	<span class="keyword">while</span>(p1&lt;=mid&amp;&amp;p2&lt;=right)&#123;</span><br><span class="line">		<span class="keyword">if</span>(arr[p1]&lt;=arr[p2])&#123;</span><br><span class="line">			result[current++]=arr[p1++];</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span>&#123;</span><br><span class="line">			result[current++]=arr[p2++];</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">while</span>(p1&lt;=mid) result[current++]=arr[p1++];</span><br><span class="line">	<span class="keyword">while</span>(p2&lt;=right) result[current++]=arr[p2++];</span><br><span class="line">	<span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>;i&lt;right-left+<span class="number">1</span>;i++)&#123;</span><br><span class="line">		arr[left+i]=result[i];</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度O(NlogN)</p>
+<p>时间复杂度比插入选择排序小，因为原来的比较n次只得到一个结果，下一轮重新开始比较，而归并排序把每一次的比较结果都传递给了下一轮；</p>
+<p>空间复杂度大，因为多定义了一个数组</p>
+<h4 id="扩展"><a href="#扩展" class="headerlink" title="扩展"></a>扩展</h4><h5 id="小和问题"><a href="#小和问题" class="headerlink" title="小和问题"></a>小和问题</h5><p>在一个数组中，每一个数左边比当前数小的数累加起来，叫做这个数组的小和。求一个数组的小和。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">merge</span><span class="params">(<span class="type">int</span> arr[],<span class="type">int</span> left,<span class="type">int</span> mid,<span class="type">int</span> right)</span></span>&#123;</span><br><span class="line">	<span class="type">int</span> p1=left,p2=mid+<span class="number">1</span>,current=<span class="number">0</span>,sum=<span class="number">0</span>;</span><br><span class="line">	<span class="type">int</span> result[right-left+<span class="number">1</span>];</span><br><span class="line">	<span class="keyword">while</span>(p1&lt;=mid&amp;&amp;p2&lt;=right)&#123;</span><br><span class="line">		<span class="keyword">if</span>(arr[p1]&lt;arr[p2])&#123;</span><br><span class="line">			sum=sum+arr[p1]*(right-p2+<span class="number">1</span>);</span><br><span class="line">			result[current++]=arr[p1++];	</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span>(arr[p1]&gt;arr[p2])&#123;</span><br><span class="line">			result[current++]=arr[p2++];</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span> result[current++]=arr[p2++];</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">while</span>(p1&lt;=mid) result[current++]=arr[p1++];</span><br><span class="line">	<span class="keyword">while</span>(p2&lt;=right) result[current++]=arr[p2++];</span><br><span class="line">	<span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>;i&lt;right-left+<span class="number">1</span>;i++)&#123;</span><br><span class="line">		arr[left+i]=result[i];</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> sum;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">SmallSum</span><span class="params">(<span class="type">int</span> arr[],<span class="type">int</span> l,<span class="type">int</span> r)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(l==r) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	<span class="type">int</span> mid=l+((r-l)&gt;&gt;<span class="number">1</span>);</span><br><span class="line">	<span class="keyword">return</span> <span class="built_in">SmallSum</span>(arr,l,mid)+<span class="built_in">SmallSum</span>(arr,mid+<span class="number">1</span>,r)+<span class="built_in">merge</span>(arr,l,mid,r);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">getSmallSum</span><span class="params">(<span class="type">int</span> arr[],<span class="type">int</span> n)</span></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="built_in">SmallSum</span>(arr,<span class="number">0</span>,n<span class="number">-1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="逆序对问题"><a href="#逆序对问题" class="headerlink" title="逆序对问题"></a>逆序对问题</h5><p>在一个数组中，左边的数如果比右边的数大，则折两个数构成一个逆序对，请输出逆序对的个数。</p>
+<p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/shu-zu-zhong-de-ni-xu-dui-lcof/">LCR 170. 交易逆序对的总数</a></p>
+<p>在股票交易中，如果前一天的股价高于后一天的股价，则可以认为存在一个「交易逆序对」。请设计一个程序，输入一段时间内的股票交易记录 <code>record</code>，返回其中存在的「交易逆序对」总数。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">mergeReverse</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; record,<span class="type">int</span> left,<span class="type">int</span> mid,<span class="type">int</span> right)</span></span>&#123;</span><br><span class="line">    <span class="type">int</span> p1=left,p2=mid+<span class="number">1</span>,p=<span class="number">0</span>,result=<span class="number">0</span>;</span><br><span class="line">    <span class="type">int</span> help[right-left+<span class="number">1</span>];</span><br><span class="line">    <span class="keyword">while</span>(p1&lt;=mid&amp;&amp;p2&lt;=right)&#123;</span><br><span class="line">        <span class="keyword">if</span>(record[p1]&gt;record[p2])&#123;</span><br><span class="line">            result=result+(right-p2+<span class="number">1</span>);</span><br><span class="line">            help[p]=record[p1];</span><br><span class="line">            p++;</span><br><span class="line">            p1++;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span>&#123;</span><br><span class="line">            help[p]=record[p2];</span><br><span class="line">            p++;</span><br><span class="line">            p2++;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">while</span>(p1&lt;=mid)&#123;</span><br><span class="line">        help[p]=record[p1];</span><br><span class="line">        p++;</span><br><span class="line">        p1++;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">while</span>(p2&lt;=right)&#123;</span><br><span class="line">        help[p]=record[p2];</span><br><span class="line">        p++;</span><br><span class="line">        p2++;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>;i&lt;=right-left;i++)&#123;</span><br><span class="line">        record[left+i]=help[i];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">getReverse</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; record,<span class="type">int</span> left,<span class="type">int</span> right)</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(left==right) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="type">int</span> mid=left+((right-left)&gt;&gt;<span class="number">1</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">getReverse</span>(record,left,mid)+<span class="built_in">getReverse</span>(record,mid+<span class="number">1</span>,right)+<span class="built_in">mergeReverse</span>(record,left,mid,right);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">reversePairs</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; record)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(record.<span class="built_in">size</span>()==<span class="number">0</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">getReverse</span>(record,<span class="number">0</span>,record.<span class="built_in">size</span>()<span class="number">-1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="快排"><a href="#快排" class="headerlink" title="快排"></a>快排</h3><h4 id="快排1-0"><a href="#快排1-0" class="headerlink" title="快排1.0"></a>快排1.0</h4><p><u>小于等于num</u> + <u>大于num</u></p>
+<p>时间复杂度：O(N^2)，原因：划分值num打的很偏，导致只有一侧</p>
+<h4 id="快排2-0"><a href="#快排2-0" class="headerlink" title="快排2.0"></a>快排2.0</h4><p><u>小于num</u> + <u>等于num</u> + <u>大于num</u></p>
+<p>时间复杂度：O(N^2)，原因：划分值num打的很偏，导致只有一侧</p>
+<h4 id="快排3-0"><a href="#快排3-0" class="headerlink" title="快排3.0"></a>快排3.0</h4><p>随机选择一个数与最后一位数做交换，再作为划分值——&gt;好情况和坏情况是概率事件，每种情况只占1&#x2F;N，求每种情况时间复杂度的数学期望</p>
+<p>时间复杂度：O(NlogN)</p>
+<p>空间复杂度：O(logN)  最差是O(N)  &lt;——递归（记录中点位置）</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//快排，num,等于区域：p[0],p[1]</span></span><br><span class="line"><span class="comment">//[i]&lt;num,与小于边界的右边一位交换，i++，边界++</span></span><br><span class="line"><span class="comment">//[i]=num,i++</span></span><br><span class="line"><span class="comment">//[i]&gt;num,与大于边界的左边一位交换，边界--</span></span><br><span class="line"><span class="function">vector&lt;<span class="type">int</span>&gt; <span class="title">partition</span><span class="params">(<span class="type">int</span> arr[],<span class="type">int</span> l,<span class="type">int</span> r)</span></span>&#123;<span class="comment">//返回等于区的左右边界</span></span><br><span class="line">	<span class="comment">//以最后一个数作为划分值</span></span><br><span class="line">	<span class="type">int</span> low=l<span class="number">-1</span>;<span class="comment">//小于区左边界</span></span><br><span class="line">	<span class="type">int</span> high=r;<span class="comment">//等于区右边界	</span></span><br><span class="line">	<span class="type">int</span> i=l;<span class="comment">//当前数的位置</span></span><br><span class="line">	<span class="keyword">while</span>(i&lt;high)&#123;</span><br><span class="line">		<span class="keyword">if</span>(arr[i]&lt;arr[r])&#123;</span><br><span class="line">			<span class="built_in">swap</span>(arr,i,low+<span class="number">1</span>);</span><br><span class="line">			low++;</span><br><span class="line">			i++;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span>(arr[i]==arr[r])&#123;</span><br><span class="line">			i++;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span>&#123;</span><br><span class="line">			<span class="built_in">swap</span>(arr,i,high<span class="number">-1</span>);</span><br><span class="line">			high--;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="built_in">swap</span>(arr,high,r);</span><br><span class="line">	<span class="keyword">return</span> &#123;low+<span class="number">1</span>,high&#125;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">quickSort</span><span class="params">(<span class="type">int</span> arr[],<span class="type">int</span> l,<span class="type">int</span> r)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(l&lt;r)&#123;</span><br><span class="line">		<span class="comment">//随机选取一个数与最后一个数交换</span></span><br><span class="line">		<span class="built_in">srand</span>(<span class="built_in">time</span>(<span class="number">0</span>));</span><br><span class="line">		<span class="type">int</span> idx=(<span class="built_in">rand</span>()%(r-l+<span class="number">1</span>))+l;</span><br><span class="line">		<span class="built_in">swap</span>(arr,idx,r);</span><br><span class="line">		vector&lt;<span class="type">int</span>&gt; p=<span class="built_in">partition</span>(arr,l,r);</span><br><span class="line">		<span class="built_in">quickSort</span>(arr,l,p[<span class="number">0</span>]<span class="number">-1</span>);</span><br><span class="line">		<span class="built_in">quickSort</span>(arr,p[<span class="number">1</span>]+<span class="number">1</span>,r);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="扩展-1"><a href="#扩展-1" class="headerlink" title="扩展"></a>扩展</h4><h5 id="荷兰旗问题"><a href="#荷兰旗问题" class="headerlink" title="荷兰旗问题"></a>荷兰旗问题</h5><p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/sort-colors/">75. 颜色分类</a></p>
+<p>给定一个包含红色、白色和蓝色、共 <code>n</code> 个元素的数组 <code>nums</code> ，**<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E5%8E%9F%E5%9C%B0%E7%AE%97%E6%B3%95">原地</a>**对它们进行排序，使得相同颜色的元素相邻，并按照红色、白色、蓝色顺序排列。</p>
+<p>我们使用整数 <code>0</code>、 <code>1</code> 和 <code>2</code> 分别表示红色、白色和蓝色。</p>
+<p>必须在不使用库内置的 sort 函数的情况下解决这个问题。</p>
+<h3 id="堆排"><a href="#堆排" class="headerlink" title="堆排"></a>堆排</h3><h4 id="堆"><a href="#堆" class="headerlink" title="堆"></a>堆</h4><p>完全二叉树：从上到下从左到右依次排满的过程</p>
+<p>数据结构：从0开始的连续数组</p>
+<p>父节点：(i-1)&#x2F;2</p>
+<p>左节点：2i+1，右节点：2i+2</p>
+<p>大根堆&#x2F;小根堆：根节点最大&#x2F;最小</p>
+<p>Q：插入一个数</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//插到数组最后，不断与父节点比较，若大于父节点则交换</span></span><br><span class="line"><span class="comment">//不断向上移动直到来到合适的位置</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">heapInsert</span><span class="params">(<span class="type">int</span> arr[],<span class="type">int</span> idx)</span></span>&#123;<span class="comment">//让idx来到正确的位置</span></span><br><span class="line">	<span class="keyword">while</span>(arr[idx]&gt;arr[(idx<span class="number">-1</span>)/<span class="number">2</span>])&#123;</span><br><span class="line">		<span class="built_in">swap</span>(arr,idx,(idx<span class="number">-1</span>)/<span class="number">2</span>);</span><br><span class="line">		idx=(idx<span class="number">-1</span>)/<span class="number">2</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Q：去掉最大值</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//把最后一个数移到根节点处，然后不断下移直到合适的位置</span></span><br><span class="line"><span class="comment">//下移：不断与左右节点最大的交换，直到没有子节点或者大于子节点</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">heapify</span><span class="params">(<span class="type">int</span> arr[],<span class="type">int</span> idx,<span class="type">int</span> heapsize)</span></span>&#123;<span class="comment">//从idx开始下移</span></span><br><span class="line">	<span class="type">int</span> max;</span><br><span class="line">	<span class="keyword">while</span>(<span class="number">2</span>*idx+<span class="number">1</span>&lt;heapsize)&#123;</span><br><span class="line">		max=<span class="number">2</span>*idx+<span class="number">1</span>;</span><br><span class="line">		<span class="keyword">if</span>(<span class="number">2</span>*idx+<span class="number">2</span>&lt;heapsize&amp;&amp;arr[max]&lt;arr[<span class="number">2</span>*idx+<span class="number">2</span>])&#123;</span><br><span class="line">			max=<span class="number">2</span>*idx+<span class="number">2</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span>(arr[max]&lt;arr[idx]) <span class="keyword">break</span>;</span><br><span class="line">		<span class="built_in">swap</span>(arr,idx,max);</span><br><span class="line">		idx=max;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="堆排序"><a href="#堆排序" class="headerlink" title="堆排序"></a>堆排序</h4><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">heapSort</span><span class="params">(<span class="type">int</span> arr[],<span class="type">int</span> n)</span></span>&#123;</span><br><span class="line">    <span class="comment">//创建大根堆，一个个插入</span></span><br><span class="line">	<span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>;i&lt;n;i++)&#123;</span><br><span class="line">		<span class="built_in">heapInsert</span>(arr,i);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="type">int</span> heapSize=n;</span><br><span class="line">    <span class="comment">//arr[0]跟arr[末]交换=最大值来到了最后</span></span><br><span class="line">	<span class="built_in">swap</span>(arr,<span class="number">0</span>,heapSize<span class="number">-1</span>);</span><br><span class="line">	heapSize--;</span><br><span class="line">	<span class="keyword">while</span>(heapSize&gt;<span class="number">0</span>)&#123;</span><br><span class="line">		<span class="built_in">heapify</span>(arr,<span class="number">0</span>,heapSize);</span><br><span class="line">		<span class="built_in">swap</span>(arr,<span class="number">0</span>,--heapSize);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>时间复杂度O(NlogN)</p>
+<p>空间复杂度O(1)</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//创建大根堆的优化：从下往上从右往左不断heapify</span></span><br><span class="line"><span class="keyword">for</span>(<span class="type">int</span> i=n<span class="number">-1</span>;i&gt;=<span class="number">0</span>;i--)&#123;</span><br><span class="line">    <span class="built_in">heapify</span>(nums,i,n);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="桶排序"><a href="#桶排序" class="headerlink" title="桶排序"></a>桶排序</h3><h4 id="计数排序"><a href="#计数排序" class="headerlink" title="计数排序"></a>计数排序</h4><p>Q：员工年龄排序（0~200）</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//i位置表示i岁的员工个数</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">countSort</span><span class="params">(<span class="type">int</span> arr[],<span class="type">int</span> n)</span></span>&#123;</span><br><span class="line">	<span class="type">int</span> num[<span class="number">200</span>]=&#123;<span class="number">0</span>&#125;;</span><br><span class="line">	<span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>;i&lt;n;i++)&#123;</span><br><span class="line">		num[arr[i]]++;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>;i&lt;<span class="number">200</span>;i++)&#123;</span><br><span class="line">		<span class="keyword">while</span>(num[i]&gt;<span class="number">0</span>)&#123;</span><br><span class="line">			cout&lt;&lt;i&lt;&lt;<span class="string">&quot; &quot;</span>;</span><br><span class="line">			num[i]--;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line">in</span><br></pre></td></tr></table></figure>
+
+<p>局限性：不基于比较的排序，取决于数据状态，比如说年龄范围0~200，准备num[200]，所以得知道数范围</p>
+<h4 id="基数排序-桶排序"><a href="#基数排序-桶排序" class="headerlink" title="基数排序&#x2F;桶排序"></a>基数排序&#x2F;桶排序</h4><p>Eg：[17,13,25,100,72]</p>
+<ol>
+<li><p>补全[017,013,025,100,072]</p>
+</li>
+<li><p>准备十个桶，几进制就几个桶</p>
+</li>
+<li><p>按个位进桶</p>
+<table>
+<thead>
+<tr>
+<th>0</th>
+<th>1</th>
+<th>2</th>
+<th>3</th>
+<th>4</th>
+<th>5</th>
+<th>6</th>
+<th>7</th>
+<th>8</th>
+<th>9</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>100</td>
+<td></td>
+<td>072</td>
+<td>013</td>
+<td></td>
+<td>025</td>
+<td></td>
+<td>017</td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<p>先进先出，按个位出桶[100,072,013,025,017]</p>
+</li>
+<li><p>按十位进桶</p>
+<table>
+<thead>
+<tr>
+<th>0</th>
+<th>1</th>
+<th>2</th>
+<th>3</th>
+<th>4</th>
+<th>5</th>
+<th>6</th>
+<th>7</th>
+<th>8</th>
+<th>9</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>100</td>
+<td>013<br />017</td>
+<td>025</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td>072</td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<p>先进先出，按十位出桶[100,013,017,025,072]</p>
+</li>
+<li><p>按百位进桶</p>
+<table>
+<thead>
+<tr>
+<th>0</th>
+<th>1</th>
+<th>2</th>
+<th>3</th>
+<th>4</th>
+<th>5</th>
+<th>6</th>
+<th>7</th>
+<th>8</th>
+<th>9</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>013<br />017<br />025<br />072</td>
+<td>100</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<p>先进先出，按百位出桶[013,017,025,072,100]</p>
+</li>
+</ol>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/2024/08/13/%E7%AE%80%E5%8D%95%E6%8E%92%E5%BA%8F/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1537,176 +1751,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/07/22/C-%E6%99%BA%E8%83%BD%E6%8C%87%E9%92%88/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="yhcs">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hexo">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2024/07/22/C-%E6%99%BA%E8%83%BD%E6%8C%87%E9%92%88/" class="post-title-link" itemprop="url">C++:智能指针使用</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2024-07-22 23:24:05" itemprop="dateCreated datePublished" datetime="2024-07-22T23:24:05+08:00">2024-07-22</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-08-14 15:19:14" itemprop="dateModified" datetime="2024-08-14T15:19:14+08:00">2024-08-14</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C++</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="智能指针"><a href="#智能指针" class="headerlink" title="智能指针"></a>智能指针</h1><p>C++ 中的指针分为原始指针和智能指针<br>智能指针是裸指针的封装<br>智能指针只解决一部分问题：独占、共享所有权指针的释放、传输，没有从根本上解决C++内存安全的问题</p>
-<h3 id="独占指针：unique-ptr"><a href="#独占指针：unique-ptr" class="headerlink" title="独占指针：unique_ptr"></a>独占指针：unique_ptr</h3><p>特点：</p>
-<ul>
-<li>在任何时刻，只能有一个指针管理内存</li>
-<li>指针超出作用域，内存将自动释放</li>
-<li>该类型指针不可以copy，只可以move</li>
-</ul>
-<p> 三种创建方式</p>
-<ul>
-<li>通过已有裸指针创建</li>
-<li>通过<code>new</code>来创建</li>
-<li>通过<code>std::make_unique</code>创建（推荐）</li>
-</ul>
-<p> <code>unique_ptr</code>可以通过<code>get()</code>来获取地址<br> <code>unique_ptr</code>实现了<code>-&gt;</code>和<code>*</code></p>
-<ul>
-<li>可以通过<code>-&gt;</code>调用成员函数</li>
-<li>可以通过<code>*</code>调用<code>dereferencing</code>解引用<br>代码实例<br><code>unique</code>指针的三种创建方式</li>
-</ul>
-<ol>
-<li><p>使用原始指针：注意将原始指针置空</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Cat *c_ptr=<span class="keyword">new</span> <span class="built_in">Cat</span>(<span class="string">&quot;aa&quot;</span>);</span><br><span class="line"><span class="function">unique_ptr&lt;Cat&gt; <span class="title">u_c_ptr</span><span class="params">(c_ptr)</span></span>;</span><br><span class="line"><span class="comment">//之后要将原始指针置空</span></span><br><span class="line">c_ptr=<span class="literal">nullptr</span>;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>使用new</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">unique_ptr&lt;Cat&gt; <span class="title">u_ptr</span><span class="params">(<span class="keyword">new</span> Cat(<span class="string">&quot;bb&quot;</span>))</span></span>;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>使用<code>make_unique</code>（推荐）</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">unique_ptr&lt;Cat&gt; u_ptr=<span class="built_in">make_unique</span>&lt;Cat&gt;(<span class="string">&quot;cc&quot;</span>);</span><br></pre></td></tr></table></figure>
-<p><strong>程序结束会后自动调用析构函数！</strong></p>
-</li>
-</ol>
-<p>其他：使用<code>get()</code>获取地址，<code>*</code>解引用</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">unique_ptr&lt;<span class="type">int</span>&gt; u_ptr=<span class="built_in">make_unique</span>&lt;<span class="type">int</span>&gt;(<span class="number">10</span>);</span><br><span class="line">cout&lt;&lt;*u_ptr&lt;&lt;endl;</span><br><span class="line">cout&lt;&lt;u_ptr.<span class="built_in">get</span>()&lt;&lt;endl;</span><br></pre></td></tr></table></figure>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">10</span><br><span class="line">0x183fb0</span><br></pre></td></tr></table></figure>
-
-<h3 id="unique-ptr与函数调用"><a href="#unique-ptr与函数调用" class="headerlink" title="unique_ptr与函数调用"></a>unique_ptr与函数调用</h3><ul>
-<li><code>unique_ptr</code>是不可copy，只可以move</li>
-<li>作函数参数和函数返回值时要注意所有权</li>
-</ul>
-<ol>
-<li><code>passing by value</code><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">pass_by_value</span><span class="params">(unique_ptr&lt;Cat&gt; p)</span></span>&#123;</span><br><span class="line">    p-&gt;<span class="built_in">cat_info</span>();</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    unique_ptr&lt;Cat&gt; c=<span class="built_in">make_unique</span>&lt;Cat&gt;(<span class="string">&quot;Tom&quot;</span>);</span><br><span class="line">    <span class="built_in">pass_by_value</span>(<span class="built_in">move</span>(c));</span><br><span class="line">    <span class="comment">// 此时c已经被move到pass_by_value中，c已经不可用</span></span><br><span class="line">	<span class="comment">//c-&gt;cat_info();此时程序会崩溃</span></span><br><span class="line">    <span class="built_in">pass_by_value</span>(<span class="built_in">make_unique</span>&lt;Cat&gt;(<span class="string">&quot;Jerry&quot;</span>));<span class="comment">//默认调用move</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Constructor of Cat:Tom</span><br><span class="line">cat info name:Tom</span><br><span class="line">Desctructor of Cat:Tom</span><br><span class="line">Constructor of Cat:Jerry</span><br><span class="line">cat info name:Jerry</span><br><span class="line">Desctructor of Cat:Jerry</span><br></pre></td></tr></table></figure></li>
-<li><code>passing by reference</code><ul>
-<li>不加const的情况<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">pass_by_reference</span><span class="params">(unique_ptr&lt;Cat&gt; &amp;p)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    p-&gt;<span class="built_in">set_name</span>(<span class="string">&quot;Amy&quot;</span>);</span><br><span class="line">    p-&gt;<span class="built_in">cat_info</span>();</span><br><span class="line">    p.<span class="built_in">reset</span>();<span class="comment">// 清空</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    unique_ptr&lt;Cat&gt; cat = <span class="built_in">make_unique</span>&lt;Cat&gt;(<span class="string">&quot;Tom&quot;</span>);</span><br><span class="line">    <span class="built_in">pass_by_reference</span>(cat);</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;=============unique_ptr=============&quot;</span> &lt;&lt; endl;</span><br><span class="line">	<span class="comment">// 此时cat被清空了</span></span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;cat address:&quot;</span> &lt;&lt; cat.<span class="built_in">get</span>() &lt;&lt; endl;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Constructor of Cat:Tom</span><br><span class="line">cat info name:Amy</span><br><span class="line">Desctructor of Cat:Amy</span><br><span class="line">=============unique_ptr=============</span><br><span class="line">cat address:0</span><br></pre></td></tr></table></figure></li>
-<li>加const的情况<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">pass_by_reference</span><span class="params">(<span class="type">const</span> unique_ptr&lt;Cat&gt; &amp;p)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    p-&gt;<span class="built_in">set_name</span>(<span class="string">&quot;Amy&quot;</span>);</span><br><span class="line">    p-&gt;<span class="built_in">cat_info</span>();</span><br><span class="line">    <span class="comment">// p.reset();加了const以后不允许清空</span></span><br><span class="line">	<span class="comment">//但还是可以对对象进行修改</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    unique_ptr&lt;Cat&gt; cat = <span class="built_in">make_unique</span>&lt;Cat&gt;(<span class="string">&quot;Tom&quot;</span>);</span><br><span class="line">    <span class="built_in">pass_by_reference</span>(cat);</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;=============unique_ptr=============&quot;</span> &lt;&lt; endl;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;cat address:&quot;</span> &lt;&lt; cat.<span class="built_in">get</span>() &lt;&lt; endl;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Constructor of Cat:Tom</span><br><span class="line">cat info name:Amy</span><br><span class="line">=============unique_ptr=============</span><br><span class="line">cat address:0x1f3f60</span><br><span class="line">Desctructor of Cat:Amy</span><br></pre></td></tr></table></figure></li>
-</ul>
-</li>
-<li><code>return by value</code><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">unique_ptr&lt;Cat&gt; <span class="title">get_unique_ptr</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    unique_ptr&lt;Cat&gt; p = <span class="built_in">make_unique</span>&lt;Cat&gt;(<span class="string">&quot;Local cat&quot;</span>);</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;unique_ptr addreess:&quot;</span> &lt;&lt; p.<span class="built_in">get</span>() &lt;&lt; endl;</span><br><span class="line">    <span class="keyword">return</span> p;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    cout&lt;&lt;<span class="built_in">get_unique_ptr</span>().<span class="built_in">get</span>()&lt;&lt;endl;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;=============unique_ptr=============&quot;</span> &lt;&lt; endl;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Constructor of Cat:Local cat</span><br><span class="line">unique_ptr addreess:0x1043f60</span><br><span class="line">0x1043f60</span><br><span class="line">Desctructor of Cat:Local cat</span><br></pre></td></tr></table></figure></li>
-</ol>
-<h3 id="共享指针-shared-ptr"><a href="#共享指针-shared-ptr" class="headerlink" title="共享指针:shared_ptr"></a>共享指针:shared_ptr</h3><ul>
-<li><code>shared_ptr</code>又称计数指针  </li>
-<li>与<code>unique_ptr</code>不同的是它可以共享数据，可以copy  </li>
-<li><code>shared_ptr</code>创建了一个计数器，与类对象的内存相关联；copy则计数器+1，销毁则计数器-1；api为<code>use_count()</code></li>
-</ul>
-<ol>
-<li>常量类型<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">   <span class="comment">// 常量类型</span></span><br><span class="line"><span class="comment">// 还有一种定义方式</span></span><br><span class="line"><span class="function">shared_ptr&lt;<span class="type">int</span>&gt; <span class="title">ptr</span><span class="params">(<span class="keyword">new</span> <span class="type">int</span>(<span class="number">10</span>))</span></span>;</span><br><span class="line"></span><br><span class="line">   shared_ptr&lt;<span class="type">int</span>&gt; p1 = <span class="built_in">make_shared</span>&lt;<span class="type">int</span>&gt;(<span class="number">10</span>);</span><br><span class="line">   cout &lt;&lt; <span class="string">&quot;value:&quot;</span> &lt;&lt; *p1 &lt;&lt; endl;</span><br><span class="line">   cout &lt;&lt; <span class="string">&quot;use count:&quot;</span> &lt;&lt; p1.<span class="built_in">use_count</span>() &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">   <span class="comment">// 复制，引用计数+1</span></span><br><span class="line">   shared_ptr&lt;<span class="type">int</span>&gt; p2 = p1;</span><br><span class="line">   shared_ptr&lt;<span class="type">int</span>&gt; p3 = p1;</span><br><span class="line">   cout &lt;&lt; <span class="string">&quot;use count:&quot;</span> &lt;&lt; p1.<span class="built_in">use_count</span>() &lt;&lt; endl;</span><br><span class="line">   cout &lt;&lt; <span class="string">&quot;use count:&quot;</span> &lt;&lt; p2.<span class="built_in">use_count</span>() &lt;&lt; endl;</span><br><span class="line">   cout &lt;&lt; <span class="string">&quot;use count:&quot;</span> &lt;&lt; p3.<span class="built_in">use_count</span>() &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">   <span class="comment">// 修改值，另一个值也会改变，因为指向一个地方</span></span><br><span class="line">   *p3 = <span class="number">30</span>;</span><br><span class="line">   cout &lt;&lt; <span class="string">&quot;p1 value:&quot;</span> &lt;&lt; *p1 &lt;&lt; endl;</span><br><span class="line">   cout &lt;&lt; <span class="string">&quot;p2 value:&quot;</span> &lt;&lt; *p2 &lt;&lt; endl; </span><br><span class="line"></span><br><span class="line">   <span class="comment">// 清空一个</span></span><br><span class="line">   p3 = <span class="literal">nullptr</span>;</span><br><span class="line">   cout &lt;&lt; <span class="string">&quot;use count:&quot;</span> &lt;&lt; p1.<span class="built_in">use_count</span>() &lt;&lt; endl;</span><br><span class="line">   cout &lt;&lt; <span class="string">&quot;use count:&quot;</span> &lt;&lt; p2.<span class="built_in">use_count</span>() &lt;&lt; endl;</span><br><span class="line">   cout &lt;&lt; <span class="string">&quot;use count:&quot;</span> &lt;&lt; p3.<span class="built_in">use_count</span>() &lt;&lt; endl;</span><br></pre></td></tr></table></figure></li>
-<li>自定义类型<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">shared_ptr&lt;Cat&gt; cat1 = <span class="built_in">make_shared</span>&lt;Cat&gt;();</span><br><span class="line">cout &lt;&lt; <span class="string">&quot;cat use count:&quot;</span> &lt;&lt; cat1.<span class="built_in">use_count</span>() &lt;&lt; endl;</span><br><span class="line">shared_ptr&lt;Cat&gt; cat2 = cat1;</span><br><span class="line">shared_ptr&lt;Cat&gt; cat3 = cat2;</span><br><span class="line">cout &lt;&lt; <span class="string">&quot;cat use count:&quot;</span> &lt;&lt; cat1.<span class="built_in">use_count</span>() &lt;&lt; endl;</span><br><span class="line">cout &lt;&lt; <span class="string">&quot;cat use count:&quot;</span> &lt;&lt; cat2.<span class="built_in">use_count</span>() &lt;&lt; endl;</span><br><span class="line">cout &lt;&lt; <span class="string">&quot;cat use count:&quot;</span> &lt;&lt; cat3.<span class="built_in">use_count</span>() &lt;&lt; endl;</span><br><span class="line">cat1.<span class="built_in">reset</span>();</span><br><span class="line">cout &lt;&lt; <span class="string">&quot;cat use count:&quot;</span> &lt;&lt; cat1.<span class="built_in">use_count</span>() &lt;&lt; endl;</span><br><span class="line">cout &lt;&lt; <span class="string">&quot;cat use count:&quot;</span> &lt;&lt; cat2.<span class="built_in">use_count</span>() &lt;&lt; endl;</span><br><span class="line">cout &lt;&lt; <span class="string">&quot;cat use count:&quot;</span> &lt;&lt; cat3.<span class="built_in">use_count</span>() &lt;&lt; endl;</span><br><span class="line">cout &lt;&lt; <span class="string">&quot;==================================&quot;</span> &lt;&lt; endl;</span><br><span class="line"><span class="keyword">return</span> <span class="number">0</span>;</span><br></pre></td></tr></table></figure>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">cat use count:3</span><br><span class="line">cat use count:3</span><br><span class="line">cat use count:3</span><br><span class="line">cat use count:0</span><br><span class="line">cat use count:2</span><br><span class="line">cat use count:2</span><br><span class="line">==================================</span><br><span class="line">Desctructor of Cat:Mimi</span><br></pre></td></tr></table></figure>
-引用计数不为0，程序结束之后销毁<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">shared_ptr&lt;Cat&gt; cat1 = <span class="built_in">make_shared</span>&lt;Cat&gt;();</span><br><span class="line">cout &lt;&lt; <span class="string">&quot;cat use count:&quot;</span> &lt;&lt; cat1.<span class="built_in">use_count</span>() &lt;&lt; endl;</span><br><span class="line">shared_ptr&lt;Cat&gt; cat2 = cat1;</span><br><span class="line">shared_ptr&lt;Cat&gt; cat3 = cat2;</span><br><span class="line">cout &lt;&lt; <span class="string">&quot;cat use count:&quot;</span> &lt;&lt; cat1.<span class="built_in">use_count</span>() &lt;&lt; endl;</span><br><span class="line">cout &lt;&lt; <span class="string">&quot;cat use count:&quot;</span> &lt;&lt; cat2.<span class="built_in">use_count</span>() &lt;&lt; endl;</span><br><span class="line">cout &lt;&lt; <span class="string">&quot;cat use count:&quot;</span> &lt;&lt; cat3.<span class="built_in">use_count</span>() &lt;&lt; endl;</span><br><span class="line">cat1.<span class="built_in">reset</span>();</span><br><span class="line">cout &lt;&lt; <span class="string">&quot;cat use count:&quot;</span> &lt;&lt; cat1.<span class="built_in">use_count</span>() &lt;&lt; endl;</span><br><span class="line">cout &lt;&lt; <span class="string">&quot;cat use count:&quot;</span> &lt;&lt; cat2.<span class="built_in">use_count</span>() &lt;&lt; endl;</span><br><span class="line">cout &lt;&lt; <span class="string">&quot;cat use count:&quot;</span> &lt;&lt; cat3.<span class="built_in">use_count</span>() &lt;&lt; endl;</span><br><span class="line">cat2.<span class="built_in">reset</span>();</span><br><span class="line">cat3.<span class="built_in">reset</span>();</span><br><span class="line">cout &lt;&lt; <span class="string">&quot;==================================&quot;</span> &lt;&lt; endl;</span><br><span class="line"><span class="keyword">return</span> <span class="number">0</span>;</span><br></pre></td></tr></table></figure>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">cat use count:1</span><br><span class="line">cat use count:3</span><br><span class="line">cat use count:3</span><br><span class="line">cat use count:3</span><br><span class="line">cat use count:0</span><br><span class="line">cat use count:2</span><br><span class="line">cat use count:2</span><br><span class="line">Desctructor of Cat:Mimi</span><br><span class="line">==================================</span><br></pre></td></tr></table></figure>
-引用计数为0，就调用析构函数</li>
-</ol>
-<h3 id="shared-ptr和函数调用"><a href="#shared-ptr和函数调用" class="headerlink" title="shared_ptr和函数调用"></a>shared_ptr和函数调用</h3><ol>
-<li><code>shared_ptr passed by value</code><br>涉及copy，内部引用计数+1，但离开函数use_count-1</li>
-<li><code>shared_ptr passed by ref</code></li>
-<li><code>return by value</code></li>
-</ol>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">pass_by_value</span><span class="params">(shared_ptr&lt;Cat&gt; cat)</span></span>&#123;</span><br><span class="line">    cat-&gt;<span class="built_in">cat_info</span>();</span><br><span class="line">    cat-&gt;<span class="built_in">set_name</span>(<span class="string">&quot;cat2&quot;</span>);</span><br><span class="line">    cout&lt;&lt;<span class="string">&quot;func1 use count:&quot;</span>&lt;&lt;cat.<span class="built_in">use_count</span>()&lt;&lt;endl;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">pass_by_ref</span><span class="params">(shared_ptr&lt;Cat&gt; &amp;cat)</span></span>&#123;</span><br><span class="line">    cat-&gt;<span class="built_in">cat_info</span>();</span><br><span class="line">    cout&lt;&lt;<span class="string">&quot;func2 use count:&quot;</span>&lt;&lt;cat.<span class="built_in">use_count</span>()&lt;&lt;endl;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 一般不用</span></span><br><span class="line"><span class="function">shared_ptr&lt;Cat&gt; <span class="title">get_shared_ptr</span><span class="params">()</span></span>&#123;</span><br><span class="line">    shared_ptr&lt;Cat&gt; cat=<span class="built_in">make_shared</span>&lt;Cat&gt;(<span class="string">&quot;local cat&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> cat;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    shared_ptr&lt;Cat&gt; cat1=<span class="built_in">make_shared</span>&lt;Cat&gt;(<span class="string">&quot;cat1&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">pass_by_value</span>(cat1);</span><br><span class="line">    cat1-&gt;<span class="built_in">cat_info</span>();</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;main use count:&quot;</span> &lt;&lt; cat1.<span class="built_in">use_count</span>() &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">pass_by_ref</span>(cat1);</span><br><span class="line">    cat1-&gt;<span class="built_in">cat_info</span>();</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;main use count:&quot;</span> &lt;&lt; cat1.<span class="built_in">use_count</span>() &lt;&lt; endl;</span><br><span class="line"></span><br><span class="line">    shared_ptr&lt;Cat&gt; loacl_cat = <span class="built_in">get_shared_ptr</span>();</span><br><span class="line">    loacl_cat-&gt;<span class="built_in">cat_info</span>();</span><br><span class="line">    cout&lt;&lt;<span class="string">&quot;===============================&quot;</span>&lt;&lt;endl;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">Constructor of Cat:cat1</span><br><span class="line">cat info name:cat1</span><br><span class="line">func1 use count:2</span><br><span class="line">cat info name:cat2</span><br><span class="line">main use count:1</span><br><span class="line">cat info name:cat2</span><br><span class="line">func2 use count:1   // 此时引用计数并没有+1</span><br><span class="line">cat info name:cat2</span><br><span class="line">main use count:1</span><br><span class="line">Constructor of Cat:local cat</span><br><span class="line">cat info name:local cat</span><br><span class="line">===============================</span><br><span class="line">Desctructor of Cat:local cat</span><br><span class="line">Desctructor of Cat:cat2</span><br></pre></td></tr></table></figure>
-
-<h3 id="shared-ptr与unique-ptr"><a href="#shared-ptr与unique-ptr" class="headerlink" title="shared_ptr与unique_ptr"></a>shared_ptr与unique_ptr</h3><ul>
-<li>不能将<code>shared_ptr</code>转换为<code>unique_ptr</code></li>
-<li><code>unique_ptr</code>可以转换为<code>shared_ptr</code><ul>
-<li>通过<code>std::move</code></li>
-</ul>
-</li>
-</ul>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">unique_ptr&lt;Cat&gt; <span class="title">get_unique_ptr</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    unique_ptr&lt;Cat&gt; cat = <span class="built_in">make_unique</span>&lt;Cat&gt;(<span class="string">&quot;local cat&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> cat;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    unique_ptr&lt;Cat&gt; cat1 = <span class="built_in">make_unique</span>&lt;Cat&gt;(<span class="string">&quot;Amy&quot;</span>);</span><br><span class="line">	<span class="comment">// 通过move将unique_ptr转换为shared_ptr</span></span><br><span class="line">    shared_ptr&lt;Cat&gt; cat2 = <span class="built_in">move</span>(cat1);  <span class="comment">// 此时cat1已经不能用了</span></span><br><span class="line"></span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;cat2 use count:&quot;</span> &lt;&lt; cat2.<span class="built_in">use_count</span>() &lt;&lt; endl;</span><br><span class="line">	<span class="comment">// 函数返回值为unique_ptr，可以用shared_ptr接收</span></span><br><span class="line">    shared_ptr&lt;Cat&gt; cat3 = <span class="built_in">get_unique_ptr</span>();</span><br><span class="line">    <span class="keyword">if</span> (cat3) &#123;</span><br><span class="line">        cat3-&gt;<span class="built_in">cat_info</span>();</span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;cat3 use count:&quot;</span> &lt;&lt; cat3.<span class="built_in">use_count</span>() &lt;&lt; endl;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;===============================&quot;</span> &lt;&lt; endl;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="weak-ptr"><a href="#weak-ptr" class="headerlink" title="weak_ptr"></a>weak_ptr</h3><ul>
-<li><code>weak_ptr</code>并不拥有内存的所有权，所以不能调用<code>-&gt;</code>和<code>*</code>解引用</li>
-<li>和<code>shared_ptr</code>类似，但不影响对象引用计数</li>
-<li>为什么需要<code>weak_ptr</code>：解决<code>shared_ptr</code>循环引用的问题<ul>
-<li>例：Person1中有一个成员friend，指向另一个Person2，Person2-&gt;friend又指向另一个Person3或者指向Person1，最后每个的引用计数都不为0 —— 循环引用</li>
-<li>这里需要用一个不需要拥有所有权的指针</li>
-</ul>
-</li>
-</ul>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">// weak_ptr不能单独存在</span></span><br><span class="line">    shared_ptr&lt;Cat&gt; s_cat1=<span class="built_in">make_shared</span>&lt;Cat&gt;(<span class="string">&quot;cat1&quot;</span>);</span><br><span class="line">    weak_ptr&lt;Cat&gt; w_cat1=s_cat1;</span><br><span class="line">    <span class="comment">// weak_ptr不影响引用计数</span></span><br><span class="line">    cout&lt;&lt;<span class="string">&quot;w_cat1:&quot;</span>&lt;&lt;w_cat1.<span class="built_in">use_count</span>()&lt;&lt;endl;</span><br><span class="line">    cout&lt;&lt;<span class="string">&quot;s_cat1:&quot;</span>&lt;&lt;s_cat1.<span class="built_in">use_count</span>()&lt;&lt;endl;</span><br><span class="line">    <span class="comment">// weak_ptr不能使用-&gt;和*操作符</span></span><br><span class="line">    <span class="comment">// w_cat1-&gt;cat_info();</span></span><br><span class="line">    shared_ptr&lt;Cat&gt; s_cat2 = w_cat1.<span class="built_in">lock</span>();</span><br><span class="line">    cout&lt;&lt;<span class="string">&quot;w_cat1:&quot;</span>&lt;&lt;w_cat1.<span class="built_in">use_count</span>()&lt;&lt;endl;</span><br><span class="line">    cout&lt;&lt;<span class="string">&quot;s_cat1:&quot;</span>&lt;&lt;s_cat1.<span class="built_in">use_count</span>()&lt;&lt;endl;</span><br><span class="line">    cout&lt;&lt;<span class="string">&quot;s_cat2:&quot;</span>&lt;&lt;s_cat2.<span class="built_in">use_count</span>()&lt;&lt;endl;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;===============================&quot;</span> &lt;&lt; endl;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><strong>循环依赖的问题</strong></p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;memory&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Cat</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">explicit</span> <span class="title">Cat</span><span class="params">(string name)</span></span>;</span><br><span class="line">    <span class="built_in">Cat</span>() = <span class="keyword">default</span>;</span><br><span class="line">    ~<span class="built_in">Cat</span>();</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">cat_info</span><span class="params">()</span> <span class="type">const</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;cat info name:&quot;</span> &lt;&lt; name &lt;&lt; endl;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function">string <span class="title">get_name</span><span class="params">()</span> <span class="type">const</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> name;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">set_name</span><span class="params">(<span class="type">const</span> string &amp;name)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>-&gt;name = name;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">set_friend</span><span class="params">(shared_ptr&lt;Cat&gt; m_friend)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>-&gt;m_friend = m_friend;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    string name&#123;<span class="string">&quot;Mimi&quot;</span>&#125;;</span><br><span class="line">    shared_ptr&lt;Cat&gt; m_friend;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">Cat::<span class="built_in">Cat</span>(string name) : <span class="built_in">name</span>(name)</span><br><span class="line">&#123;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;Constructor of Cat:&quot;</span> &lt;&lt; name &lt;&lt; endl;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Cat::~<span class="built_in">Cat</span>()</span><br><span class="line">&#123;</span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;Desctructor of Cat:&quot;</span> &lt;&lt; name &lt;&lt; endl;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    shared_ptr&lt;Cat&gt; cat1 = <span class="built_in">make_shared</span>&lt;Cat&gt;(<span class="string">&quot;cat1&quot;</span>);</span><br><span class="line">    shared_ptr&lt;Cat&gt; cat3 = <span class="built_in">make_shared</span>&lt;Cat&gt;(<span class="string">&quot;cat3&quot;</span>);</span><br><span class="line">    shared_ptr&lt;Cat&gt; cat4 = <span class="built_in">make_shared</span>&lt;Cat&gt;(<span class="string">&quot;cat4&quot;</span>);</span><br><span class="line"></span><br><span class="line">    cat3-&gt;<span class="built_in">set_friend</span>(cat4);</span><br><span class="line">    cat4-&gt;<span class="built_in">set_friend</span>(cat3);</span><br><span class="line">    </span><br><span class="line">    cout &lt;&lt; <span class="string">&quot;===============================&quot;</span> &lt;&lt; endl;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Constructor of Cat:cat1</span><br><span class="line">Constructor of Cat:cat3</span><br><span class="line">Constructor of Cat:cat4</span><br><span class="line">===============================</span><br><span class="line">Desctructor of Cat:cat1</span><br></pre></td></tr></table></figure>
-<p>发现没有调用cat3和cat4的析构函数<br><strong>解决方法：</strong>将成员变量数据<code>shared_ptr&lt;Cat&gt; m_friend;</code>改为<code>weak_ptr&lt;Cat&gt; m_friend;</code><br>但是<code>void set_friend(shared_ptr&lt;Cat&gt; m_friend)</code>这里的不用改</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Constructor of Cat:cat1</span><br><span class="line">Constructor of Cat:cat3</span><br><span class="line">Constructor of Cat:cat4</span><br><span class="line">===============================</span><br><span class="line">Desctructor of Cat:cat4</span><br><span class="line">Desctructor of Cat:cat3</span><br><span class="line">Desctructor of Cat:cat1</span><br></pre></td></tr></table></figure>
-<p>此时可以正常析构</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1776,7 +1820,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">52</span>
+          <span class="site-state-item-count">53</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

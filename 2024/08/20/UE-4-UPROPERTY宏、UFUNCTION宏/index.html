@@ -20,12 +20,12 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="UPROPERTY宏、属性说明符和元数据说明符UPROPERTY宏UPROPERTY宏：虚幻C++生成反射数据，在蓝图中可以找到相应的变量 属性说明符123456789&#x2F;&#x2F; 仅在类默认设置可见UPROPERTY(VisibleDefaultsOnly)	&#x2F;&#x2F; 虚幻C++生成反射数据，在蓝图中可以找到相应的变量    int32 VisibleDefaultsOnlyInt;&#x2F;&#x2F; 仅在实例化细节面板">
+  <meta name="description" content="UPROPERTY宏、属性说明符和元数据说明符UPROPERTY宏UPROPERTY宏：把C++里的变量暴露给蓝图，实现在蓝图中访问C++变量，达到C++和蓝图通信的效果 属性说明符123456789&#x2F;&#x2F; 仅在类默认设置可见UPROPERTY(VisibleDefaultsOnly)	&#x2F;&#x2F; 虚幻C++生成反射数据，在蓝图中可以找到相应的变量    int32 VisibleDefaultsOnly">
 <meta property="og:type" content="article">
-<meta property="og:title" content="UE(4):UPROPERTY宏、属性说明符和元数据说明符">
-<meta property="og:url" content="http://example.com/2024/08/20/UE-4-UPROPERTY%E5%AE%8F%E3%80%81%E5%B1%9E%E6%80%A7%E8%AF%B4%E6%98%8E%E7%AC%A6%E5%92%8C%E5%85%83%E6%95%B0%E6%8D%AE%E8%AF%B4%E6%98%8E%E7%AC%A6/index.html">
+<meta property="og:title" content="UE(4):UPROPERTY宏、UFUNCTION宏">
+<meta property="og:url" content="http://example.com/2024/08/20/UE-4-UPROPERTY%E5%AE%8F%E3%80%81UFUNCTION%E5%AE%8F/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="UPROPERTY宏、属性说明符和元数据说明符UPROPERTY宏UPROPERTY宏：虚幻C++生成反射数据，在蓝图中可以找到相应的变量 属性说明符123456789&#x2F;&#x2F; 仅在类默认设置可见UPROPERTY(VisibleDefaultsOnly)	&#x2F;&#x2F; 虚幻C++生成反射数据，在蓝图中可以找到相应的变量    int32 VisibleDefaultsOnlyInt;&#x2F;&#x2F; 仅在实例化细节面板">
+<meta property="og:description" content="UPROPERTY宏、属性说明符和元数据说明符UPROPERTY宏UPROPERTY宏：把C++里的变量暴露给蓝图，实现在蓝图中访问C++变量，达到C++和蓝图通信的效果 属性说明符123456789&#x2F;&#x2F; 仅在类默认设置可见UPROPERTY(VisibleDefaultsOnly)	&#x2F;&#x2F; 虚幻C++生成反射数据，在蓝图中可以找到相应的变量    int32 VisibleDefaultsOnly">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http://example.com/assets/UE-4-UPROPERTY%E5%AE%8F%E3%80%81%E5%B1%9E%E6%80%A7%E8%AF%B4%E6%98%8E%E7%AC%A6%E5%92%8C%E5%85%83%E6%95%B0%E6%8D%AE%E8%AF%B4%E6%98%8E%E7%AC%A6/image-20240820173600330.png">
 <meta property="og:image" content="http://example.com/assets/UE-4-UPROPERTY%E5%AE%8F%E3%80%81%E5%B1%9E%E6%80%A7%E8%AF%B4%E6%98%8E%E7%AC%A6%E5%92%8C%E5%85%83%E6%95%B0%E6%8D%AE%E8%AF%B4%E6%98%8E%E7%AC%A6/image-20240820174959387.png">
@@ -34,13 +34,18 @@
 <meta property="og:image" content="http://example.com/assets/UE-4-UPROPERTY%E5%AE%8F%E3%80%81%E5%B1%9E%E6%80%A7%E8%AF%B4%E6%98%8E%E7%AC%A6%E5%92%8C%E5%85%83%E6%95%B0%E6%8D%AE%E8%AF%B4%E6%98%8E%E7%AC%A6/image-20240820180119115.png">
 <meta property="og:image" content="http://example.com/assets/UE-4-UPROPERTY%E5%AE%8F%E3%80%81%E5%B1%9E%E6%80%A7%E8%AF%B4%E6%98%8E%E7%AC%A6%E5%92%8C%E5%85%83%E6%95%B0%E6%8D%AE%E8%AF%B4%E6%98%8E%E7%AC%A6/image-20240820180123296.png">
 <meta property="og:image" content="http://example.com/assets/UE-4-UPROPERTY%E5%AE%8F%E3%80%81%E5%B1%9E%E6%80%A7%E8%AF%B4%E6%98%8E%E7%AC%A6%E5%92%8C%E5%85%83%E6%95%B0%E6%8D%AE%E8%AF%B4%E6%98%8E%E7%AC%A6/image-20240820180451588.png">
+<meta property="og:image" content="http://example.com/%25E6%25A1%258C%25E9%259D%25A2/assets/UEC++/image-20240820205201302.png">
+<meta property="og:image" content="http://example.com/2024/08/20/assets/UE-4-UPROPERTY%E5%AE%8F%E3%80%81UFUNCTION%E5%AE%8F/image-20240820205206787.png">
+<meta property="og:image" content="http://example.com/assets/UE-4-UPROPERTY%E5%AE%8F%E3%80%81UFUNCTION%E5%AE%8F/image-20240821124658647.png">
+<meta property="og:image" content="http://example.com/assets/UE-4-UPROPERTY%E5%AE%8F%E3%80%81UFUNCTION%E5%AE%8F/image-20240821124837582.png">
+<meta property="og:image" content="http://example.com/assets/UE-4-UPROPERTY%E5%AE%8F%E3%80%81UFUNCTION%E5%AE%8F/image-20240821125656504.png">
 <meta property="article:published_time" content="2024-08-20T12:54:29.000Z">
-<meta property="article:modified_time" content="2024-08-20T12:57:28.663Z">
+<meta property="article:modified_time" content="2024-08-21T07:00:52.100Z">
 <meta property="article:author" content="yhcs">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://example.com/assets/UE-4-UPROPERTY%E5%AE%8F%E3%80%81%E5%B1%9E%E6%80%A7%E8%AF%B4%E6%98%8E%E7%AC%A6%E5%92%8C%E5%85%83%E6%95%B0%E6%8D%AE%E8%AF%B4%E6%98%8E%E7%AC%A6/image-20240820173600330.png">
 
-<link rel="canonical" href="http://example.com/2024/08/20/UE-4-UPROPERTY%E5%AE%8F%E3%80%81%E5%B1%9E%E6%80%A7%E8%AF%B4%E6%98%8E%E7%AC%A6%E5%92%8C%E5%85%83%E6%95%B0%E6%8D%AE%E8%AF%B4%E6%98%8E%E7%AC%A6/">
+<link rel="canonical" href="http://example.com/2024/08/20/UE-4-UPROPERTY%E5%AE%8F%E3%80%81UFUNCTION%E5%AE%8F/">
 
 
 <script id="page-configurations">
@@ -53,7 +58,7 @@
   };
 </script>
 
-  <title>UE(4):UPROPERTY宏、属性说明符和元数据说明符 | Hexo</title>
+  <title>UE(4):UPROPERTY宏、UFUNCTION宏 | Hexo</title>
   
 
 
@@ -163,7 +168,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/08/20/UE-4-UPROPERTY%E5%AE%8F%E3%80%81%E5%B1%9E%E6%80%A7%E8%AF%B4%E6%98%8E%E7%AC%A6%E5%92%8C%E5%85%83%E6%95%B0%E6%8D%AE%E8%AF%B4%E6%98%8E%E7%AC%A6/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/08/20/UE-4-UPROPERTY%E5%AE%8F%E3%80%81UFUNCTION%E5%AE%8F/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -176,7 +181,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          UE(4):UPROPERTY宏、属性说明符和元数据说明符
+          UE(4):UPROPERTY宏、UFUNCTION宏
         </h1>
 
         <div class="post-meta">
@@ -185,10 +190,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2024-08-20 20:54:29 / 修改时间：20:57:28" itemprop="dateCreated datePublished" datetime="2024-08-20T20:54:29+08:00">2024-08-20</time>
+              <time title="创建时间：2024-08-20 20:54:29" itemprop="dateCreated datePublished" datetime="2024-08-20T20:54:29+08:00">2024-08-20</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-08-21 15:00:52" itemprop="dateModified" datetime="2024-08-21T15:00:52+08:00">2024-08-21</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
@@ -210,7 +221,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h3 id="UPROPERTY宏、属性说明符和元数据说明符"><a href="#UPROPERTY宏、属性说明符和元数据说明符" class="headerlink" title="UPROPERTY宏、属性说明符和元数据说明符"></a>UPROPERTY宏、属性说明符和元数据说明符</h3><h4 id="UPROPERTY宏"><a href="#UPROPERTY宏" class="headerlink" title="UPROPERTY宏"></a>UPROPERTY宏</h4><p><code>UPROPERTY</code>宏：虚幻C++生成反射数据，在蓝图中可以找到相应的变量</p>
+        <h3 id="UPROPERTY宏、属性说明符和元数据说明符"><a href="#UPROPERTY宏、属性说明符和元数据说明符" class="headerlink" title="UPROPERTY宏、属性说明符和元数据说明符"></a>UPROPERTY宏、属性说明符和元数据说明符</h3><h4 id="UPROPERTY宏"><a href="#UPROPERTY宏" class="headerlink" title="UPROPERTY宏"></a>UPROPERTY宏</h4><p><code>UPROPERTY</code>宏：把C++里的变量暴露给蓝图，实现在蓝图中访问C++变量，达到C++和蓝图通信的效果</p>
 <h4 id="属性说明符"><a href="#属性说明符" class="headerlink" title="属性说明符"></a>属性说明符</h4><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 仅在类默认设置可见</span></span><br><span class="line"><span class="built_in">UPROPERTY</span>(VisibleDefaultsOnly)	<span class="comment">// 虚幻C++生成反射数据，在蓝图中可以找到相应的变量</span></span><br><span class="line">    int32 VisibleDefaultsOnlyInt;</span><br><span class="line"><span class="comment">// 仅在实例化细节面板可见</span></span><br><span class="line"><span class="built_in">UPROPERTY</span>(VisibleInstanceOnly)	</span><br><span class="line">    FString VisibleInstanceOnlyString;</span><br><span class="line"><span class="comment">// 类默认设置和实例化细节面板都可见</span></span><br><span class="line"><span class="built_in">UPROPERTY</span>(VisibleAnywhere)</span><br><span class="line">    FVector VisibleAnywhereVector;</span><br></pre></td></tr></table></figure>
 
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 仅在类默认设置里面编辑</span></span><br><span class="line"><span class="built_in">UPROPERTY</span>(EditDefaultsOnly)</span><br><span class="line">    int32 EditDefaultsOnly;</span><br><span class="line"><span class="comment">// 仅在实例化细节面板编辑</span></span><br><span class="line"><span class="built_in">UPROPERTY</span>(EditInstanceOnly)</span><br><span class="line">    FString EditInstanceOnlyString;</span><br><span class="line"><span class="comment">// 类默认设置和实例化细节面板都编辑</span></span><br><span class="line"><span class="built_in">UPROPERTY</span>(EditAnywhere)</span><br><span class="line">    FVector EditAnywhereVector;</span><br></pre></td></tr></table></figure>
@@ -232,6 +243,30 @@
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Tooltip解释说明我们的变量</span></span><br><span class="line"><span class="built_in">UPROPERTY</span>(EditAnywhere, BlueprintReadWrite, meta = (ToolTip = <span class="string">&quot;isControllerTrue&quot;</span>))</span><br><span class="line">	<span class="type">bool</span> isTrue;</span><br></pre></td></tr></table></figure>
 
 <p><img src="/../assets/UE-4-UPROPERTY%E5%AE%8F%E3%80%81%E5%B1%9E%E6%80%A7%E8%AF%B4%E6%98%8E%E7%AC%A6%E5%92%8C%E5%85%83%E6%95%B0%E6%8D%AE%E8%AF%B4%E6%98%8E%E7%AC%A6/image-20240820180451588.png" alt="image-20240820180451588"></p>
+<h3 id="UFUNCTION宏、属性说明符和元数据说明符"><a href="#UFUNCTION宏、属性说明符和元数据说明符" class="headerlink" title="UFUNCTION宏、属性说明符和元数据说明符"></a>UFUNCTION宏、属性说明符和元数据说明符</h3><p><code>UFUNCTION</code>宏：生成函数的反射数据，将函数暴露给蓝图，实现函数和蓝图之间的通信</p>
+<h4 id="属性说明符-1"><a href="#属性说明符-1" class="headerlink" title="属性说明符"></a>属性说明符</h4><p><strong><code>BlueprintCallable</code>：</strong>暴露我们的函数在蓝图中可调用</p>
+<p><strong><code>BlueprintPure</code>：</strong>纯虚函数的定义</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 暴露我们的函数在蓝图中可调用</span></span><br><span class="line"><span class="built_in">UFUNCTION</span>(BlueprintCallable, Category = <span class="string">&quot;My Function&quot;</span>)</span><br><span class="line">	<span class="function"><span class="type">void</span> <span class="title">PrintF1</span><span class="params">()</span></span>;</span><br><span class="line"><span class="comment">// 纯虚函数的定义BlueprintPure</span></span><br><span class="line"><span class="built_in">UFUNCTION</span>(BlueprintCallable, BlueprintPure, Category = <span class="string">&quot;My Function&quot;</span>)</span><br><span class="line">	<span class="function"><span class="type">bool</span> <span class="title">PrintF2</span><span class="params">()</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>有返回值vs无返回值</p>
+<ul>
+<li>有返回值的是一个函数，无返回值的是一个事件</li>
+</ul>
+<p><img src="/../../../%25E6%25A1%258C%25E9%259D%25A2/assets/UEC++/image-20240820205201302.png" alt="image-20240820205201302"><img src="../assets/UE-4-UPROPERTY%E5%AE%8F%E3%80%81UFUNCTION%E5%AE%8F/image-20240820205206787.png" alt="image-20240820205206787" style="zoom: 67%;" /></p>
+<p><strong><code>BlueprintImplementableEvent</code>：</strong>在C++中声明，不能定义，蓝图可重载</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// BlueprintImplementableEvent:在C++中声明，不能定义，蓝图可重载</span></span><br><span class="line"><span class="built_in">UFUNCTION</span>(BlueprintImplementableEvent)</span><br><span class="line">	<span class="function"><span class="type">void</span> <span class="title">Test1</span><span class="params">()</span></span>;</span><br><span class="line"><span class="built_in">UFUNCTION</span>(BlueprintImplementableEvent)</span><br><span class="line">	<span class="function"><span class="type">int</span> <span class="title">Test2</span><span class="params">()</span></span>;</span><br><span class="line"><span class="built_in">UFUNCTION</span>(BlueprintImplementableEvent)</span><br><span class="line">	<span class="function"><span class="type">void</span> <span class="title">Test3</span><span class="params">(<span class="type">const</span> FString &amp;MyString)</span></span>;</span><br><span class="line"><span class="built_in">UFUNCTION</span>(BlueprintImplementableEvent)</span><br><span class="line">	<span class="function"><span class="type">int</span> <span class="title">Test4</span><span class="params">(<span class="type">const</span> FString&amp; MyString)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p><strong><code>BlueprintNativeEvent</code>：</strong>在C++中声明和实现，蓝图可重载或者不重载</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// BlueprintNativeEvent:在C++中声明和实现，蓝图可重载或者不重载</span></span><br><span class="line"><span class="built_in">UFUNCTION</span>(BlueprintNativeEvent)</span><br><span class="line">	<span class="function"><span class="type">void</span> <span class="title">TestA</span><span class="params">()</span></span>;</span><br><span class="line"><span class="built_in">UFUNCTION</span>(BlueprintNativeEvent)</span><br><span class="line">	<span class="function"><span class="type">int</span> <span class="title">TestB</span><span class="params">()</span></span>;</span><br><span class="line"><span class="built_in">UFUNCTION</span>(BlueprintNativeEvent)</span><br><span class="line">	<span class="function"><span class="type">void</span> <span class="title">TestC</span><span class="params">(<span class="type">const</span> FString &amp;mystring)</span></span>;</span><br><span class="line"><span class="built_in">UFUNCTION</span>(BlueprintNativeEvent)</span><br><span class="line">	<span class="function"><span class="type">int</span> <span class="title">TestD</span><span class="params">(<span class="type">const</span> FString&amp; mystring)</span></span>;</span><br><span class="line"><span class="comment">// 实现时函数名=原函数名+_Implementation</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">AMyPawn::TestA_Implementation</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	GEngine-&gt;<span class="built_in">AddOnScreenDebugMessage</span>(<span class="number">-1</span>, <span class="number">5.0f</span>, FColor::Red, <span class="built_in">TEXT</span>(<span class="string">&quot;TestA&quot;</span>));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>示例：在 <code>BeginPlay</code> 中调用 <code>TestA</code>， 在蓝图中重载 <code>TestA</code></p>
+<p><img src="/../assets/UE-4-UPROPERTY%E5%AE%8F%E3%80%81UFUNCTION%E5%AE%8F/image-20240821124658647.png" alt="image-20240821124658647"></p>
+<p>运行结果：</p>
+<p><img src="/../assets/UE-4-UPROPERTY%E5%AE%8F%E3%80%81UFUNCTION%E5%AE%8F/image-20240821124837582.png" alt="image-20240821124837582"></p>
+<h4 id="元数据说明符-1"><a href="#元数据说明符-1" class="headerlink" title="元数据说明符"></a>元数据说明符</h4><p><code>DisplayName</code>：为函数起别名</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 元数据说明符meta</span></span><br><span class="line"><span class="built_in">UFUNCTION</span>(BlueprintCallable, Category = <span class="string">&quot;My Function&quot;</span>, meta = (DisplayName = <span class="string">&quot;MyPrintTest&quot;</span>))</span><br><span class="line">	<span class="function"><span class="type">void</span> <span class="title">PrintTest</span><span class="params">()</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/../assets/UE-4-UPROPERTY%E5%AE%8F%E3%80%81UFUNCTION%E5%AE%8F/image-20240821125656504.png" alt="image-20240821125656504"></p>
 
     </div>
 
@@ -250,7 +285,10 @@
     <a href="/2024/08/19/UE-3-%E5%AE%B9%E5%99%A8/" rel="prev" title="UE(3):容器">
       <i class="fa fa-chevron-left"></i> UE(3):容器
     </a></div>
-      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2024/08/21/UE-5-%E6%9E%9A%E4%B8%BEUENUM%E3%80%81%E7%BB%93%E6%9E%84%E4%BD%93USTRUCT/" rel="next" title="UE(5):枚举UENUM、结构体USTRUCT">
+      UE(5):枚举UENUM、结构体USTRUCT <i class="fa fa-chevron-right"></i>
+    </a></div>
     </div>
       </footer>
     
@@ -309,7 +347,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#UPROPERTY%E5%AE%8F%E3%80%81%E5%B1%9E%E6%80%A7%E8%AF%B4%E6%98%8E%E7%AC%A6%E5%92%8C%E5%85%83%E6%95%B0%E6%8D%AE%E8%AF%B4%E6%98%8E%E7%AC%A6"><span class="nav-number">1.</span> <span class="nav-text">UPROPERTY宏、属性说明符和元数据说明符</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#UPROPERTY%E5%AE%8F"><span class="nav-number">1.1.</span> <span class="nav-text">UPROPERTY宏</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B1%9E%E6%80%A7%E8%AF%B4%E6%98%8E%E7%AC%A6"><span class="nav-number">1.2.</span> <span class="nav-text">属性说明符</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%83%E6%95%B0%E6%8D%AE%E8%AF%B4%E6%98%8E%E7%AC%A6"><span class="nav-number">1.3.</span> <span class="nav-text">元数据说明符</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#UPROPERTY%E5%AE%8F%E3%80%81%E5%B1%9E%E6%80%A7%E8%AF%B4%E6%98%8E%E7%AC%A6%E5%92%8C%E5%85%83%E6%95%B0%E6%8D%AE%E8%AF%B4%E6%98%8E%E7%AC%A6"><span class="nav-number">1.</span> <span class="nav-text">UPROPERTY宏、属性说明符和元数据说明符</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#UPROPERTY%E5%AE%8F"><span class="nav-number">1.1.</span> <span class="nav-text">UPROPERTY宏</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B1%9E%E6%80%A7%E8%AF%B4%E6%98%8E%E7%AC%A6"><span class="nav-number">1.2.</span> <span class="nav-text">属性说明符</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%83%E6%95%B0%E6%8D%AE%E8%AF%B4%E6%98%8E%E7%AC%A6"><span class="nav-number">1.3.</span> <span class="nav-text">元数据说明符</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#UFUNCTION%E5%AE%8F%E3%80%81%E5%B1%9E%E6%80%A7%E8%AF%B4%E6%98%8E%E7%AC%A6%E5%92%8C%E5%85%83%E6%95%B0%E6%8D%AE%E8%AF%B4%E6%98%8E%E7%AC%A6"><span class="nav-number">2.</span> <span class="nav-text">UFUNCTION宏、属性说明符和元数据说明符</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B1%9E%E6%80%A7%E8%AF%B4%E6%98%8E%E7%AC%A6-1"><span class="nav-number">2.1.</span> <span class="nav-text">属性说明符</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%83%E6%95%B0%E6%8D%AE%E8%AF%B4%E6%98%8E%E7%AC%A6-1"><span class="nav-number">2.2.</span> <span class="nav-text">元数据说明符</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -323,7 +361,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">52</span>
+          <span class="site-state-item-count">53</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

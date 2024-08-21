@@ -150,7 +150,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/08/20/UE-4-UPROPERTY%E5%AE%8F%E3%80%81%E5%B1%9E%E6%80%A7%E8%AF%B4%E6%98%8E%E7%AC%A6%E5%92%8C%E5%85%83%E6%95%B0%E6%8D%AE%E8%AF%B4%E6%98%8E%E7%AC%A6/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/08/21/UE-5-%E6%9E%9A%E4%B8%BEUENUM%E3%80%81%E7%BB%93%E6%9E%84%E4%BD%93USTRUCT/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -164,7 +164,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2024/08/20/UE-4-UPROPERTY%E5%AE%8F%E3%80%81%E5%B1%9E%E6%80%A7%E8%AF%B4%E6%98%8E%E7%AC%A6%E5%92%8C%E5%85%83%E6%95%B0%E6%8D%AE%E8%AF%B4%E6%98%8E%E7%AC%A6/" class="post-title-link" itemprop="url">UE(4):UPROPERTY宏、属性说明符和元数据说明符</a>
+            <a href="/2024/08/21/UE-5-%E6%9E%9A%E4%B8%BEUENUM%E3%80%81%E7%BB%93%E6%9E%84%E4%BD%93USTRUCT/" class="post-title-link" itemprop="url">UE(5):枚举UENUM、结构体USTRUCT</a>
         </h2>
 
         <div class="post-meta">
@@ -175,7 +175,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2024-08-20 20:54:29 / 修改时间：20:57:28" itemprop="dateCreated datePublished" datetime="2024-08-20T20:54:29+08:00">2024-08-20</time>
+              <time title="创建时间：2024-08-21 15:01:49 / 修改时间：15:02:10" itemprop="dateCreated datePublished" datetime="2024-08-21T15:01:49+08:00">2024-08-21</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -198,7 +198,102 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="UPROPERTY宏、属性说明符和元数据说明符"><a href="#UPROPERTY宏、属性说明符和元数据说明符" class="headerlink" title="UPROPERTY宏、属性说明符和元数据说明符"></a>UPROPERTY宏、属性说明符和元数据说明符</h3><h4 id="UPROPERTY宏"><a href="#UPROPERTY宏" class="headerlink" title="UPROPERTY宏"></a>UPROPERTY宏</h4><p><code>UPROPERTY</code>宏：虚幻C++生成反射数据，在蓝图中可以找到相应的变量</p>
+          <h3 id="枚举UENUM"><a href="#枚举UENUM" class="headerlink" title="枚举UENUM"></a>枚举<code>UENUM</code></h3><p>**<code>UENUM</code>:**生成枚举的反射数据，通过反射将枚举暴露给蓝图，进行C++和蓝图之间的通信</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 生成枚举的反射数据，通过反射将枚举暴露给蓝图，进行C++和蓝图之间的通信</span></span><br><span class="line"><span class="comment">// BlueprintType:在蓝图中创建的变量类型可以选择这个枚举</span></span><br><span class="line"><span class="built_in">UENUM</span>(BlueprintType)</span><br><span class="line"><span class="keyword">namespace</span> MyEnumType &#123;</span><br><span class="line">	<span class="keyword">enum</span> <span class="title class_">MyCustomEnum</span> &#123;</span><br><span class="line">		Type1,</span><br><span class="line">		Type2,</span><br><span class="line">		Type3</span><br><span class="line">	&#125;;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 在类中声明变量</span></span><br><span class="line"><span class="built_in">UPROPERTY</span>(EditAnywhere, BlueprintReadWrite, Category = <span class="string">&quot;MyEnum&quot;</span>);</span><br><span class="line">	TEnumAsByte&lt;MyEnumType::MyCustomEnum&gt; MyCustomEnum;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 枚举声明的另一种方式</span></span><br><span class="line"><span class="built_in">UENUM</span>(BlueprintType)</span><br><span class="line"><span class="keyword">enum class</span> <span class="title class_">EMtTestEnum</span> :uint8 &#123;</span><br><span class="line">	<span class="function">OneType <span class="title">UMETA</span><span class="params">(DisplayName = <span class="string">&quot;OneType&quot;</span>)</span>,</span></span><br><span class="line"><span class="function">	TwoType <span class="title">UMETA</span><span class="params">(DisplayName = <span class="string">&quot;TwoType&quot;</span>)</span>,</span></span><br><span class="line"><span class="function">	ThreeType <span class="title">UMETA</span><span class="params">(DisplayName = <span class="string">&quot;ThreeType&quot;</span>)</span>,</span></span><br><span class="line"><span class="function">&#125;</span>;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/../assets/UE-5-%E6%9E%9A%E4%B8%BEUENUM%E3%80%81%E7%BB%93%E6%9E%84%E4%BD%93USTRUCT/image-20240821130846119.png" alt="image-20240821130846119">+</p>
+<p>**<code>BlueprintType</code>:**在蓝图中创建的变量类型可以选择这个枚举</p>
+<p><img src="/../assets/UE-5-%E6%9E%9A%E4%B8%BEUENUM%E3%80%81%E7%BB%93%E6%9E%84%E4%BD%93USTRUCT/image-20240821130940475.png" alt="image-20240821130940475"></p>
+<h3 id="结构体USTRUCT"><a href="#结构体USTRUCT" class="headerlink" title="结构体USTRUCT"></a>结构体<code>USTRUCT</code></h3><p><strong><code>USTRUCT()</code>：</strong>生成结构体的反射数据，通过反射将结构体的变量或者方法暴露给蓝图</p>
+<p>**<code>BlueprintType</code>:**在蓝图中创建的变量类型可以选择这个结构体</p>
+<p>ps：命名必须以F开头</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 生成结构体的反射数据，通过反射将结构体的变量或者方法暴露给蓝图</span></span><br><span class="line"><span class="comment">// BlueprintType:在蓝图中创建的变量类型可以选择这个结构体</span></span><br><span class="line"><span class="built_in">USTRUCT</span>(BlueprintType)</span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">FMyStruct</span> <span class="comment">// 命名必须以F开头</span></span><br><span class="line">&#123;</span><br><span class="line">	<span class="built_in">GENERATED_USTRUCT_BODY</span>()</span><br><span class="line"></span><br><span class="line">	<span class="built_in">UPROPERTY</span>(EditAnywhere, BlueprintReadWrite, Category = <span class="string">&quot;MyTestStruct&quot;</span>)</span><br><span class="line">		int32 Health;</span><br><span class="line">	<span class="built_in">UPROPERTY</span>(EditAnywhere, BlueprintReadWrite, Category = <span class="string">&quot;MyTestStruct&quot;</span>)</span><br><span class="line">		FString MyName;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 声明一个结构体的变量</span></span><br><span class="line"><span class="built_in">UPROPERTY</span>(EditAnywhere, BlueprintReadWrite, Category = <span class="string">&quot;MyCustomStruct&quot;</span>)</span><br><span class="line">	FMyStruct MyCustomStruct;</span><br></pre></td></tr></table></figure>
+
+<p><strong>使用结构体接收数据表格</strong></p>
+<p>创建 <code>Object</code> 类</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;Engine/Classes/Engine/DataTable.h&quot;</span></span></span><br><span class="line"></span><br><span class="line"><span class="built_in">USTRUCT</span>(BlueprintType)</span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">FMyDataTableStruct</span>: <span class="keyword">public</span> FTableRowBase</span><br><span class="line">&#123;</span><br><span class="line">	<span class="built_in">GENERATED_USTRUCT_BODY</span>()</span><br><span class="line">	<span class="built_in">UPROPERTY</span>(EditAnywhere, BlueprintReadWrite, Category = <span class="string">&quot;MyTestDataTableStruct&quot;</span>)</span><br><span class="line">		<span class="type">float</span> Health;</span><br><span class="line">	<span class="built_in">UPROPERTY</span>(EditAnywhere, BlueprintReadWrite, Category = <span class="string">&quot;MyTestDataTableStruct&quot;</span>)</span><br><span class="line">		FString Name;</span><br><span class="line">	<span class="built_in">UPROPERTY</span>(EditAnywhere, BlueprintReadWrite, Category = <span class="string">&quot;MyTestDataTableStruct&quot;</span>)</span><br><span class="line">		<span class="type">int</span> Level;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>创建数据表格，保存为 csv 格式</p>
+<p><img src="/../assets/UE-5-%E6%9E%9A%E4%B8%BEUENUM%E3%80%81%E7%BB%93%E6%9E%84%E4%BD%93USTRUCT/image-20240821145917602.png" alt="image-20240821145917602"></p>
+<p>在项目中拖入文件</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/08/20/UE-4-UPROPERTY%E5%AE%8F%E3%80%81UFUNCTION%E5%AE%8F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="yhcs">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/08/20/UE-4-UPROPERTY%E5%AE%8F%E3%80%81UFUNCTION%E5%AE%8F/" class="post-title-link" itemprop="url">UE(4):UPROPERTY宏、UFUNCTION宏</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2024-08-20 20:54:29" itemprop="dateCreated datePublished" datetime="2024-08-20T20:54:29+08:00">2024-08-20</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-08-21 15:00:52" itemprop="dateModified" datetime="2024-08-21T15:00:52+08:00">2024-08-21</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/UE/" itemprop="url" rel="index"><span itemprop="name">UE</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="UPROPERTY宏、属性说明符和元数据说明符"><a href="#UPROPERTY宏、属性说明符和元数据说明符" class="headerlink" title="UPROPERTY宏、属性说明符和元数据说明符"></a>UPROPERTY宏、属性说明符和元数据说明符</h3><h4 id="UPROPERTY宏"><a href="#UPROPERTY宏" class="headerlink" title="UPROPERTY宏"></a>UPROPERTY宏</h4><p><code>UPROPERTY</code>宏：把C++里的变量暴露给蓝图，实现在蓝图中访问C++变量，达到C++和蓝图通信的效果</p>
 <h4 id="属性说明符"><a href="#属性说明符" class="headerlink" title="属性说明符"></a>属性说明符</h4><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 仅在类默认设置可见</span></span><br><span class="line"><span class="built_in">UPROPERTY</span>(VisibleDefaultsOnly)	<span class="comment">// 虚幻C++生成反射数据，在蓝图中可以找到相应的变量</span></span><br><span class="line">    int32 VisibleDefaultsOnlyInt;</span><br><span class="line"><span class="comment">// 仅在实例化细节面板可见</span></span><br><span class="line"><span class="built_in">UPROPERTY</span>(VisibleInstanceOnly)	</span><br><span class="line">    FString VisibleInstanceOnlyString;</span><br><span class="line"><span class="comment">// 类默认设置和实例化细节面板都可见</span></span><br><span class="line"><span class="built_in">UPROPERTY</span>(VisibleAnywhere)</span><br><span class="line">    FVector VisibleAnywhereVector;</span><br></pre></td></tr></table></figure>
 
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 仅在类默认设置里面编辑</span></span><br><span class="line"><span class="built_in">UPROPERTY</span>(EditDefaultsOnly)</span><br><span class="line">    int32 EditDefaultsOnly;</span><br><span class="line"><span class="comment">// 仅在实例化细节面板编辑</span></span><br><span class="line"><span class="built_in">UPROPERTY</span>(EditInstanceOnly)</span><br><span class="line">    FString EditInstanceOnlyString;</span><br><span class="line"><span class="comment">// 类默认设置和实例化细节面板都编辑</span></span><br><span class="line"><span class="built_in">UPROPERTY</span>(EditAnywhere)</span><br><span class="line">    FVector EditAnywhereVector;</span><br></pre></td></tr></table></figure>
@@ -220,6 +315,30 @@
 <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Tooltip解释说明我们的变量</span></span><br><span class="line"><span class="built_in">UPROPERTY</span>(EditAnywhere, BlueprintReadWrite, meta = (ToolTip = <span class="string">&quot;isControllerTrue&quot;</span>))</span><br><span class="line">	<span class="type">bool</span> isTrue;</span><br></pre></td></tr></table></figure>
 
 <p><img src="/../assets/UE-4-UPROPERTY%E5%AE%8F%E3%80%81%E5%B1%9E%E6%80%A7%E8%AF%B4%E6%98%8E%E7%AC%A6%E5%92%8C%E5%85%83%E6%95%B0%E6%8D%AE%E8%AF%B4%E6%98%8E%E7%AC%A6/image-20240820180451588.png" alt="image-20240820180451588"></p>
+<h3 id="UFUNCTION宏、属性说明符和元数据说明符"><a href="#UFUNCTION宏、属性说明符和元数据说明符" class="headerlink" title="UFUNCTION宏、属性说明符和元数据说明符"></a>UFUNCTION宏、属性说明符和元数据说明符</h3><p><code>UFUNCTION</code>宏：生成函数的反射数据，将函数暴露给蓝图，实现函数和蓝图之间的通信</p>
+<h4 id="属性说明符-1"><a href="#属性说明符-1" class="headerlink" title="属性说明符"></a>属性说明符</h4><p><strong><code>BlueprintCallable</code>：</strong>暴露我们的函数在蓝图中可调用</p>
+<p><strong><code>BlueprintPure</code>：</strong>纯虚函数的定义</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 暴露我们的函数在蓝图中可调用</span></span><br><span class="line"><span class="built_in">UFUNCTION</span>(BlueprintCallable, Category = <span class="string">&quot;My Function&quot;</span>)</span><br><span class="line">	<span class="function"><span class="type">void</span> <span class="title">PrintF1</span><span class="params">()</span></span>;</span><br><span class="line"><span class="comment">// 纯虚函数的定义BlueprintPure</span></span><br><span class="line"><span class="built_in">UFUNCTION</span>(BlueprintCallable, BlueprintPure, Category = <span class="string">&quot;My Function&quot;</span>)</span><br><span class="line">	<span class="function"><span class="type">bool</span> <span class="title">PrintF2</span><span class="params">()</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>有返回值vs无返回值</p>
+<ul>
+<li>有返回值的是一个函数，无返回值的是一个事件</li>
+</ul>
+<p><img src="/../../../%25E6%25A1%258C%25E9%259D%25A2/assets/UEC++/image-20240820205201302.png" alt="image-20240820205201302"><img src="../assets/UE-4-UPROPERTY%E5%AE%8F%E3%80%81UFUNCTION%E5%AE%8F/image-20240820205206787.png" alt="image-20240820205206787" style="zoom: 67%;" /></p>
+<p><strong><code>BlueprintImplementableEvent</code>：</strong>在C++中声明，不能定义，蓝图可重载</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// BlueprintImplementableEvent:在C++中声明，不能定义，蓝图可重载</span></span><br><span class="line"><span class="built_in">UFUNCTION</span>(BlueprintImplementableEvent)</span><br><span class="line">	<span class="function"><span class="type">void</span> <span class="title">Test1</span><span class="params">()</span></span>;</span><br><span class="line"><span class="built_in">UFUNCTION</span>(BlueprintImplementableEvent)</span><br><span class="line">	<span class="function"><span class="type">int</span> <span class="title">Test2</span><span class="params">()</span></span>;</span><br><span class="line"><span class="built_in">UFUNCTION</span>(BlueprintImplementableEvent)</span><br><span class="line">	<span class="function"><span class="type">void</span> <span class="title">Test3</span><span class="params">(<span class="type">const</span> FString &amp;MyString)</span></span>;</span><br><span class="line"><span class="built_in">UFUNCTION</span>(BlueprintImplementableEvent)</span><br><span class="line">	<span class="function"><span class="type">int</span> <span class="title">Test4</span><span class="params">(<span class="type">const</span> FString&amp; MyString)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p><strong><code>BlueprintNativeEvent</code>：</strong>在C++中声明和实现，蓝图可重载或者不重载</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// BlueprintNativeEvent:在C++中声明和实现，蓝图可重载或者不重载</span></span><br><span class="line"><span class="built_in">UFUNCTION</span>(BlueprintNativeEvent)</span><br><span class="line">	<span class="function"><span class="type">void</span> <span class="title">TestA</span><span class="params">()</span></span>;</span><br><span class="line"><span class="built_in">UFUNCTION</span>(BlueprintNativeEvent)</span><br><span class="line">	<span class="function"><span class="type">int</span> <span class="title">TestB</span><span class="params">()</span></span>;</span><br><span class="line"><span class="built_in">UFUNCTION</span>(BlueprintNativeEvent)</span><br><span class="line">	<span class="function"><span class="type">void</span> <span class="title">TestC</span><span class="params">(<span class="type">const</span> FString &amp;mystring)</span></span>;</span><br><span class="line"><span class="built_in">UFUNCTION</span>(BlueprintNativeEvent)</span><br><span class="line">	<span class="function"><span class="type">int</span> <span class="title">TestD</span><span class="params">(<span class="type">const</span> FString&amp; mystring)</span></span>;</span><br><span class="line"><span class="comment">// 实现时函数名=原函数名+_Implementation</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">AMyPawn::TestA_Implementation</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	GEngine-&gt;<span class="built_in">AddOnScreenDebugMessage</span>(<span class="number">-1</span>, <span class="number">5.0f</span>, FColor::Red, <span class="built_in">TEXT</span>(<span class="string">&quot;TestA&quot;</span>));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>示例：在 <code>BeginPlay</code> 中调用 <code>TestA</code>， 在蓝图中重载 <code>TestA</code></p>
+<p><img src="/../assets/UE-4-UPROPERTY%E5%AE%8F%E3%80%81UFUNCTION%E5%AE%8F/image-20240821124658647.png" alt="image-20240821124658647"></p>
+<p>运行结果：</p>
+<p><img src="/../assets/UE-4-UPROPERTY%E5%AE%8F%E3%80%81UFUNCTION%E5%AE%8F/image-20240821124837582.png" alt="image-20240821124837582"></p>
+<h4 id="元数据说明符-1"><a href="#元数据说明符-1" class="headerlink" title="元数据说明符"></a>元数据说明符</h4><p><code>DisplayName</code>：为函数起别名</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 元数据说明符meta</span></span><br><span class="line"><span class="built_in">UFUNCTION</span>(BlueprintCallable, Category = <span class="string">&quot;My Function&quot;</span>, meta = (DisplayName = <span class="string">&quot;MyPrintTest&quot;</span>))</span><br><span class="line">	<span class="function"><span class="type">void</span> <span class="title">PrintTest</span><span class="params">()</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/../assets/UE-4-UPROPERTY%E5%AE%8F%E3%80%81UFUNCTION%E5%AE%8F/image-20240821125656504.png" alt="image-20240821125656504"></p>
 
       
     </div>
@@ -1322,220 +1441,6 @@ priority_queue&lt;int,vector&lt;int&gt;,my_greater&gt; que; // 函数 &quot;my_g
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/08/13/O-Nlog-N-%E7%9A%84%E6%8E%92%E5%BA%8F/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="yhcs">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hexo">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2024/08/13/O-Nlog-N-%E7%9A%84%E6%8E%92%E5%BA%8F/" class="post-title-link" itemprop="url">O(Nlog N)的排序</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2024-08-13 16:24:47 / 修改时间：16:27:58" itemprop="dateCreated datePublished" datetime="2024-08-13T16:24:47+08:00">2024-08-13</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E7%AE%97%E6%B3%95%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">算法学习</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="O-NlogN-的排序"><a href="#O-NlogN-的排序" class="headerlink" title="O(NlogN)的排序"></a>O(NlogN)的排序</h2><h3 id="归并排序"><a href="#归并排序" class="headerlink" title="归并排序"></a>归并排序</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">mergeSort</span><span class="params">(<span class="type">int</span> arr[],<span class="type">int</span> n)</span></span>&#123;</span><br><span class="line">	<span class="built_in">sort</span>(arr,<span class="number">0</span>,n<span class="number">-1</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">sort</span><span class="params">(<span class="type">int</span> arr[],<span class="type">int</span> l,<span class="type">int</span> r)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(l==r) <span class="keyword">return</span>;</span><br><span class="line">	<span class="type">int</span> mid=l+((r-l)&gt;&gt;<span class="number">1</span>);</span><br><span class="line">	<span class="built_in">sort</span>(arr,l,mid);</span><br><span class="line">	<span class="built_in">sort</span>(arr,mid+<span class="number">1</span>,r);</span><br><span class="line">	<span class="built_in">merge</span>(arr,l,mid,r);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">merge</span><span class="params">(<span class="type">int</span> arr[],<span class="type">int</span> left,<span class="type">int</span> mid,<span class="type">int</span> right)</span></span>&#123;</span><br><span class="line">	<span class="type">int</span> p1=left,p2=mid+<span class="number">1</span>,current=<span class="number">0</span>;</span><br><span class="line">	<span class="type">int</span> result[right-left+<span class="number">1</span>];</span><br><span class="line">	<span class="keyword">while</span>(p1&lt;=mid&amp;&amp;p2&lt;=right)&#123;</span><br><span class="line">		<span class="keyword">if</span>(arr[p1]&lt;=arr[p2])&#123;</span><br><span class="line">			result[current++]=arr[p1++];</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span>&#123;</span><br><span class="line">			result[current++]=arr[p2++];</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">while</span>(p1&lt;=mid) result[current++]=arr[p1++];</span><br><span class="line">	<span class="keyword">while</span>(p2&lt;=right) result[current++]=arr[p2++];</span><br><span class="line">	<span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>;i&lt;right-left+<span class="number">1</span>;i++)&#123;</span><br><span class="line">		arr[left+i]=result[i];</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>时间复杂度O(NlogN)</p>
-<p>时间复杂度比插入选择排序小，因为原来的比较n次只得到一个结果，下一轮重新开始比较，而归并排序把每一次的比较结果都传递给了下一轮；</p>
-<p>空间复杂度大，因为多定义了一个数组</p>
-<h4 id="扩展"><a href="#扩展" class="headerlink" title="扩展"></a>扩展</h4><h5 id="小和问题"><a href="#小和问题" class="headerlink" title="小和问题"></a>小和问题</h5><p>在一个数组中，每一个数左边比当前数小的数累加起来，叫做这个数组的小和。求一个数组的小和。</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">merge</span><span class="params">(<span class="type">int</span> arr[],<span class="type">int</span> left,<span class="type">int</span> mid,<span class="type">int</span> right)</span></span>&#123;</span><br><span class="line">	<span class="type">int</span> p1=left,p2=mid+<span class="number">1</span>,current=<span class="number">0</span>,sum=<span class="number">0</span>;</span><br><span class="line">	<span class="type">int</span> result[right-left+<span class="number">1</span>];</span><br><span class="line">	<span class="keyword">while</span>(p1&lt;=mid&amp;&amp;p2&lt;=right)&#123;</span><br><span class="line">		<span class="keyword">if</span>(arr[p1]&lt;arr[p2])&#123;</span><br><span class="line">			sum=sum+arr[p1]*(right-p2+<span class="number">1</span>);</span><br><span class="line">			result[current++]=arr[p1++];	</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span>(arr[p1]&gt;arr[p2])&#123;</span><br><span class="line">			result[current++]=arr[p2++];</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span> result[current++]=arr[p2++];</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">while</span>(p1&lt;=mid) result[current++]=arr[p1++];</span><br><span class="line">	<span class="keyword">while</span>(p2&lt;=right) result[current++]=arr[p2++];</span><br><span class="line">	<span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>;i&lt;right-left+<span class="number">1</span>;i++)&#123;</span><br><span class="line">		arr[left+i]=result[i];</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> sum;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">SmallSum</span><span class="params">(<span class="type">int</span> arr[],<span class="type">int</span> l,<span class="type">int</span> r)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(l==r) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	<span class="type">int</span> mid=l+((r-l)&gt;&gt;<span class="number">1</span>);</span><br><span class="line">	<span class="keyword">return</span> <span class="built_in">SmallSum</span>(arr,l,mid)+<span class="built_in">SmallSum</span>(arr,mid+<span class="number">1</span>,r)+<span class="built_in">merge</span>(arr,l,mid,r);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">getSmallSum</span><span class="params">(<span class="type">int</span> arr[],<span class="type">int</span> n)</span></span>&#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="built_in">SmallSum</span>(arr,<span class="number">0</span>,n<span class="number">-1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h5 id="逆序对问题"><a href="#逆序对问题" class="headerlink" title="逆序对问题"></a>逆序对问题</h5><p>在一个数组中，左边的数如果比右边的数大，则折两个数构成一个逆序对，请输出逆序对的个数。</p>
-<p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/shu-zu-zhong-de-ni-xu-dui-lcof/">LCR 170. 交易逆序对的总数</a></p>
-<p>在股票交易中，如果前一天的股价高于后一天的股价，则可以认为存在一个「交易逆序对」。请设计一个程序，输入一段时间内的股票交易记录 <code>record</code>，返回其中存在的「交易逆序对」总数。</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">mergeReverse</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; record,<span class="type">int</span> left,<span class="type">int</span> mid,<span class="type">int</span> right)</span></span>&#123;</span><br><span class="line">    <span class="type">int</span> p1=left,p2=mid+<span class="number">1</span>,p=<span class="number">0</span>,result=<span class="number">0</span>;</span><br><span class="line">    <span class="type">int</span> help[right-left+<span class="number">1</span>];</span><br><span class="line">    <span class="keyword">while</span>(p1&lt;=mid&amp;&amp;p2&lt;=right)&#123;</span><br><span class="line">        <span class="keyword">if</span>(record[p1]&gt;record[p2])&#123;</span><br><span class="line">            result=result+(right-p2+<span class="number">1</span>);</span><br><span class="line">            help[p]=record[p1];</span><br><span class="line">            p++;</span><br><span class="line">            p1++;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span>&#123;</span><br><span class="line">            help[p]=record[p2];</span><br><span class="line">            p++;</span><br><span class="line">            p2++;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">while</span>(p1&lt;=mid)&#123;</span><br><span class="line">        help[p]=record[p1];</span><br><span class="line">        p++;</span><br><span class="line">        p1++;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">while</span>(p2&lt;=right)&#123;</span><br><span class="line">        help[p]=record[p2];</span><br><span class="line">        p++;</span><br><span class="line">        p2++;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>;i&lt;=right-left;i++)&#123;</span><br><span class="line">        record[left+i]=help[i];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">getReverse</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; record,<span class="type">int</span> left,<span class="type">int</span> right)</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(left==right) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="type">int</span> mid=left+((right-left)&gt;&gt;<span class="number">1</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">getReverse</span>(record,left,mid)+<span class="built_in">getReverse</span>(record,mid+<span class="number">1</span>,right)+<span class="built_in">mergeReverse</span>(record,left,mid,right);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">reversePairs</span><span class="params">(vector&lt;<span class="type">int</span>&gt;&amp; record)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(record.<span class="built_in">size</span>()==<span class="number">0</span>) <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">getReverse</span>(record,<span class="number">0</span>,record.<span class="built_in">size</span>()<span class="number">-1</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="快排"><a href="#快排" class="headerlink" title="快排"></a>快排</h3><h4 id="快排1-0"><a href="#快排1-0" class="headerlink" title="快排1.0"></a>快排1.0</h4><p><u>小于等于num</u> + <u>大于num</u></p>
-<p>时间复杂度：O(N^2)，原因：划分值num打的很偏，导致只有一侧</p>
-<h4 id="快排2-0"><a href="#快排2-0" class="headerlink" title="快排2.0"></a>快排2.0</h4><p><u>小于num</u> + <u>等于num</u> + <u>大于num</u></p>
-<p>时间复杂度：O(N^2)，原因：划分值num打的很偏，导致只有一侧</p>
-<h4 id="快排3-0"><a href="#快排3-0" class="headerlink" title="快排3.0"></a>快排3.0</h4><p>随机选择一个数与最后一位数做交换，再作为划分值——&gt;好情况和坏情况是概率事件，每种情况只占1&#x2F;N，求每种情况时间复杂度的数学期望</p>
-<p>时间复杂度：O(NlogN)</p>
-<p>空间复杂度：O(logN)  最差是O(N)  &lt;——递归（记录中点位置）</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//快排，num,等于区域：p[0],p[1]</span></span><br><span class="line"><span class="comment">//[i]&lt;num,与小于边界的右边一位交换，i++，边界++</span></span><br><span class="line"><span class="comment">//[i]=num,i++</span></span><br><span class="line"><span class="comment">//[i]&gt;num,与大于边界的左边一位交换，边界--</span></span><br><span class="line"><span class="function">vector&lt;<span class="type">int</span>&gt; <span class="title">partition</span><span class="params">(<span class="type">int</span> arr[],<span class="type">int</span> l,<span class="type">int</span> r)</span></span>&#123;<span class="comment">//返回等于区的左右边界</span></span><br><span class="line">	<span class="comment">//以最后一个数作为划分值</span></span><br><span class="line">	<span class="type">int</span> low=l<span class="number">-1</span>;<span class="comment">//小于区左边界</span></span><br><span class="line">	<span class="type">int</span> high=r;<span class="comment">//等于区右边界	</span></span><br><span class="line">	<span class="type">int</span> i=l;<span class="comment">//当前数的位置</span></span><br><span class="line">	<span class="keyword">while</span>(i&lt;high)&#123;</span><br><span class="line">		<span class="keyword">if</span>(arr[i]&lt;arr[r])&#123;</span><br><span class="line">			<span class="built_in">swap</span>(arr,i,low+<span class="number">1</span>);</span><br><span class="line">			low++;</span><br><span class="line">			i++;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">if</span>(arr[i]==arr[r])&#123;</span><br><span class="line">			i++;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span>&#123;</span><br><span class="line">			<span class="built_in">swap</span>(arr,i,high<span class="number">-1</span>);</span><br><span class="line">			high--;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="built_in">swap</span>(arr,high,r);</span><br><span class="line">	<span class="keyword">return</span> &#123;low+<span class="number">1</span>,high&#125;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">quickSort</span><span class="params">(<span class="type">int</span> arr[],<span class="type">int</span> l,<span class="type">int</span> r)</span></span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(l&lt;r)&#123;</span><br><span class="line">		<span class="comment">//随机选取一个数与最后一个数交换</span></span><br><span class="line">		<span class="built_in">srand</span>(<span class="built_in">time</span>(<span class="number">0</span>));</span><br><span class="line">		<span class="type">int</span> idx=(<span class="built_in">rand</span>()%(r-l+<span class="number">1</span>))+l;</span><br><span class="line">		<span class="built_in">swap</span>(arr,idx,r);</span><br><span class="line">		vector&lt;<span class="type">int</span>&gt; p=<span class="built_in">partition</span>(arr,l,r);</span><br><span class="line">		<span class="built_in">quickSort</span>(arr,l,p[<span class="number">0</span>]<span class="number">-1</span>);</span><br><span class="line">		<span class="built_in">quickSort</span>(arr,p[<span class="number">1</span>]+<span class="number">1</span>,r);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="扩展-1"><a href="#扩展-1" class="headerlink" title="扩展"></a>扩展</h4><h5 id="荷兰旗问题"><a href="#荷兰旗问题" class="headerlink" title="荷兰旗问题"></a>荷兰旗问题</h5><p><a target="_blank" rel="noopener" href="https://leetcode.cn/problems/sort-colors/">75. 颜色分类</a></p>
-<p>给定一个包含红色、白色和蓝色、共 <code>n</code> 个元素的数组 <code>nums</code> ，**<a target="_blank" rel="noopener" href="https://baike.baidu.com/item/%E5%8E%9F%E5%9C%B0%E7%AE%97%E6%B3%95">原地</a>**对它们进行排序，使得相同颜色的元素相邻，并按照红色、白色、蓝色顺序排列。</p>
-<p>我们使用整数 <code>0</code>、 <code>1</code> 和 <code>2</code> 分别表示红色、白色和蓝色。</p>
-<p>必须在不使用库内置的 sort 函数的情况下解决这个问题。</p>
-<h3 id="堆排"><a href="#堆排" class="headerlink" title="堆排"></a>堆排</h3><h4 id="堆"><a href="#堆" class="headerlink" title="堆"></a>堆</h4><p>完全二叉树：从上到下从左到右依次排满的过程</p>
-<p>数据结构：从0开始的连续数组</p>
-<p>父节点：(i-1)&#x2F;2</p>
-<p>左节点：2i+1，右节点：2i+2</p>
-<p>大根堆&#x2F;小根堆：根节点最大&#x2F;最小</p>
-<p>Q：插入一个数</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//插到数组最后，不断与父节点比较，若大于父节点则交换</span></span><br><span class="line"><span class="comment">//不断向上移动直到来到合适的位置</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">heapInsert</span><span class="params">(<span class="type">int</span> arr[],<span class="type">int</span> idx)</span></span>&#123;<span class="comment">//让idx来到正确的位置</span></span><br><span class="line">	<span class="keyword">while</span>(arr[idx]&gt;arr[(idx<span class="number">-1</span>)/<span class="number">2</span>])&#123;</span><br><span class="line">		<span class="built_in">swap</span>(arr,idx,(idx<span class="number">-1</span>)/<span class="number">2</span>);</span><br><span class="line">		idx=(idx<span class="number">-1</span>)/<span class="number">2</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>Q：去掉最大值</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//把最后一个数移到根节点处，然后不断下移直到合适的位置</span></span><br><span class="line"><span class="comment">//下移：不断与左右节点最大的交换，直到没有子节点或者大于子节点</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">heapify</span><span class="params">(<span class="type">int</span> arr[],<span class="type">int</span> idx,<span class="type">int</span> heapsize)</span></span>&#123;<span class="comment">//从idx开始下移</span></span><br><span class="line">	<span class="type">int</span> max;</span><br><span class="line">	<span class="keyword">while</span>(<span class="number">2</span>*idx+<span class="number">1</span>&lt;heapsize)&#123;</span><br><span class="line">		max=<span class="number">2</span>*idx+<span class="number">1</span>;</span><br><span class="line">		<span class="keyword">if</span>(<span class="number">2</span>*idx+<span class="number">2</span>&lt;heapsize&amp;&amp;arr[max]&lt;arr[<span class="number">2</span>*idx+<span class="number">2</span>])&#123;</span><br><span class="line">			max=<span class="number">2</span>*idx+<span class="number">2</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span>(arr[max]&lt;arr[idx]) <span class="keyword">break</span>;</span><br><span class="line">		<span class="built_in">swap</span>(arr,idx,max);</span><br><span class="line">		idx=max;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h4 id="堆排序"><a href="#堆排序" class="headerlink" title="堆排序"></a>堆排序</h4><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">heapSort</span><span class="params">(<span class="type">int</span> arr[],<span class="type">int</span> n)</span></span>&#123;</span><br><span class="line">    <span class="comment">//创建大根堆，一个个插入</span></span><br><span class="line">	<span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>;i&lt;n;i++)&#123;</span><br><span class="line">		<span class="built_in">heapInsert</span>(arr,i);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="type">int</span> heapSize=n;</span><br><span class="line">    <span class="comment">//arr[0]跟arr[末]交换=最大值来到了最后</span></span><br><span class="line">	<span class="built_in">swap</span>(arr,<span class="number">0</span>,heapSize<span class="number">-1</span>);</span><br><span class="line">	heapSize--;</span><br><span class="line">	<span class="keyword">while</span>(heapSize&gt;<span class="number">0</span>)&#123;</span><br><span class="line">		<span class="built_in">heapify</span>(arr,<span class="number">0</span>,heapSize);</span><br><span class="line">		<span class="built_in">swap</span>(arr,<span class="number">0</span>,--heapSize);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>时间复杂度O(NlogN)</p>
-<p>空间复杂度O(1)</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//创建大根堆的优化：从下往上从右往左不断heapify</span></span><br><span class="line"><span class="keyword">for</span>(<span class="type">int</span> i=n<span class="number">-1</span>;i&gt;=<span class="number">0</span>;i--)&#123;</span><br><span class="line">    <span class="built_in">heapify</span>(nums,i,n);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="桶排序"><a href="#桶排序" class="headerlink" title="桶排序"></a>桶排序</h3><h4 id="计数排序"><a href="#计数排序" class="headerlink" title="计数排序"></a>计数排序</h4><p>Q：员工年龄排序（0~200）</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//i位置表示i岁的员工个数</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">countSort</span><span class="params">(<span class="type">int</span> arr[],<span class="type">int</span> n)</span></span>&#123;</span><br><span class="line">	<span class="type">int</span> num[<span class="number">200</span>]=&#123;<span class="number">0</span>&#125;;</span><br><span class="line">	<span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>;i&lt;n;i++)&#123;</span><br><span class="line">		num[arr[i]]++;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">for</span>(<span class="type">int</span> i=<span class="number">0</span>;i&lt;<span class="number">200</span>;i++)&#123;</span><br><span class="line">		<span class="keyword">while</span>(num[i]&gt;<span class="number">0</span>)&#123;</span><br><span class="line">			cout&lt;&lt;i&lt;&lt;<span class="string">&quot; &quot;</span>;</span><br><span class="line">			num[i]--;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line">in</span><br></pre></td></tr></table></figure>
-
-<p>局限性：不基于比较的排序，取决于数据状态，比如说年龄范围0~200，准备num[200]，所以得知道数范围</p>
-<h4 id="基数排序-桶排序"><a href="#基数排序-桶排序" class="headerlink" title="基数排序&#x2F;桶排序"></a>基数排序&#x2F;桶排序</h4><p>Eg：[17,13,25,100,72]</p>
-<ol>
-<li><p>补全[017,013,025,100,072]</p>
-</li>
-<li><p>准备十个桶，几进制就几个桶</p>
-</li>
-<li><p>按个位进桶</p>
-<table>
-<thead>
-<tr>
-<th>0</th>
-<th>1</th>
-<th>2</th>
-<th>3</th>
-<th>4</th>
-<th>5</th>
-<th>6</th>
-<th>7</th>
-<th>8</th>
-<th>9</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>100</td>
-<td></td>
-<td>072</td>
-<td>013</td>
-<td></td>
-<td>025</td>
-<td></td>
-<td>017</td>
-<td></td>
-<td></td>
-</tr>
-</tbody></table>
-<p>先进先出，按个位出桶[100,072,013,025,017]</p>
-</li>
-<li><p>按十位进桶</p>
-<table>
-<thead>
-<tr>
-<th>0</th>
-<th>1</th>
-<th>2</th>
-<th>3</th>
-<th>4</th>
-<th>5</th>
-<th>6</th>
-<th>7</th>
-<th>8</th>
-<th>9</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>100</td>
-<td>013<br />017</td>
-<td>025</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td>072</td>
-<td></td>
-<td></td>
-</tr>
-</tbody></table>
-<p>先进先出，按十位出桶[100,013,017,025,072]</p>
-</li>
-<li><p>按百位进桶</p>
-<table>
-<thead>
-<tr>
-<th>0</th>
-<th>1</th>
-<th>2</th>
-<th>3</th>
-<th>4</th>
-<th>5</th>
-<th>6</th>
-<th>7</th>
-<th>8</th>
-<th>9</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>013<br />017<br />025<br />072</td>
-<td>100</td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-</tbody></table>
-<p>先进先出，按百位出桶[013,017,025,072,100]</p>
-</li>
-</ol>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1605,7 +1510,7 @@ priority_queue&lt;int,vector&lt;int&gt;,my_greater&gt; que; // 函数 &quot;my_g
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">52</span>
+          <span class="site-state-item-count">53</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
