@@ -150,6 +150,117 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/07/01/python_%E8%A7%A3%E6%9E%90xml-1-SAX/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="yhcs">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/07/01/python_%E8%A7%A3%E6%9E%90xml-1-SAX/" class="post-title-link" itemprop="url">python：解析xml(1):SAX</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2024-07-01 22:12:10" itemprop="dateCreated datePublished" datetime="2024-07-01T22:12:10+08:00">2024-07-01</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-07-13 16:58:02" itemprop="dateModified" datetime="2024-07-13T16:58:02+08:00">2024-07-13</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index"><span itemprop="name">python</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="XML"><a href="#XML" class="headerlink" title="XML"></a>XML</h3><p>xml：可扩展标记语言</p>
+<p>——&gt;用来传输和存储数据</p>
+<p>——没有预定义的标签</p>
+<p>——对html的补充</p>
+<p>描述：独立于软件和硬件的信息传输工具</p>
+<p><strong>python对xml的解析：</strong></p>
+<ol>
+<li>SAX：事件驱动模型，通过在解析XML的过程中触发一个个的事件并调用用户定义的回调函数来处理XML文件</li>
+<li>DOM：将 XML 数据在内存中解析成一个树，通过对树的操作来操作XML</li>
+<li>ElementTree：轻量级的DOM</li>
+</ol>
+<blockquote>
+<p>对比：DOM需要将XML数据映射到内存中的树，一是比较慢，二是比较耗内存，而SAX流式读取XML文件，比较快，占用内存少，但需要用户实现回调函数（handler）</p>
+</blockquote>
+<h3 id="python使用SAX解析xml"><a href="#python使用SAX解析xml" class="headerlink" title="python使用SAX解析xml"></a>python使用SAX解析xml</h3><p>SAX是一种基于事件驱动的 API，牵涉到两个部分: <strong>解析器</strong>和<strong>事件处理器</strong>。</p>
+<ol>
+<li>解析器：读取XML文档，并向事件处理器发送事件，如元素开始跟元素结束事件。</li>
+<li>事件处理器：负责对事件作出响应，对传递的XML数据进行处理。</li>
+</ol>
+<ul>
+<li><p>引入：<code>import xml.sax</code></p>
+</li>
+<li><p>继承基类，自定义相关的类</p>
+<ul>
+<li><code>init</code>方法</li>
+<li><code>ContebtHandler</code>类方法<ul>
+<li><code>characters(content)</code>：内容事件处理</li>
+<li><code>startDocument()</code> ：文档启动的时候调用</li>
+<li><code>endDocument()</code> ：解析器到达文档结尾时调用</li>
+<li><code>startElement(name, attrs)</code>：遇到XML开始标签时调用，name是标签的名字，attrs是标签的属性值字典</li>
+<li><code>endElement(name)</code> ：遇到XML结束标签时调用</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#!/usr/bin/python</span></span><br><span class="line"><span class="comment"># -*- coding: UTF-8 -*-</span></span><br><span class="line"> </span><br><span class="line"><span class="keyword">import</span> xml.sax</span><br><span class="line"> </span><br><span class="line"><span class="keyword">class</span> <span class="title class_">MovieHandler</span>( xml.sax.ContentHandler ):</span><br><span class="line">   <span class="keyword">def</span> <span class="title function_">__init__</span>(<span class="params">self</span>):</span><br><span class="line">      self.CurrentData = <span class="string">&quot;&quot;</span></span><br><span class="line">      self.<span class="built_in">type</span> = <span class="string">&quot;&quot;</span></span><br><span class="line">      self.<span class="built_in">format</span> = <span class="string">&quot;&quot;</span></span><br><span class="line">      self.year = <span class="string">&quot;&quot;</span></span><br><span class="line">      self.rating = <span class="string">&quot;&quot;</span></span><br><span class="line">      self.stars = <span class="string">&quot;&quot;</span></span><br><span class="line">      self.description = <span class="string">&quot;&quot;</span></span><br><span class="line"> </span><br><span class="line">   <span class="comment"># 元素开始事件处理</span></span><br><span class="line">   <span class="keyword">def</span> <span class="title function_">startElement</span>(<span class="params">self, tag, attributes</span>):</span><br><span class="line">      self.CurrentData = tag</span><br><span class="line">      <span class="keyword">if</span> tag == <span class="string">&quot;movie&quot;</span>:</span><br><span class="line">         <span class="built_in">print</span> <span class="string">&quot;*****Movie*****&quot;</span></span><br><span class="line">         title = attributes[<span class="string">&quot;title&quot;</span>]</span><br><span class="line">         <span class="built_in">print</span> <span class="string">&quot;Title:&quot;</span>, title</span><br><span class="line"> </span><br><span class="line">   <span class="comment"># 元素结束事件处理</span></span><br><span class="line">   <span class="keyword">def</span> <span class="title function_">endElement</span>(<span class="params">self, tag</span>):</span><br><span class="line">      <span class="keyword">if</span> self.CurrentData == <span class="string">&quot;type&quot;</span>:</span><br><span class="line">         <span class="built_in">print</span> <span class="string">&quot;Type:&quot;</span>, self.<span class="built_in">type</span></span><br><span class="line">      <span class="keyword">elif</span> self.CurrentData == <span class="string">&quot;format&quot;</span>:</span><br><span class="line">         <span class="built_in">print</span> <span class="string">&quot;Format:&quot;</span>, self.<span class="built_in">format</span></span><br><span class="line">      <span class="keyword">elif</span> self.CurrentData == <span class="string">&quot;year&quot;</span>:</span><br><span class="line">         <span class="built_in">print</span> <span class="string">&quot;Year:&quot;</span>, self.year</span><br><span class="line">      <span class="keyword">elif</span> self.CurrentData == <span class="string">&quot;rating&quot;</span>:</span><br><span class="line">         <span class="built_in">print</span> <span class="string">&quot;Rating:&quot;</span>, self.rating</span><br><span class="line">      <span class="keyword">elif</span> self.CurrentData == <span class="string">&quot;stars&quot;</span>:</span><br><span class="line">         <span class="built_in">print</span> <span class="string">&quot;Stars:&quot;</span>, self.stars</span><br><span class="line">      <span class="keyword">elif</span> self.CurrentData == <span class="string">&quot;description&quot;</span>:</span><br><span class="line">         <span class="built_in">print</span> <span class="string">&quot;Description:&quot;</span>, self.description</span><br><span class="line">      self.CurrentData = <span class="string">&quot;&quot;</span></span><br><span class="line"> </span><br><span class="line">   <span class="comment"># 内容事件处理</span></span><br><span class="line">   <span class="keyword">def</span> <span class="title function_">characters</span>(<span class="params">self, content</span>):</span><br><span class="line">      <span class="keyword">if</span> self.CurrentData == <span class="string">&quot;type&quot;</span>:</span><br><span class="line">         self.<span class="built_in">type</span> = content</span><br><span class="line">      <span class="keyword">elif</span> self.CurrentData == <span class="string">&quot;format&quot;</span>:</span><br><span class="line">         self.<span class="built_in">format</span> = content</span><br><span class="line">      <span class="keyword">elif</span> self.CurrentData == <span class="string">&quot;year&quot;</span>:</span><br><span class="line">         self.year = content</span><br><span class="line">      <span class="keyword">elif</span> self.CurrentData == <span class="string">&quot;rating&quot;</span>:</span><br><span class="line">         self.rating = content</span><br><span class="line">      <span class="keyword">elif</span> self.CurrentData == <span class="string">&quot;stars&quot;</span>:</span><br><span class="line">         self.stars = content</span><br><span class="line">      <span class="keyword">elif</span> self.CurrentData == <span class="string">&quot;description&quot;</span>:</span><br><span class="line">         self.description = content</span><br><span class="line">  </span><br><span class="line"><span class="keyword">if</span> ( __name__ == <span class="string">&quot;__main__&quot;</span>):</span><br><span class="line">   </span><br><span class="line">   <span class="comment"># 创建一个 XMLReader</span></span><br><span class="line">   parser = xml.sax.make_parser()</span><br><span class="line">   <span class="comment"># turn off namepsaces</span></span><br><span class="line">   parser.setFeature(xml.sax.handler.feature_namespaces, <span class="number">0</span>)</span><br><span class="line"> </span><br><span class="line">   <span class="comment"># 重写 ContextHandler</span></span><br><span class="line">   Handler = MovieHandler()</span><br><span class="line">   parser.setContentHandler( Handler )</span><br><span class="line">   </span><br><span class="line">   parser.parse(<span class="string">&quot;movies.xml&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/2024/06/30/%E8%BF%9B%E7%A8%8B%E7%AE%A1%E7%90%86(%E4%B8%80)%E8%BF%9B%E7%A8%8B%E5%92%8C%E7%BA%BF%E7%A8%8B/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1572,230 +1683,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/05/02/TME-0429%E9%9D%A2%E7%BB%8F/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="yhcs">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hexo">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2024/05/02/TME-0429%E9%9D%A2%E7%BB%8F/" class="post-title-link" itemprop="url">0429TME面经</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2024-05-02 14:26:26" itemprop="dateCreated datePublished" datetime="2024-05-02T14:26:26+08:00">2024-05-02</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2024-07-22 23:25:53" itemprop="dateModified" datetime="2024-07-22T23:25:53+08:00">2024-07-22</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="腾讯音乐4-29-客户端开发面经"><a href="#腾讯音乐4-29-客户端开发面经" class="headerlink" title="腾讯音乐4.29 客户端开发面经"></a>腾讯音乐4.29 客户端开发面经</h3><h5 id="面试流程："><a href="#面试流程：" class="headerlink" title="面试流程："></a>面试流程：</h5><ol>
-<li>面试官介绍部门情况</li>
-<li>自我介绍（面试官要求介绍项目什么的）</li>
-<li>问答环节</li>
-</ol>
-<h5 id="问题："><a href="#问题：" class="headerlink" title="问题："></a>问题：</h5><h6 id="tcp建立连接是3次握手，断开连接是4次挥手，为什么会有这个差异？"><a href="#tcp建立连接是3次握手，断开连接是4次挥手，为什么会有这个差异？" class="headerlink" title="tcp建立连接是3次握手，断开连接是4次挥手，为什么会有这个差异？"></a>tcp建立连接是3次握手，断开连接是4次挥手，为什么会有这个差异？</h6><p>断开连接为什么要4次，而不是3次？</p>
-<ul>
-<li><strong>TCP连接为什么要三次握手</strong>？<ol>
-<li>原因：<ol>
-<li>客户端发出SYN，并收到ACK，这就是两次网络传输了。</li>
-<li>同样服务器端也发出SYN，且等待对方回复，这也是两次网络传输。</li>
-<li>加起来难道不是四次吗？实际上<strong>服务器端将对客户端 SYN(1) 的回复和自己 SYN(1) 的请求合并了</strong>，所以建立一个 TCP 连接最少只需要经过三次网络传输</li>
-</ol>
-</li>
-<li>举例：已失效的连接请求报文</li>
-</ol>
-</li>
-<li><strong>TCP断开连接为什么需要四次挥手？</strong><ol>
-<li>原因：<ol>
-<li>发起断开方发出FIN，并收到ACK，这就是两次网络传输了。</li>
-<li>同样被断开方也发出FIN，且等待对方回复，这也是两次网络传输。</li>
-<li>为什么服务端返回ACK的时候不一起发送FIN？因为在收到FIN时，服务端可能还有数据要发送，等到数据传输完时再发送FIN</li>
-</ol>
-</li>
-</ol>
-</li>
-</ul>
-<h6 id="ping命令使用过吗？traceroute跟它其实差不多，但是那个traceroute为什么能够探索到服务器的各个节点。"><a href="#ping命令使用过吗？traceroute跟它其实差不多，但是那个traceroute为什么能够探索到服务器的各个节点。" class="headerlink" title="ping命令使用过吗？traceroute跟它其实差不多，但是那个traceroute为什么能够探索到服务器的各个节点。"></a>ping命令使用过吗？traceroute跟它其实差不多，但是那个traceroute为什么能够探索到服务器的各个节点。</h6><blockquote>
-<p><code>traceroute</code>是linux&#x2F;unix系统中用于分析本地到目标网络地址间的路由转发路径的工具，也常用于诊断网络链路不通或异常的发生位置。windows下命令为<code>tracert www.baidu.com</code></p>
-</blockquote>
-<p><img src="/../assets/TME-0429%E9%9D%A2%E7%BB%8F/image-20240502142938707-17150891457311.png" alt="image-20240502142938707"></p>
-<blockquote>
-<ol>
-<li>每一跳的IP和时延信息是怎么得到的？</li>
-<li>为什么每一跳有3个时延信息，有时还会显示2个或者3个IP地址？</li>
-<li>为什么有些跳数显示的结果是请求超时？为什么有节点请求超时了还能到达后续的节点？</li>
-</ol>
-</blockquote>
-<p><strong><code>traceroute/tracert</code>的原理</strong></p>
-<ol>
-<li>向目标IP发送3个TTL&#x3D;n（n起始值为1）的ICMP ping request报文，等待回应</li>
-<li>如果收到<code>ICMP ping response</code>报文，则说明路由成功，通过n跳可以到达目标IP，traceroute工作完成。request和response的时间间隔就是时延，由于发送了3个request，因此有3个时延信息。</li>
-<li>如果收到<code>ICMP TTL exceeded</code>报文，则说明第n跳路由到达了这个报文的发送节点。IP报文的TTL字段每经过一次路由转发就会减1，当减到0时当前的转发节点就会向报文的源IP发送一个ICMP TTL exceeded报文，因此发送了这个报文的节点就是第n跳的路由节点。由于发送了3个request，因此会返回3个报文和对应的时延信息。由于到目标IP的路由路径不一定是唯一的，因此报文在第n跳时到达的节点不一定是同一个，就有可能会输出多个第n跳节点地址。</li>
-<li>如果在request发出3秒（默认超时时间）后仍然没有收到任何回应，则这轮<strong>检测超时</strong>。但这并<u>不意味着目标IP不可达</u>，而很可能是因为第n跳到达的节点<u>不允许发送TTL exceeded报文</u>。因此traceroute会继续后面的探测过程。</li>
-<li>将TTL加1，回到第1步继续探测。</li>
-</ol>
-<h6 id="为什么https比http更安全？答：因为https在http的基础上使用了tls协议进行加密。"><a href="#为什么https比http更安全？答：因为https在http的基础上使用了tls协议进行加密。" class="headerlink" title="为什么https比http更安全？答：因为https在http的基础上使用了tls协议进行加密。"></a>为什么https比http更安全？答：因为https在http的基础上使用了tls协议进行加密。</h6><ul>
-<li>讲一讲整个加密过程</li>
-<li>所以密钥本身是对称加密的，还是那个非对称加密？</li>
-</ul>
-<h6 id="tcp三次握手成功以后，比方说给对方发1k的数据，对方会有什么下一步的动作？"><a href="#tcp三次握手成功以后，比方说给对方发1k的数据，对方会有什么下一步的动作？" class="headerlink" title="tcp三次握手成功以后，比方说给对方发1k的数据，对方会有什么下一步的动作？"></a>tcp三次握手成功以后，比方说给对方发1k的数据，对方会有什么下一步的动作？</h6><h6 id="tcp报文头多少字节-20-60B"><a href="#tcp报文头多少字节-20-60B" class="headerlink" title="tcp报文头多少字节 20~60B"></a>tcp报文头多少字节 20~60B</h6><blockquote>
-<p>udp报文头部为8B</p>
-</blockquote>
-<h6 id="stl的vector是线程安全的吗？"><a href="#stl的vector是线程安全的吗？" class="headerlink" title="stl的vector是线程安全的吗？"></a>stl的vector是线程安全的吗？</h6><p>是，所有操作加了同步锁，不支持多线程操作</p>
-<blockquote>
-<p>vector特点：</p>
-<p>1.动态分配空间，当空间不足时，会执行分配新空间——复制元素——释放原空间；</p>
-<p>2.在末端插入和删除执行效率高，在其他位置插入和删除效率低(为保持原有相对次序，插入和删除点之后的元素需要整体后移)；</p>
-<p>3.删除数据并不会释放已分配的空间，因此vector的capacity(容量)大于vector的size(元素个数);</p>
-<p>4.支持随机访问，且执行效率高；</p>
-<p>5.vector是线程安全的，所有操作加了同步锁，不支持多线程操作</p>
-<p>#vector跟数组的差别</p>
-<p>区别<br>1.大小固定 vs 大小可变：</p>
-<p>数组是一个具有<strong>固定大小</strong>的连续内存块，一旦定义后，其大小无法改变。<br>vector是一个<strong>动态数组</strong>，它使用了自动扩容机制，可以根据需要动态调整大小。可以通过添加或删除元素来改变vector的大小。<br>2.初始化：</p>
-<p>数组的<strong>大小在定义时必须确定</strong>，并且可以使用初始化列表或循环初始化等方式进行初始化。<br>vector的大小可以在定义时指定，也可以在后续使用push_back()、emplace_back()等函数插入元素进行初始化。<br>3.访问元素：</p>
-<p>数组通过索引直接访问元素，可以使用下标运算符[]或指针运算符*来访问特定位置的元素。<br>vector也可以使用下标运算符[]访问元素，还可以使用at()函数进行边界检查。<br>4.自动内存管理：</p>
-<p>数组需要<strong>手动管理内存</strong>，包括分配和释放内存。<br>vector自动处理内存管理，会自动增加或减少内存以适应元素的数量。<br>5.功能差异：</p>
-<p>vector提供了许多方便的成员函数，如push_back()、pop_back()、insert()、erase()等，用于在尾部或指定位置添加、删除元素。<br>数组本身没有提供这些功能，需要手动编写代码来实现。</p>
-</blockquote>
-<h6 id="map底层的红黑树的实现原理"><a href="#map底层的红黑树的实现原理" class="headerlink" title="map底层的红黑树的实现原理"></a>map底层的红黑树的实现原理</h6><h6 id="C-虚函数跟普通的函数有什么区别吗？"><a href="#C-虚函数跟普通的函数有什么区别吗？" class="headerlink" title="C++虚函数跟普通的函数有什么区别吗？"></a>C++虚函数跟普通的函数有什么区别吗？</h6><h6 id="虚函数表是在什么阶段，可以知道它自己的指针是多少。"><a href="#虚函数表是在什么阶段，可以知道它自己的指针是多少。" class="headerlink" title="虚函数表是在什么阶段，可以知道它自己的指针是多少。"></a>虚函数表是在什么阶段，可以知道它自己的指针是多少。</h6><h6 id="utf16，包括utf32，讲一下他们的差异。"><a href="#utf16，包括utf32，讲一下他们的差异。" class="headerlink" title="utf16，包括utf32，讲一下他们的差异。"></a>utf16，包括utf32，讲一下他们的差异。</h6><ul>
-<li><p><strong>utf8</strong></p>
-<ol>
-<li><p>特点：使用<strong>变长字节数</strong></p>
-<p>原因：可以理解为按需分配，节省存储空间</p>
-<p>优势：节省空间；劣势：不利于程序内部处理</p>
-<blockquote>
-<p>而UTF-32这样<strong>等长码元序列</strong>(即等宽码元序列)的编码方式就比较适合程序处理，当然，缺点是比较耗费存储空间</p>
-</blockquote>
-</li>
-<li><p>编码方式：最短为一个字节，通过utf8首字节就能判断编码有几个字节</p>
-<ol>
-<li>如果首字节以0开头，肯定是单字节编码(即单个单字节码元)；</li>
-<li>如果首字节以110开头，肯定是双字节编码(即由两个单字节码元所组成的双码元序列)；</li>
-<li>如果首字节以1110开头，肯定是三字节编码(即由三个单字节码元所组成的三码元序列)，以此类推。</li>
-</ol>
-<ul>
-<li><p>这里的0相当于终结标志</p>
-</li>
-<li><p>前缀码的作用：区分和标识</p>
-</li>
-<li><p>除了单字节编码外，由多个单字节码元所组成的多字节编码其首字节以外的后续字节均以10开头(以区别于单字节编码以及多字节编码的首字节)。</p>
-</li>
-</ul>
-</li>
-</ol>
-</li>
-<li><p><strong>utf16</strong></p>
-<ol>
-<li><p>特点：2字节或者4字节（<strong>没有办法兼容ASCII编码</strong>，ASCII编码使用1 Byte来进行存储）</p>
-</li>
-<li><p>字节顺序问题：如某字符为十六进制编码<code>4E59</code>，按两个字节拆分为<code>4E</code>和<code>59</code></p>
-<table>
-<thead>
-<tr>
-<th align="left">-</th>
-<th align="left">读取顺序</th>
-<th align="left">显示字符</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="left">Windows</td>
-<td align="left">4E 59</td>
-<td align="left">奎</td>
-</tr>
-<tr>
-<td align="left">Mac</td>
-<td align="left">59 4E</td>
-<td align="left">乙</td>
-</tr>
-</tbody></table>
-<p>引入：字节顺序标记<strong>（英语：byte-order mark，BOM）</strong>来标记是大端序还是小端序。</p>
-</li>
-<li><p>BOM：是一个有特殊含义的统一码字符，码点为<code>U+FEFF</code>。当以UTF-16或UTF-32来将UCS&#x2F;统一码字符所组成的字符串编码时，这个字符被用来标示其字节序。</p>
-<p><strong>字符<code>U+FEFF</code>如果出现在字节流的开头，则用来标识该字节流的字节序，是高位在前还是低位在前。</strong></p>
-</li>
-</ol>
-</li>
-</ul>
-<h6 id="空的class大小是多少？"><a href="#空的class大小是多少？" class="headerlink" title="空的class大小是多少？"></a>空的class大小是多少？</h6><ol>
-<li>空类大小&#x3D;1，因为编译器需要安插进去一个 <code>char</code>，使得这个 class 对象得以在内存中被配置独一无二的地址。</li>
-<li>某个类A继承该空类<ol>
-<li>如果A为空，<code>sizeof(A)=1</code></li>
-<li>如果A不为空，<code>sizeof(A)=真实大小</code></li>
-</ol>
-</li>
-<li>如果一个类没有成员变量，但是含虚函数&#x2F;虚继承别的类，则会生成一个<code>vptr</code>，<code>sizeof(A)=4/8</code></li>
-</ol>
-<blockquote>
-<p><strong>虚继承</strong></p>
-<ol>
-<li><p>多继承：多个直接基类中产生派生类，存在问题：多个基类相互交织</p>
-<p><img src="/../assets/TME-0429%E9%9D%A2%E7%BB%8F/image-20240505011615000-17150891823763.png" alt="image-20240505011615000"></p>
-<p>假如类 A 有一个成员变量 a，那么在类 D 中直接访问 a 就会产生歧义，编译器不知道它究竟来自 A –&gt;B–&gt;D 这条路径，还是来自 A–&gt;C–&gt;D 这条路径。</p>
-</li>
-<li><p>虚继承：为了解决多继承时的命名冲突和冗余数据问题，C++ 提出了虚继承，使得在派生类中只保留一份间接基类的成员。</p>
-<p>目的：让某个类做出声明，承诺愿意共享它的基类。</p>
-<p><img src="/../assets/TME-0429%E9%9D%A2%E7%BB%8F/image-20240505011755261-17150891900515.png" alt="image-20240505011755261"></p>
-<p>本例中的 A 就是一个虚基类。在这种机制下，不论虚基类在继承体系中出现了多少次，在派生类中都只包含一份虚基类的成员。</p>
-</li>
-</ol>
-</blockquote>
-<blockquote>
-<p>计算类的大小，还要考虑字节对齐</p>
-</blockquote>
-<h6 id="定义一个结构体，里面可能有很多的数据类型。在不同的编译器，不同的系统下，结构体大小可能会有不同的大小。你觉得是因为什么？（字节对齐）"><a href="#定义一个结构体，里面可能有很多的数据类型。在不同的编译器，不同的系统下，结构体大小可能会有不同的大小。你觉得是因为什么？（字节对齐）" class="headerlink" title="定义一个结构体，里面可能有很多的数据类型。在不同的编译器，不同的系统下，结构体大小可能会有不同的大小。你觉得是因为什么？（字节对齐）"></a>定义一个结构体，里面可能有很多的数据类型。在不同的编译器，不同的系统下，结构体大小可能会有不同的大小。你觉得是因为什么？（字节对齐）</h6><ol>
-<li>内存对齐（Padding）：<br>为了提高数据访问的效率，许多处理器和编译器会要求数据按照特定的边界对齐，不同的编译器可能会有不同的默认对齐设置或对齐策略。例如，某些处理器可能要求一个<code>int</code>类型的变量在4字节边界上对齐。如果结构体中的某个成员不满足这个对齐要求，编译器会在成员之间插入额外的空间（填充字节），以达到所需的对齐。这会导致结构体的大小在不同系统或编译器下有所不同。</li>
-<li>数据类型的大小：<br>虽然标准数据类型（如<code>int</code>、<code>long</code>等）在大多数系统上都有固定的大小，但在某些系统或编译器下，它们的大小可能会有所不同。</li>
-</ol>
-<h6 id="C-的加锁方式"><a href="#C-的加锁方式" class="headerlink" title="C++的加锁方式"></a>C++的加锁方式</h6><h6 id="C-子类跟基类的构造顺序和析构顺序，为什么？"><a href="#C-子类跟基类的构造顺序和析构顺序，为什么？" class="headerlink" title="C++子类跟基类的构造顺序和析构顺序，为什么？"></a>C++子类跟基类的构造顺序和析构顺序，为什么？</h6><h6 id="局部变量在进程内存的哪一块里面"><a href="#局部变量在进程内存的哪一块里面" class="headerlink" title="局部变量在进程内存的哪一块里面"></a>局部变量在进程内存的哪一块里面</h6><p>一般全局变量存放在数据区，局部变量存放在栈区，<br>动态变量存放在堆区，函数代码放在代码区。</p>
-<h6 id="函数的参数的压栈顺序：参数从右到左入栈"><a href="#函数的参数的压栈顺序：参数从右到左入栈" class="headerlink" title="函数的参数的压栈顺序：参数从右到左入栈"></a>函数的参数的压栈顺序：参数从右到左入栈</h6><p>例：<code>void func(int a,int b,int c)</code>，进栈顺序为：<code>c b a</code>.</p>
-<h6 id="网络的多路复用？"><a href="#网络的多路复用？" class="headerlink" title="网络的多路复用？"></a>网络的多路复用？</h6><h6 id="线程切换怎么保证切回来的时候，还能够按照原来流程继续走下去。"><a href="#线程切换怎么保证切回来的时候，还能够按照原来流程继续走下去。" class="headerlink" title="线程切换怎么保证切回来的时候，还能够按照原来流程继续走下去。"></a>线程切换怎么保证切回来的时候，还能够按照原来流程继续走下去。</h6><h6 id="算法问题：运营在线上搞了两个活动，回收数据的时候，a活动收了2千万的那个qq号，b活动他回收了那个5千万的qq号。求两个活动大概都参加的用户有多少。设计一个算法求a和b的交集。"><a href="#算法问题：运营在线上搞了两个活动，回收数据的时候，a活动收了2千万的那个qq号，b活动他回收了那个5千万的qq号。求两个活动大概都参加的用户有多少。设计一个算法求a和b的交集。" class="headerlink" title="算法问题：运营在线上搞了两个活动，回收数据的时候，a活动收了2千万的那个qq号，b活动他回收了那个5千万的qq号。求两个活动大概都参加的用户有多少。设计一个算法求a和b的交集。"></a>算法问题：运营在线上搞了两个活动，回收数据的时候，a活动收了2千万的那个qq号，b活动他回收了那个5千万的qq号。求两个活动大概都参加的用户有多少。设计一个算法求a和b的交集。</h6><h6 id="如果编写组件，提供接口定义入参和出参，为什么入参尽可能使用C的数据类型，而不是使用C"><a href="#如果编写组件，提供接口定义入参和出参，为什么入参尽可能使用C的数据类型，而不是使用C" class="headerlink" title="如果编写组件，提供接口定义入参和出参，为什么入参尽可能使用C的数据类型，而不是使用C++"></a>如果编写组件，提供接口定义入参和出参，为什么入参尽可能使用C的数据类型，而不是使用C++</h6><h6 id="共享屏幕做算法：解析http报文，实现传入参数key返回value"><a href="#共享屏幕做算法：解析http报文，实现传入参数key返回value" class="headerlink" title="共享屏幕做算法：解析http报文，实现传入参数key返回value"></a>共享屏幕做算法：解析http报文，实现传入参数key返回value</h6><h6 id="共享屏幕做算法：快排"><a href="#共享屏幕做算法：快排" class="headerlink" title="共享屏幕做算法：快排"></a>共享屏幕做算法：快排</h6>
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1865,7 +1752,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">53</span>
+          <span class="site-state-item-count">54</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

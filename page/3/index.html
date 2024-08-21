@@ -150,6 +150,211 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/07/22/0717%E7%99%BE%E5%BA%A6%E9%9D%A2%E7%BB%8F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="yhcs">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/07/22/0717%E7%99%BE%E5%BA%A6%E9%9D%A2%E7%BB%8F/" class="post-title-link" itemprop="url">0717百度面经</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2024-07-22 23:24:25 / 修改时间：23:25:41" itemprop="dateCreated datePublished" datetime="2024-07-22T23:24:25+08:00">2024-07-22</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="0717百度面经"><a href="#0717百度面经" class="headerlink" title="0717百度面经"></a>0717百度面经</h1><h3 id="1-python跟C-的区别"><a href="#1-python跟C-的区别" class="headerlink" title="1. python跟C++的区别"></a>1. python跟C++的区别</h3><ol>
+<li>语言类型不同<ol>
+<li>C++是<strong>编译性</strong>编程语言，编程型语言在程序执行前有一个单独的编译过程，将程序翻译成机器语言，以后执行的时候就不用再编译，直接运行可执行文件</li>
+<li>python是<strong>解释性</strong>语言，解释型语言是指使用专门的解释器对源程序进行逐行解释成特定平台的机器码，并立即执行。每次执行解释性语言程序的时候都需要重新解释再执行，所以它的运行效率通常比较低，而且不能脱离解释器执行</li>
+</ol>
+</li>
+<li>执行效率不同<ol>
+<li>C++执行效率高</li>
+<li>python执行效率低</li>
+</ol>
+</li>
+<li>开发效率不同<ol>
+<li>C++开发效率低，编程难度大</li>
+<li>python开发效率高，编程难度小</li>
+</ol>
+</li>
+<li>内存管理机制不同<ol>
+<li>python有被称为“垃圾收集器”的自动内存管理机制，不允许直接进行内存处理操作</li>
+<li>C++里则没有这样的机制，并且所有内存管理操作都需要自行处理</li>
+</ol>
+</li>
+</ol>
+<h3 id="2-对称加密和非对称加密的区别"><a href="#2-对称加密和非对称加密的区别" class="headerlink" title="2. 对称加密和非对称加密的区别"></a>2. 对称加密和非对称加密的区别</h3><ol>
+<li>加密和解密使用的密钥不同<ol>
+<li>对称加密双方使用相同密钥</li>
+<li>非对称加密双方分别使用公钥和私钥</li>
+</ol>
+</li>
+<li>成本不同<ol>
+<li>对称加密算法在加密和解密过程中只涉及一个密钥，算法的实现成本较低</li>
+<li>而非对称加密算法涉及两个密钥，其中一个是非公开的，因此算法的实现成本较高</li>
+</ol>
+</li>
+<li>加解密速度不同<ol>
+<li>对称加解密速度较快，适合数据比较长的时候使用</li>
+<li>非对称加解密速度较慢，适合对少量数据的使用</li>
+</ol>
+</li>
+<li>传输的安全性不同<ol>
+<li>对称加密的通信双方使用相同的秘钥，如果一方的秘钥遭泄露，那么整个通信就会被破解。</li>
+<li>而非对称加密使用一对秘钥，一个用来加密，一个用来解密，而且公钥是公开的，秘钥是自己保存的，即便攻击者获得了公钥，也无法解密加密的数据。</li>
+</ol>
+</li>
+</ol>
+<h3 id="3-AES算法几种工作模式"><a href="#3-AES算法几种工作模式" class="headerlink" title="3. AES算法几种工作模式"></a>3. AES算法几种工作模式</h3><ol>
+<li>AES加密算法<br>AES的轮函数每一轮迭代的结构都一样，由4种变换组成：字节替换、行移位、列混合、轮密钥加</li>
+<li>分组加密的工作模式<br><strong>块加密模式</strong></li>
+</ol>
+<ul>
+<li>ECB：消息分成相互独立的加密模块，每块独立加密。特点：同样的明文会出现相同的密文，适合短数据加密</li>
+<li>CBC（分组链接模式）：消息块M1跟初始向量IV异或后加密得密文C1，消息块M2和C1异或后加密得密文C2。特点：适合用于加密较长的消息<br><strong>流加密模式</strong>：转化为流密码，不需要对密码进行填充</li>
+<li>CFB（密码反馈模式）：IV——移位寄存器加密后，选择前j比特和消息P1异或得C1，将移位寄存器左移j位并放入密文C1……</li>
+<li>OFB（输出反馈模式）：OFB是将加密算法的输出反馈到移位寄存器，CFB是将密文反馈到移位寄存器。OFB的优点是比特错误不会被传播，而CFB的比特错误会被放到移位寄存器里，影响接下来的解密过程<br><strong>CTR（计算器模式）：</strong>Counter加密后和明文P1异或得C1，Counter+1：加密后和明文P2异或后得C2。特点：可以并行加密。</li>
+</ul>
+<h3 id="4-C-内存分区"><a href="#4-C-内存分区" class="headerlink" title="4. C++内存分区"></a>4. C++内存分区</h3><p>C++在执行时，将内存划分为4个区域：</p>
+<ol>
+<li>代码区：存放函数体的二进制代码</li>
+<li>全局区：存放全局变量、静态变量和常量</li>
+<li>栈区：由编译器自动分配释放，存放函数的参数值、局部变量</li>
+<li>堆区：由程序员分配和释放，若程序员不释放，程序结束时由操作系统回收</li>
+</ol>
+<ul>
+<li>程序运行前：<br>  程序编译后，生成了exe可执行程序，未执行程序前分为两个区域<ol>
+<li>代码区：存放CPU执行的机器指令；是共享的，对于频繁执行的程序，在内存中有一份代码就行；是只读的，防止程序意外修改指令</li>
+<li>全局区：存放全局变量和静态变量+常量区：存放const修饰的全局常量和字符串常量等</li>
+</ol>
+</li>
+<li>程序运行后：<ol>
+<li>栈区：由编译器自动分配和释放，存放函数的参数值、局部变量。所以注意：不要返回局部变量的地址，栈区开辟的数据由编译器自动释放。</li>
+<li>堆区：由程序员分配释放，若程序员不释放，程序结束时由操作系统回收</li>
+</ol>
+</li>
+</ul>
+<h3 id="5-32位系统中堆通常在的地址范围是多少，大概有多大"><a href="#5-32位系统中堆通常在的地址范围是多少，大概有多大" class="headerlink" title="5. 32位系统中堆通常在的地址范围是多少，大概有多大"></a>5. 32位系统中堆通常在的地址范围是多少，大概有多大</h3><p>对于linux来说，地址由低向高分别是：保留区，代码段，数据段，BSS段，堆，文件映射区，栈，内核空间<br>堆的大小范围可能在几百MB到2-3GB之间</p>
+<h3 id="6-C-中的智能指针"><a href="#6-C-中的智能指针" class="headerlink" title="6. C++中的智能指针"></a>6. C++中的智能指针</h3><p>unique指针怎么做到不能被复制的</p>
+<h3 id="7-指针传递、值传递和引用传递的区别"><a href="#7-指针传递、值传递和引用传递的区别" class="headerlink" title="7. 指针传递、值传递和引用传递的区别"></a>7. 指针传递、值传递和引用传递的区别</h3><ul>
+<li>python有没有值传递和引用传递的区别：python中没有严格的定义值传递与引用传递<ul>
+<li>python中的变量没有类型，变量相当于一个指针，可以指向任何类型的对象，也就是变量引用了某个对象；python对象是有类型的，一般看变量是什么类型需要看其引用的对象是什么类型。</li>
+<li>总的看来，函数传递参数都可以看做是引用传递的（因为python变量相当于指针，传递指针就相当于传递了地址的引用），只不过因为python中的有些对象是不可变的，因此让有些引用传递的过程中又像是值传递的。</li>
+<li>当python中的函数传递过来的是不可变的值时（比如数字常量、元组和字符串），相当于 C语言中的值传递的；若传递过来的参数是可变的（如列表、字典等），则相当于引用传递</li>
+</ul>
+</li>
+<li>可变类型与不可变类型<ul>
+<li>不可变类型：不可变变量的值一旦创建，就不能被修改。如果你尝试修改一个不可变对象的值，Python 将会创建一个新的对象。Python 中的不可变对象包括整数（int）、浮点数（float）、字符串（str）、元组（tuple）等。</li>
+<li>可变类型：可变变量的值可以在原地修改，而不会创建一个新的对象。Python 中的可变对象包括列表（list）、字典（dict）、集合（set）等  <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">      <span class="keyword">def</span> <span class="title function_">modify_value</span>(<span class="params">x</span>):</span><br><span class="line">      <span class="built_in">print</span>(<span class="string">f&quot;变量x修改前地址：<span class="subst">&#123;<span class="built_in">id</span>(x)&#125;</span>&quot;</span>)</span><br><span class="line">  	x = x + <span class="number">10</span></span><br><span class="line">  	<span class="built_in">print</span>(<span class="string">f&quot;变量x修改后地址：<span class="subst">&#123;<span class="built_in">id</span>(x)&#125;</span>&quot;</span>)</span><br><span class="line">  	<span class="built_in">print</span>(<span class="string">&quot;函数内部修改后的值为:&quot;</span>, x)</span><br><span class="line">  	</span><br><span class="line"><span class="comment"># 调用函数</span></span><br><span class="line">value = <span class="number">5</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">f&quot;变量value地址：<span class="subst">&#123;<span class="built_in">id</span>(value)&#125;</span>&quot;</span>)</span><br><span class="line">modify_value(value)</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;函数外部原始值为:&quot;</span>, value)</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ul>
+<h3 id="8-C-编译链接的过程"><a href="#8-C-编译链接的过程" class="headerlink" title="8. C++编译链接的过程"></a>8. C++编译链接的过程</h3><ol>
+<li>预处理阶段：预处理器主要处理以#号开头的预处理指令，包括头文件包含、宏定义、条件编译等等<ol>
+<li>头文件包含：预处理器会根据<code>#include</code>指令将需要的头文件内容插入到当前源文件中</li>
+<li>宏替换：预处理器会识别并替换<code>#define</code>指令定义的宏</li>
+<li>条件编译：预处理器根据<code>#ifdef/#ifndef</code>等条件编译指令来决定是否编译某段代码</li>
+<li>在这个过程中，预处理器还会处理行链接、删除注释等工作</li>
+</ol>
+</li>
+<li>编译阶段：编译器将预处理后的源代码转换成汇编语言代码<ol>
+<li>词法分析：编译器首先将源代码分解为一系列的tokens</li>
+<li>语法分析：编译器根据语言的语法规则，将tokens组合成语法树或者中间表示</li>
+<li>语义分析：编译器检查语法树或者中间表示的语义，确保类型正确、变量已定义等</li>
+<li>优化：编译器可能会进行一系列优化，以提高生成代码的性能或减少其大小</li>
+<li>最终编译器生成汇编语言代码文件（通常是以.s或.asm为扩展名）</li>
+</ol>
+</li>
+<li>汇编阶段：汇编器将编译阶段生成的汇编代码转换成机器指令<ol>
+<li>汇编指令：汇编器将每一条汇编指令翻译成机器指令</li>
+<li>最终，汇编器生成目标文件（通常以.o、.obj或.elf为扩展名）。这些目标文件包含了机器码、符号表和其他代码相关的信息</li>
+</ol>
+</li>
+<li>链接阶段：链接器将多个目标文件和库文件（如静态库和动态库）结合起来，生成最终的可执行文件。地址重定位：链接器解决函数和变量之间的引用关系，确定他们在内存中的地址。<ol>
+<li>符号解析：链接器处理目标文件中定义的符号（如函数和变量）和引用的符号，确保他们之间的正确匹配</li>
+<li>库文件链接：如果程序中使用了外部库，链接器会将这些库与目标文件链接起来</li>
+<li>整个编译链接过程确保了源代码从高级语言形式逐步转换为机器可执行的形式，并处理了代码中的依赖关系和符号引用。最终生成的可执行文件可以在目标平台上运行</li>
+</ol>
+</li>
+</ol>
+<h3 id="9-C-中static关键字的作用"><a href="#9-C-中static关键字的作用" class="headerlink" title="9. C++中static关键字的作用"></a>9. C++中static关键字的作用</h3><ol>
+<li>static最重要的作用：隐藏（普通函数、普通变量）  <ul>
+<li>当同时编译多个文件时，所有未加<code>static</code>的全局变量和函数都具有全局可见性，其他源文件也能访问</li>
+<li>如果加了<code>static</code>，就会对其他源文件隐藏，避免命名冲突</li>
+</ul>
+</li>
+<li>static的第二个作用是改变变量的存储位置：静态存储区<ul>
+<li>静态存储区存储的有全局变量和static变量</li>
+<li>存储在静态存储区的变量的特点：<ol>
+<li>在程序刚开始运行的时候就完成初始化，也是唯一的一次初始化</li>
+<li>静态数据区中所有变量初始值默认为0</li>
+<li>具有持久性</li>
+</ol>
+</li>
+</ul>
+</li>
+<li>static修饰类成员<br> 静态数据成员是类的成员不是对象的成员，所以有以下作用<ol>
+<li>类的静态成员函数属于类而不是类的对象，所以没有this指针，不能访问非静态数据和非静态成员函数，也不能将静态成员函数定义为虚函数</li>
+<li>类的静态成员数据是静态存储的，所以必须进行初始化，静态成员初始化和一般成员初始化不同，在类外初始化，格式如下：<code>&lt;数据类型&gt; &lt;类名&gt;::&lt;成员名&gt;=&lt;值&gt;</code></li>
+<li>静态成员为父类和子类共享。为了防止父类的影响，可以在子类定义一个与父类相同的静态变量，以屏蔽父类的影响</li>
+</ol>
+</li>
+</ol>
+<hr>
+<p>Q:在头文件中把变量声明为static变量，在引用该头文件的源文件中可以访问该变量吗<br>A：可以，声明static变量一般是为了在本cpp文件中的static变量不能被其他cpp引用。但是对于头文件，因为cpp文件中包含了该头文件，相当于该static变量在本cpp文件中也可见。而且当多个cpp文件包含该头文件时，static变量在各个cpp是独立的  </p>
+<hr>
+<p>Q：为什么静态成员函数不能修饰为const？<br>A：C++的类中，const修饰函数表示函数不能修改成员变量的值，而static函数没有this指针，不能访问非静态成员变量， 矛盾  </p>
+<hr>
+<p>Q：为什么不能在类的内部定义以及初始化static成员变量，必须放到类外定义？<br>A：因为静态成员属于整个类，而不属于某个对象，如果在类内初始化，会导致每个对象都包含该静态成员，矛盾  </p>
+<hr>
+<p>Q：为什么static关键字只能出现在类内部的声明语句中，而不能重复出现在类外的定义中<br>A：如果类外定义函数加了static，会导致该函数只能在本文件中使用，而类本来就是为了给程序里各个地方用的，其他地方使用是包含类的头文件，而无法包含类的源文件</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/2024/07/22/C-%E6%99%BA%E8%83%BD%E6%8C%87%E9%92%88/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1163,196 +1368,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/07/13/HTTP%E5%8D%8F%E8%AE%AE/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="yhcs">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hexo">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2024/07/13/HTTP%E5%8D%8F%E8%AE%AE/" class="post-title-link" itemprop="url">HTTP协议</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2024-07-13 16:48:56 / 修改时间：16:49:31" itemprop="dateCreated datePublished" datetime="2024-07-13T16:48:56+08:00">2024-07-13</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="HTTP"><a href="#HTTP" class="headerlink" title="HTTP"></a>HTTP</h2><h3 id="HTTP基本概念"><a href="#HTTP基本概念" class="headerlink" title="HTTP基本概念"></a>HTTP基本概念</h3><h4 id="HTTP是什么"><a href="#HTTP是什么" class="headerlink" title="HTTP是什么"></a>HTTP是什么</h4><p>HTTP 超文本传输协议</p>
-<ol>
-<li>传输：两点之间，可以是本地浏览器和服务器，也可以是服务器和服务器</li>
-<li>超文本：文字、图片、视频等文本的混合体，并且有超链接，能从一个超文本跳转到另一个超文本</li>
-</ol>
-<h4 id="HTTP常见状态码"><a href="#HTTP常见状态码" class="headerlink" title="HTTP常见状态码"></a>HTTP常见状态码</h4><p>五大类HTTP状态码</p>
-<ol>
-<li><p>1XX：提示信息，表示协议处理的一种中间状态</p>
-</li>
-<li><p>2XX：报文已经被收到并被正确处理</p>
-<ul>
-<li>200 OK：表示一切正常，如果是非 HEAD 请求，服务器返回的响应头都会有 body 数据。</li>
-<li>204 No Content：与 200 OK 基本相同，但响应头没有 body 数据</li>
-<li>206 Partical Content：应用于 HTTP <strong>分块下载或断点续传</strong>，表示响应返回的 body 数据并不是资源的全部，而是其中的一部分，也是服务器处理成功的状态。</li>
-</ul>
-</li>
-<li><p>3XX：客户端请求的资源发生了变动，需要客户端用新的 URL 重新发送请求获取资源，也就是<strong>重定向</strong></p>
-<ul>
-<li>301 Moved Permanently：永久重定向，说明请求的资源已经不存在了，需改用新的 URL 再次访问</li>
-<li>302 Found：临时重定向，说明请求的资源还在，但暂时需要用另一个 URL 来访问</li>
-</ul>
-<blockquote>
-<p>301 和 302 都会在响应头里使用字段 Location，指明后续要跳转的 URL，浏览器会自动重定向新的 URL</p>
-</blockquote>
-<ul>
-<li>304 Not Modified: 不具有跳转的含义，表示资源未修改，重定向已存在的缓冲文件，也称<strong>缓存重定向</strong>（返回客户端上的缓存），也就是告诉客户端可以继续使用缓存资源，用于缓存控制</li>
-</ul>
-</li>
-<li><p>4XX：客户端发送的报文有误，服务器无法处理</p>
-<ul>
-<li>400 Bad Request：客户端请求的报文有误，笼统的错误码</li>
-<li>403 Forbidden：客户端请求的资源是服务器禁止访问的</li>
-<li>404 Not Found：请求的资源的在服务器上不存在或未找到</li>
-</ul>
-</li>
-<li><p>5XX：客户端请求报文正确，但是服务器处理时内部发生错误</p>
-<ul>
-<li>500 Internal Server Error：笼统的错误码，表示服务器发生错误，发生什么错误不知道</li>
-<li>501 Not Implemented：客户端请求的功能还不支持，“即将开业，敬请期待”</li>
-<li>502 Bad Gateway：服务器作为网关或者代理时返回的错误码，表示服务器自身工作正常，访问后端服务器时发生了错误</li>
-<li>503 Service Unavailable：表示服务器当前正忙，暂时无法响应，“网络服务正忙，请稍后再试”</li>
-</ul>
-</li>
-</ol>
-<h4 id="HTTP常见字段"><a href="#HTTP常见字段" class="headerlink" title="HTTP常见字段"></a>HTTP常见字段</h4><ul>
-<li><code>host</code>：客户端发送请求时，指定服务器的域名</li>
-<li><code>Content-Length</code>：本次回应数据的长度，解决“粘包”</li>
-</ul>
-<blockquote>
-<p>HTTP协议解决粘包的方法：1. 设置回车符、换行符作为http header的边界；2.通过<code>Conten-Length</code>字段作为http body的边界</p>
-</blockquote>
-<ul>
-<li><code>Connection</code>：用于客户端要求服务器使用“HTTP长连接”机制，以便其他请求复用</li>
-</ul>
-<blockquote>
-<p>HTTP长连接的特点：只要任意一端没有明确提出断开连接，则保持TCP连接状态<br>HTTP&#x2F;1.1版本默认使用长连接，为了兼容旧版本，所以设定<code>Connection</code>字段的值为<code>Keep-Alive</code><br>ps：注意 HTTP Keep-Alive 和 TCP Keepalive 不是一个东西</p>
-</blockquote>
-<ul>
-<li><code>Accept</code>：客户端请求的时候，声明自己可以接受哪些数据格式，<code>Accept: */*</code>:客户端声明自己可以接受任何格式的数据</li>
-<li><code>Content-Type</code>：服务器回应时，告诉客户端，本次数据是什么格式，<code>Content-Type: text/html; Charset=utf-8</code>：表明，发送的是网页，而且编码是UTF-8</li>
-<li><code>Accept-Encoding</code>:客户端在请求时，说明自己可以接受哪些压缩方法,<code>Accept-Encoding: gzip, deflate</code></li>
-<li><code>Content-Encoding</code>：说明数据的压缩方法,表示服务器返回的数据使用了什么压缩格式,<code>Content-Encoding: gzip</code></li>
-</ul>
-<h3 id="GET与POST"><a href="#GET与POST" class="headerlink" title="GET与POST"></a>GET与POST</h3><h4 id="GET和POST的区别"><a href="#GET和POST的区别" class="headerlink" title="GET和POST的区别"></a>GET和POST的区别</h4><ul>
-<li><p>GET和POST的语义区别</p>
-<p>（根据RFC规范）</p>
-<ul>
-<li>GET：从服务器获取指定的资源，请求的<strong>参数位置</strong>一般是写在 URL 中，URL 规定只能支持 ASCII，所以 GET 请求的参数只允许 ASCII 字符 ，而且浏览器会对 URL 的长度有限制（HTTP协议本身对 URL长度并没有做任何规定）。</li>
-<li>POST：根据请求负荷（报文body）对指定的资源做出处理，POST 请求携带<strong>数据的位置</strong>一般是写在报文 body 中，body 中的数据可以是任意格式的数据，只要客户端与服务端协商好即可，而且浏览器不会对 body 大小做限制</li>
-</ul>
-</li>
-</ul>
-<blockquote>
-<p>安全和幂等的概念：</p>
-<ul>
-<li>安全：HTTP协议里所谓的安全是请求方法不会破坏服务器上的资源</li>
-<li>幂等：多次执行相同的操作，结果都是相同的</li>
-</ul>
-</blockquote>
-<ul>
-<li><p>GET 和 POST 方法是否安全和幂等</p>
-<p>（RFC 规范定义）</p>
-<ul>
-<li>GET 方法就是安全且幂等的，因为它是<strong>只读</strong>操作，无论操作多少次，服务器上的数据都是安全的，且每次的结果都是相同的。所以，可以对 GET 请求的数据<strong>做缓存</strong>，这个缓存可以做到浏览器本身上（彻底避免浏览器发请求），也可以做到代理上（如nginx），而且在浏览器中 GET 请求可以保存为书签</li>
-<li>POST 因为是<strong>新增或提交数据</strong>的操作，会修改服务器上的资源，所以是<strong>不安全</strong>的，且多次提交数据就会创建多个资源，所以不是幂等的。所以，浏览器一般<strong>不会缓存</strong> POST 请求，也不能把 POST 请求保存为书签。</li>
-</ul>
-</li>
-</ul>
-<blockquote>
-<p>注意： 上面是从 RFC 规范定义的语义来分析的，但是实际过程中，开发者不一定会按照 RFC 规范定义的语义来实现 GET 和 POST 方法。比如：</p>
-<ul>
-<li>可以用 GET 方法实现新增或删除数据的请求，这样实现的 GET 方法自然就不是安全和幂等。</li>
-<li>可以用 POST 方法实现查询数据的请求，这样实现的 POST 方法自然就是安全和幂等。</li>
-</ul>
-</blockquote>
-<p>Q：GET 请求可以带 body 吗？<br>A：RFC 规范并没有规定 GET 请求不能带 body 的。理论上，任何请求都可以带 body 的。只是因为 RFC 规范定义的 GET 请求是获取资源，所以根据这个语义不需要用到 body。</p>
-<p>另外，URL 中的查询参数也不是 GET 所独有的，POST 请求的 URL 中也可以有参数的</p>
-<h3 id="HTTP缓存技术"><a href="#HTTP缓存技术" class="headerlink" title="HTTP缓存技术"></a>HTTP缓存技术</h3><h4 id="HTTP缓存的实现方式"><a href="#HTTP缓存的实现方式" class="headerlink" title="HTTP缓存的实现方式"></a>HTTP缓存的实现方式</h4><p>重复性的HTTP请求，每次都会得到相同的结果——&gt;[请求-响应]——&gt;缓存在本地，下次直接从缓存读取，不用通过网络从服务器获取，提升性能<br>HTTP缓存的实现方式：1.强制缓存；2.协商缓存</p>
-<h5 id="强制缓存"><a href="#强制缓存" class="headerlink" title="强制缓存"></a>强制缓存</h5><p>强制缓存：浏览器判断缓存没有过期，则直接使用浏览器的本地缓存，主动权在浏览器<br><strong>实现字段：</strong><br><code>Cache-Control</code>：相对时间，优先级更高，建议使用<br><code>Expires</code>：绝对时间<br><strong>实现流程：</strong></p>
-<ol>
-<li>浏览器第一次请求访问时，服务器返回资源的同时，在响应报文头部加上<code>Cache-Control</code>，设置了过期时间的大小</li>
-<li>浏览器再次请求访问资源时，先通过请求资源的时间和过期时间，判断资源是否过期，如果没过期就使用缓存，否则重新请求服务器</li>
-<li>服务器再次返回资源时，会更新response头部的<code>Cache-Control</code></li>
-</ol>
-<h5 id="协商缓存"><a href="#协商缓存" class="headerlink" title="协商缓存"></a>协商缓存</h5><p>响应码304：告诉浏览器可以使用本地缓存<br>协商缓存：通过服务器告知客户端是否可以使用缓存，即浏览器和服务端协商之后，通过协商结果判断是否使用本地缓存<br>注意：协商缓存这两个字段都需要配合强制缓存中 Cache-Control 字段来使用，只有在未能命中强制缓存的时候，才能发起带有协商缓存字段的请求。<br><strong>实现字段：</strong></p>
-<ol>
-<li>请求头部中的 <code>If-Modified-Since</code> 和响应头部中的 <code>Last-Modified</code> 字段实现<br>a. <code>If-Modified-Since</code>：资源过期，发现响应头中具有 <code>Last-Modified</code> 声明，则再次发起请求的时候带上 <code>Last-Modified</code> 的时间，服务器收到请求后发现有 <code>If-Modified-Since</code> 则与被请求资源的最后修改时间进行对比（<code>Last-Modified</code>），如果最后修改时间较新（大），说明资源又被改过，则返回最新资源，HTTP 200 OK；如果最后修改时间较旧（小），说明资源无新修改，响应 HTTP 304 缓存。<br>b. <code>Last-Modified</code>：响应资源的最后修改时间</li>
-</ol>
-<p>2.请求头部中的 <code>If-None-Match</code> 字段与响应头部中的 <code>ETag</code> 字段<br>a. <code>ETag</code>：唯一标识响应资源<br>b. <code>If-None-Match</code>：资源过期时，浏览器发现响应头里有 Etag，则再次向服务器发起请求时，会将请求头 If-None-Match 值设置为 Etag 的值。服务器收到请求后进行比对，如果资源没有变化返回 304，如果资源变化了返回 200</p>
-<p>第一种实现方式是基于<strong>时间</strong>实现的，第二种实现方式是基于一个<strong>唯一标识</strong>实现的，相对来<strong>说后者可以更加准确</strong>地判断文件内容是否被修改，避免由于时间篡改导致的不可靠问题。</p>
-<p>如果在第一次请求资源的时候，服务端返回的 HTTP 响应头部同时有 Etag 和 Last-Modified 字段，那么客户端再下一次请求的时候，如果带上了 ETag 和 Last-Modified 字段信息给服务端，这时 Etag 的优先级更高，也就是服务端先<strong>会判断 Etag 是否变化</strong>了，如果 Etag 有变化就不用在判断 Last-Modified 了，如果 Etag 没有变化，然后再看 Last-Modified。</p>
-<p><strong>为什么 ETag 的优先级更高？</strong><br>这是因为 ETag 主要能解决 Last-Modified 几个比较难以解决的问题：</p>
-<ol>
-<li>在没有修改文件内容情况下文件的最后修改时间可能也会改变，这会导致客户端认为这文件被改动了，从而重新请求；</li>
-<li>可能有些文件是在秒级以内修改的，If-Modified-Since 能检查到的粒度是秒级的，使用 Etag就能够保证这种需求下客户端在 1 秒内能刷新多次；</li>
-<li>有些服务器不能精确获取文件的最后修改时间</li>
-</ol>
-<p>使用 ETag 字段实现的协商缓存的过程：</p>
-<ol>
-<li>当浏览器第一次请求访问服务器资源时，服务器会在返回这个资源的同时，在 Response 头部加上 ETag 唯一标识，这个唯一标识的值是根据当前请求的资源生成的；</li>
-<li>当浏览器再次请求访问服务器中的该资源时，首先会先检查强制缓存是否过期：<ul>
-<li>如果没有过期，则直接使用本地缓存；</li>
-<li>如果缓存过期了，会在 Request 头部加上 If-None-Match 字段，该字段的值就是 ETag 唯一标识；</li>
-</ul>
-</li>
-<li>服务器再次收到请求后，会根据请求中的 If-None-Match 值与当前请求的资源生成的唯一标识进行比较：<ul>
-<li>如果值相等，则返回 304 Not Modified，不会返回资源；</li>
-<li>如果不相等，则返回 200 状态码和返回资源，并在 Response 头部加上新的 ETag 唯一标识；</li>
-</ul>
-</li>
-<li>如果浏览器收到 304 的请求响应状态码，则会从本地缓存中加载资源，否则更新资源</li>
-</ol>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1422,7 +1437,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">53</span>
+          <span class="site-state-item-count">54</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
