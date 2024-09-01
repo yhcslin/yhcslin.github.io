@@ -150,6 +150,292 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/09/01/TCP%E7%9F%A5%E8%AF%86%E7%82%B9/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="yhcs">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/09/01/TCP%E7%9F%A5%E8%AF%86%E7%82%B9/" class="post-title-link" itemprop="url">TCP知识点</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2024-09-01 20:38:23 / 修改时间：20:39:20" itemprop="dateCreated datePublished" datetime="2024-09-01T20:38:23+08:00">2024-09-01</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" itemprop="url" rel="index"><span itemprop="name">计算机网络</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="TCP知识点"><a href="#TCP知识点" class="headerlink" title="TCP知识点"></a>TCP知识点</h3><h4 id="1-TCP和UDP的区别"><a href="#1-TCP和UDP的区别" class="headerlink" title="1. TCP和UDP的区别"></a>1. TCP和UDP的区别</h4><ol>
+<li>连接：TCP是面向连接的，在传输数据前要先建立连接；UDP是无连接的</li>
+<li>服务对象：TCP是一对一的两点服务；UDP支持一对一、一对多、多对多的通信</li>
+<li>可靠性：TCP是可靠交付数据，能保证数据无差错、无丢失、无重复、按序到达接收方；UDP是尽最大努力交付，不保证可靠性</li>
+<li>拥塞控制和流量控制：TCP会通过拥塞控制和流量控制来决定数据的发送效率；而UDP没有，即使网络拥堵，也不会影响UDP的发送效率</li>
+<li>首部开销：TCP在不适用选项字段时头部长20B；UDP头部固定是8B</li>
+<li>传输方式：TCP是面向字节流的传输；UDP是基于报文的传输</li>
+<li>分片策略不同：TCP的数据如果大于MSS，会在传输层进行分片，主机收到后也在传输层组装TCP数据包；UDP的数据如果大于MTU，会在IP层进行分片，主机收到后，在IP层组装完数据</li>
+<li>应用场景：<ol>
+<li>TCP能保证数据的可靠性交付，经常用于：FTP文件传输、HTTP&#x2F;HTTPS</li>
+<li>UDP的处理高效简单，经常用于：<ul>
+<li>总包量少的通信，如DNS</li>
+<li>视频、音频等多媒体通信</li>
+<li>广播通信</li>
+</ul>
+</li>
+</ol>
+</li>
+</ol>
+<h4 id="2-TCP建立连接"><a href="#2-TCP建立连接" class="headerlink" title="2. TCP建立连接"></a>2. TCP建立连接</h4><h5 id="（1）三次握手过程"><a href="#（1）三次握手过程" class="headerlink" title="（1）三次握手过程"></a>（1）三次握手过程</h5><p><img src="/../assets/TCP%E7%9F%A5%E8%AF%86%E7%82%B9/TCP%E4%B8%89%E6%AC%A1%E6%8F%A1%E6%89%8B.drawio.png" alt="TCP 三次握手"></p>
+<ol>
+<li><p>初始阶段，客户端和服务端都处于 <code>CLOSE</code> 状态，服务端开始主动监听某个端口，处于 <code>LISTEN</code> 状态</p>
+</li>
+<li><p>客户端请求建立连接，会随机初始化序号 <code>client_isn</code> </p>
+<p>填充报文头部：将 <code>client_isn</code> 置于TCP首部的序号字段，把SYN位标志为1</p>
+<p>将报文发送给服务端</p>
+<p>进入 <code>SYN_SENT</code> 状态</p>
+</li>
+<li><p>服务端收到SYN报文，随机初始化序号 <code>sever_isn</code></p>
+<p>填充报文头部：将 <code>sever_isn</code> 置于序号字段，将 <code>client_isn + 1</code> 填充到确认应答号字段，将SYN和ACK位置为1</p>
+<p>将报文发送给客户端</p>
+<p>进入 <code>SYN_RCVD</code> 状态</p>
+</li>
+<li><p>客户端收到SYN-ACK报文，回应最后一个应答报文</p>
+<p>填充报文头部：序号字段为 <code>client_isn</code> ，确认应答号字段为 <code>sever_isn + 1</code>，将ACK位置为1</p>
+<p>可以携带客户端到服务端的数据</p>
+<p>将报文发送给服务端</p>
+<p>进入 <code>ESTABLISHED</code> 状态</p>
+</li>
+<li><p>服务端收到ACK报文，也进入 <code>ESTABLISHED</code> 状态</p>
+</li>
+</ol>
+<blockquote>
+<p>TCP的连接状态在linux中通过 <code>netstat -napt</code> 命令查看</p>
+</blockquote>
+<h5 id="（2）为什么是三次握手"><a href="#（2）为什么是三次握手" class="headerlink" title="（2）为什么是三次握手"></a>（2）为什么是三次握手</h5><ol>
+<li>三次握手才能阻止历史连接&#x2F;冗余连接<ul>
+<li>场景示例：客户端发送了一个SYN（isn&#x3D;10）报文后宕机，而且这个报文还被网络堵塞了；客户端重启之后重新向服务端发送一个新的SYN（isn&#x3D;20）报文，旧的报文比新的报文先到达。先看三次握手的情况：SYN（10）到达服务端之后，服务端回复SYN+ACK（ack&#x3D;11）报文，客户端收到之后发现不是自己期望收到的确认号（21）就会回RST报文，服务端收到RST报文后释放连接；如果只有两次握手的话，服务端收到SYN报文后就进入 <code>ESTABLISHED</code> 状态，就会给对方发送数据，造成资源浪费</li>
+<li>总结：两次握手无法阻止历史连接&#x2F;冗余连接，每接收到一个SYN报文就会建立一次连接，因为服务端没有中间状态 <code>SYN_RCVD</code> 来给客户端终止历史连接，导致服务端可能建立一个历史连接或者是无效冗余连接，造成资源浪费</li>
+</ul>
+</li>
+<li>同步双方初始化序列号<ul>
+<li>TCP通信双方都得维护一个序列号，作用<ol>
+<li>去除重复数据</li>
+<li>根据序列号按序接收</li>
+<li>可以通过对方回复的ACK中的确认应答号来标识哪些数据包已被接收</li>
+</ol>
+</li>
+<li>只有三次握手，一来一回才能确保双方都发送自己的序列号并且确认自己的序列号已被对方接收，并且服务端对SYN的回复以及通知对方自己序列号的报文可以合并，所以是三次握手</li>
+</ul>
+</li>
+</ol>
+<h5 id="（3）序列号问题"><a href="#（3）序列号问题" class="headerlink" title="（3）序列号问题"></a>（3）序列号问题</h5><ol>
+<li><p>序列号作用</p>
+<ol>
+<li>方便接收方去除重复数据</li>
+<li>方便接收方根据序列号按序组装报文</li>
+<li>接收方可以根据收到的报文中的确认应答字段知道发送的报文中哪些已经被接收</li>
+</ol>
+</li>
+<li><p>为什么每次建立连接的初始化序列号要求不一样</p>
+<ol>
+<li>主要原因：防止历史报文被下一个相同四元组连接接收</li>
+<li>背景：TCP四次挥手中的TIME_WAIT状态回持续2MSL时长，历史报文会在网络中消失。但是我们不能保证每次连接都能通过四次挥手来正常关闭连接，例如：服务端断电重启，回复客户端RST报文，这次建立的连接终止，然后服务端和客户端又建立了相同的四元组连接。</li>
+<li>假如每次序列号都是从0开始，大概率会导致旧的报文序列号正好在接收端的接收窗口内，会被正常接收，造成数据错乱；所以每次初始化序列号不一样能够很大程度上避免历史报文被下一个相同的四元组连接接收</li>
+</ol>
+</li>
+<li><p>序列号的初始化方法</p>
+<p>ISN &#x3D; M + F（四元组）</p>
+<ul>
+<li>计时器：每隔4微秒+1</li>
+<li>F是一个Hash算法，根据四元组生成一个随机值</li>
+</ul>
+<p>​	随机数基于时钟计时器递增，基本上不会随机成一样的初始化序列号</p>
+</li>
+<li><p>序列号回绕问题</p>
+<ol>
+<li>问题：序列号是一个32位的无符号数，当到达最大值之后会循环回到0，无法仅根据序列号来判断新老数据</li>
+<li>解决方法：TCP时间戳<ol>
+<li>TCP时间戳是一个默认开启的选项，作用：1）便于精确计算RTT，2）防止序列号回绕</li>
+<li>原理：连接双方维护一次最近收到的数据包的时间戳，当收到新数据包时会读取时间戳并跟维护的最新时间戳比较，如果不是递增的，就说明该数据包时过期的，直接丢弃这个数据包</li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+<h5 id="（4）IP层分片，为什么TCP层还需要MSS？"><a href="#（4）IP层分片，为什么TCP层还需要MSS？" class="headerlink" title="（4）IP层分片，为什么TCP层还需要MSS？"></a>（4）IP层分片，为什么TCP层还需要MSS？</h5><ol>
+<li>MTU：网络包的最大长度，一般是1500B；MSS：除去IP头和TCP头，容纳的TCP数据的最大长度</li>
+<li>如果传输层不分片，到IP层再分片的话，那对于传输层来说发送的是一整个报文，接收的也是一整个报文。如果发生丢失触发超时重传，整个IP报文的所有分片都得重传。而在传输层分片的话，只需要重传丢失的报文分片</li>
+</ol>
+<h4 id="3-TCP断开连接"><a href="#3-TCP断开连接" class="headerlink" title="3. TCP断开连接"></a>3. TCP断开连接</h4><h5 id="（1）四次挥手过程"><a href="#（1）四次挥手过程" class="headerlink" title="（1）四次挥手过程"></a>（1）四次挥手过程</h5><p><img src="/../assets/TCP%E7%9F%A5%E8%AF%86%E7%82%B9/format,png-20230309230614791.png" alt="客户端主动关闭连接 —— TCP 四次挥手"></p>
+<ol>
+<li>客户端打算关闭连接，向服务端发送 <code>FIN</code> 报文，之后进入 <code>FIN_WAIT_1</code> 状态</li>
+<li>服务端收到 <code>FIN</code> 报文后，回复 <code>ACK</code> 报文，进入 <code>CLOSE_WAIT</code> 状态</li>
+<li>客户端收到 <code>ACK</code> 报文后，进入 <code>FIN_WAIT_2</code> 状态</li>
+<li>等待服务端处理完数据之后，向客户端发送 <code>FIN</code> 报文，进入 <code>LAST_ACK</code> 状态</li>
+<li>客户端收到 <code>FIN</code> 报文后，回复 <code>ACK</code> 报文，进入 <code>TIME_WAIT</code> 状态</li>
+<li>服务端收到 <code>ACK</code> 报文后，就进入 <code>CLOSE</code> 状态，至此服务端连接关闭</li>
+<li>客户端在经过2MSL时间后，自动进入 <code>CLOSE</code> 状态，客户端连接也关闭</li>
+</ol>
+<blockquote>
+<p>注意：主动关闭连接的才有 <code>TIME_WAIT</code> 状态</p>
+</blockquote>
+<h5 id="（2）为什么是四次挥手"><a href="#（2）为什么是四次挥手" class="headerlink" title="（2）为什么是四次挥手"></a>（2）为什么是四次挥手</h5><p>关闭连接时，客户端向服务端发送 <code>FIN</code> 报文，只能标识，客户端不再发送数据了但还能接收数据</p>
+<p>服务端收到并回复 <code>ACK</code> 报文后，可能还有数据需要处理和发送，只有等到服务端不再发送数据时，才会发送 <code>FIN</code> 报文。</p>
+<p>所以，服务端通常需要等待完成数据的处理和发送，所以 <code>ACK</code> 和 <code>FIN</code> 报文一般都会分开发送，因此需要四次挥手</p>
+<h5 id="（3）-TIME-WAIT-状态"><a href="#（3）-TIME-WAIT-状态" class="headerlink" title="（3） TIME_WAIT 状态"></a>（3） <code>TIME_WAIT</code> 状态</h5><p><code>TIME_WAIT</code> 等待时间 &#x3D; 2MSL </p>
+<ul>
+<li>MSL：报文最大生存时间</li>
+<li>网络中可能存在来自发送方的数据包，被接收方接收后又会回复响应报文，一来一回需要等待2MSL时间。所以相当于至少允许报文丢失一次。</li>
+<li>从客户端接收到 <code>FIN</code> 发送 <code>ACK</code>后开始计时，如果在 <code>TIME_WAIT</code> 时间内客户端的 <code>ACK</code> 没有传输到服务端，服务端重传 <code>FIN</code> 报文，客户端重新回复 <code>ACK</code> ，并且 <code>2MSL</code> 重新计时</li>
+</ul>
+<h5 id="（4）为什么需要-TIME-WAIT-状态"><a href="#（4）为什么需要-TIME-WAIT-状态" class="headerlink" title="（4）为什么需要 TIME_WAIT 状态"></a>（4）为什么需要 <code>TIME_WAIT </code>状态</h5><ol>
+<li>防止历史连接中的数据被后面相同四元组的连接错误的接收<ul>
+<li>如果没有 <code>TIME_WAIT</code> 状态或者时间过短，比如说，上一个连接中最后发送的报文被网络延迟了，后面双方建立了新的相同的四元组连接，当被阻塞的报文到达接收方后，如果正好处于接收窗口内会被正常接收，导致数据错乱</li>
+<li>因此设计 <code>TIME_WAIT</code> 状态，并会持续2MSL时间，足以让两个方向上的数据包在网络中自然消失</li>
+</ul>
+</li>
+<li>保证被动关闭连接的一方，能被正常关闭<ul>
+<li><code>TIME_WAIT</code> 作用：等待足够的时间以确保最后的ACK能被服务器接收，从而正常关闭</li>
+<li>场景示例：如果没有 <code>TIME_WAIT</code> ，客户端发送完ACK报文就进入关闭状态，如果这个ACK报文丢失，服务端会重传FIN报文，但是这个时候客户端处于关闭状态，没有办法正常回复ACK，会回复RST报文。服务端收到RST报文后因为异常而进入CLOSE状态</li>
+</ul>
+</li>
+</ol>
+<h5 id="（5）TIME-WAIT-过多的危害、如何优化"><a href="#（5）TIME-WAIT-过多的危害、如何优化" class="headerlink" title="（5）TIME_WAIT 过多的危害、如何优化"></a>（5）<code>TIME_WAIT</code> 过多的危害、如何优化</h5><ol>
+<li>危害：<ul>
+<li>占用系统资源</li>
+<li>占用端口资源</li>
+</ul>
+</li>
+<li>优化思路：资源复用</li>
+</ol>
+<h5 id="（6）服务器出现大量-TIME-WAIT-状态的原因"><a href="#（6）服务器出现大量-TIME-WAIT-状态的原因" class="headerlink" title="（6）服务器出现大量 TIME_WAIT 状态的原因"></a>（6）服务器出现大量 <code>TIME_WAIT</code> 状态的原因</h5><p><code>TIME_WAIT</code> 是主动关闭连接方才会出现的状态，所以服务器出现大量的<code>TIME_WAIT</code> 状态，说明服务器主动断开了很多TCP连接</p>
+<p>Q：什么场景下服务端会主动断开连接</p>
+<ol>
+<li><p>HTTP没有使用长连接（任意一方没有开启长连接就会使用短连接）</p>
+<p>当完成一次TCP通信后就会关闭，一般是由服务端主动关闭TCP连接，服务端就会出现<code>TIME_WAIT</code> 状态</p>
+<p>因此，当没有启用长连接时，服务端在处理完一个http请求后就会主动关闭连接，导致出现大量<code>TIME_WAIT</code> 状态</p>
+</li>
+<li><p>HTTP长连接超时</p>
+<p>服务器会指定HTTP的超时时间，如果这段时间内客户端没有再发起新的请求，服务端就会关闭连接，出现<code>TIME_WAIT</code> 状态</p>
+<p>所以，服务端出现大量<code>TIME_WAIT</code> 状态可能是大量的客户端建立TCP连接后长时间没有发送数据，导致服务端超时主动关闭连接，出现大量<code>TIME_WAIT</code> 状态</p>
+</li>
+<li><p>HTTP长连接请求数量达到上限</p>
+<p>服务器会定义一条长连接上最大能处理的客户端请求数量，当超过最大限制时就会主动关闭连接，从而出现<code>TIME_WAIT</code> 状态</p>
+</li>
+</ol>
+<h4 id="4-重传机制、滑动窗口、流量控制和拥塞控制"><a href="#4-重传机制、滑动窗口、流量控制和拥塞控制" class="headerlink" title="4. 重传机制、滑动窗口、流量控制和拥塞控制"></a>4. 重传机制、滑动窗口、流量控制和拥塞控制</h4><h5 id="（1）重传机制"><a href="#（1）重传机制" class="headerlink" title="（1）重传机制"></a>（1）重传机制</h5><p>TCP实现可靠传输的方式之一，是通过序列号与确认应答</p>
+<p>如果数据包丢失，会用重传机制</p>
+<p>常见的重传机制：</p>
+<ol>
+<li><p>超时重传：当超过一定时间没有收到确认应答报文，就会重传数据</p>
+<p>超时重传时间RTO略大于RTT</p>
+<p>问题：每次都要时间等待，引入快速重传</p>
+</li>
+<li><p>快速重传：不以时间为驱动，而是以数据为驱动</p>
+<p>工作方式：收到三个相同的ACK报文就会重传该报文</p>
+<ul>
+<li>三次相同的ack报文：说明该报文对方还没收到，不用等到超时再重传</li>
+</ul>
+</li>
+</ol>
+<h5 id="（2）滑动窗口"><a href="#（2）滑动窗口" class="headerlink" title="（2）滑动窗口"></a>（2）滑动窗口</h5><ul>
+<li><p>确认应答的缺点：等待应答后再发送下一个数据包，效率低，网络吞吐量小，引入窗口</p>
+</li>
+<li><p>窗口：无需等待确认应答，可以连续发送数据的最大值</p>
+</li>
+</ul>
+<h5 id="（3）流量控制"><a href="#（3）流量控制" class="headerlink" title="（3）流量控制"></a>（3）流量控制</h5><p>发送方根据接收方实际接收能力控制发送的数据量</p>
+<h5 id="（4）拥塞控制"><a href="#（4）拥塞控制" class="headerlink" title="（4）拥塞控制"></a>（4）拥塞控制</h5><ul>
+<li><p>背景：网络发生拥堵时，如果继续发送大量数据包，可能会导致数据包时延、丢失，发送方就会重传数据，导致网络的负担更重，进入恶循环</p>
+</li>
+<li><p>拥塞控制的目的：避免发送方的数据填满整个网络</p>
+</li>
+<li><p>拥塞窗口cwnd：发送方维护的一个状态变量，根据网络的拥塞程度动态变化</p>
+<ul>
+<li>变化规则：网络没有拥塞就增大，网络出现拥塞就减少</li>
+</ul>
+</li>
+<li><p><code>发送窗口swnd = min(cwnd, rwnd)</code></p>
+</li>
+<li><p>四个算法</p>
+<ol>
+<li><p>慢启动：初始化为1，指数性增长</p>
+<p>当拥塞窗口达到慢启动门限，启用拥塞避免算法</p>
+</li>
+<li><p>拥塞避免：cwnd线性增长</p>
+<p>一直增长以后，网络慢慢进入拥塞状态，就会出现丢包，触发重传机制，也就是进入了拥塞发生算法</p>
+</li>
+<li><p>拥塞发生</p>
+<p>重传机制由两种：超时重传和快速重传</p>
+<ul>
+<li><p>发生超时重传（RTO时间内没收到确认应答报文），就会使用拥塞发生算法：门限值&#x3D;拥塞窗口*1&#x2F;2，拥塞窗口恢复初始值</p>
+<p>接着就开始慢启动算法</p>
+</li>
+<li><p>发生快速重传（连续收到三次相同的ACK报文）：拥塞窗口&#x3D;拥塞窗口*1&#x2F;2，门限值&#x3D;拥塞窗口</p>
+<p>接着进入快恢复算法</p>
+</li>
+</ul>
+</li>
+<li><p>快恢复</p>
+<ul>
+<li>拥塞窗口&#x3D;门限值+3</li>
+<li>重传丢失的数据包</li>
+</ul>
+</li>
+</ol>
+</li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/2024/08/21/fatal-Could-not-read-from-remote-repository-%E8%A7%A3%E5%86%B3/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1114,110 +1400,6 @@ priority_queue&lt;int,vector&lt;int&gt;,my_greater&gt; que; // 函数 &quot;my_g
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/08/13/%E5%9B%BE/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="yhcs">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hexo">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2024/08/13/%E5%9B%BE/" class="post-title-link" itemprop="url">图</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2024-08-13 16:26:02 / 修改时间：16:29:50" itemprop="dateCreated datePublished" datetime="2024-08-13T16:26:02+08:00">2024-08-13</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E7%AE%97%E6%B3%95%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">算法学习</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="图"><a href="#图" class="headerlink" title="图"></a>图</h2><ul>
-<li>做题方法：选一个模板，实现所有的算法，遇到具体题目的时候，转化为自己熟悉的结构</li>
-</ul>
-<h4 id="拓扑排序"><a href="#拓扑排序" class="headerlink" title="拓扑排序"></a>拓扑排序</h4><ul>
-<li>找到入度为0的点进队</li>
-<li>每出队一个点，就把该点的影响消除，把nexts的入度减一</li>
-</ul>
-<h4 id="最小生成树"><a href="#最小生成树" class="headerlink" title="最小生成树"></a>最小生成树</h4><p>无向图，连通且权值和最小</p>
-<h5 id="krusal算法"><a href="#krusal算法" class="headerlink" title="krusal算法"></a>krusal算法</h5><p>从边来找——&gt;最小的边min</p>
-<p>看最小的边加上后是否成环</p>
-<p>Q：如何判断是否成环</p>
-<p>A：看边连接的两个点是否属于两个集合 哈希map（点，点所在的集合）</p>
-<h5 id="prim算法"><a href="#prim算法" class="headerlink" title="prim算法"></a>prim算法</h5><ul>
-<li>最小生成堆</li>
-<li>每次从解锁的边里选最短的，并且点to未访问</li>
-<li>将边cur加入结果，点to加入visited，将点to相邻的边加入小顶堆</li>
-</ul>
-<h4 id="最小路径—Dijkstra算法"><a href="#最小路径—Dijkstra算法" class="headerlink" title="最小路径—Dijkstra算法"></a>最小路径—Dijkstra算法</h4><ul>
-<li>初始化<ul>
-<li>distanceMap &lt;node* ,int&gt;：指定点到每一个点的距离<ul>
-<li>先加入&lt;head,0&gt;</li>
-</ul>
-</li>
-<li>selectedNodes &lt;node*&gt;：已经访问过的点，即距离已确定，无需再修改</li>
-</ul>
-</li>
-<li>从distanceMap里选择距离最小且未访问的——&gt;minnode<ul>
-<li>遍历Minnie的边集（从minnode出来的边）<ul>
-<li>如果distanceMap里没有点to的记录，就加入（点to，distance+weight）</li>
-<li>如果有的话，就加入（点to，min{distance+weight，点to的距离}）</li>
-</ul>
-</li>
-<li>把minnode加入selected</li>
-<li>找minnode，循环</li>
-</ul>
-</li>
-</ul>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1287,14 +1469,14 @@ priority_queue&lt;int,vector&lt;int&gt;,my_greater&gt; que; // 函数 &quot;my_g
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">55</span>
+          <span class="site-state-item-count">56</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-count">8</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
   </nav>
