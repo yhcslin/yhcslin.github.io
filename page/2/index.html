@@ -150,6 +150,241 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2024/08/14/C-%E5%AE%B9%E5%99%A8%E5%92%8C%E7%B1%BB%E5%AE%B9%E5%99%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="yhcs">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2024/08/14/C-%E5%AE%B9%E5%99%A8%E5%92%8C%E7%B1%BB%E5%AE%B9%E5%99%A8/" class="post-title-link" itemprop="url">C++:容器和类容器</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2024-08-14 15:58:21 / 修改时间：16:00:58" itemprop="dateCreated datePublished" datetime="2024-08-14T15:58:21+08:00">2024-08-14</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/C/" itemprop="url" rel="index"><span itemprop="name">C++</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="容器和类容器"><a href="#容器和类容器" class="headerlink" title="容器和类容器"></a>容器和类容器</h2><h3 id="string"><a href="#string" class="headerlink" title="string"></a>string</h3><p>1.<code>string</code>不是容器，但是有跟序列容器类似的成员函数</p>
+<ul>
+<li><code>begin</code>和<code>end</code></li>
+<li><code>empty</code></li>
+<li><code>size</code></li>
+<li><code>swap</code>（支持交换）</li>
+<li>支持<code>==、&lt;</code>等比较运算</li>
+</ul>
+<p>2.<code>string</code>的内存布局</p>
+<table>
+<thead>
+<tr>
+<th>h</th>
+<th>e</th>
+<th>l</th>
+<th>l</th>
+<th>o</th>
+<th>!</th>
+<th>\0</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>begin</code></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td><code>end</code></td>
+</tr>
+<tr>
+<td><code>front</code></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td><code>back</code></td>
+<td></td>
+</tr>
+</tbody></table>
+<ul>
+<li><code>begin</code>和<code>end</code>是迭代器，类似于指针，<code>end</code>指向末尾+1</li>
+<li><code>front</code>和<code>back</code>是引用</li>
+</ul>
+<p>3.<code>string</code>其他用法</p>
+<ul>
+<li><code>size()</code>的复杂度是O(1)，<code>strlen()</code>的复杂度是O(N)</li>
+<li>支持字符串的拼接和查找</li>
+<li><code>nops</code>是一个string的常数，当查找不存在的字符时会返回 <code>nops</code></li>
+<li>支持到数字的互转： <code>stoi()</code>和 <code>to_string</code></li>
+</ul>
+<h3 id="序列容器"><a href="#序列容器" class="headerlink" title="序列容器"></a>序列容器</h3><h4 id="array"><a href="#array" class="headerlink" title="array"></a><code>array</code></h4><p><code>array</code>的特点：</p>
+<ol>
+<li><p>和C数组一样在栈上分配，性能方面没有差异</p>
+</li>
+<li><p>需要编译期确定数组大小</p>
+</li>
+<li><p>提供了 <code>begin</code>、 <code>end</code>、 <code>size</code>等通用成员函数</p>
+</li>
+<li><p>解决了C数组的怪异行为</p>
+<ul>
+<li><p>不能按值拷贝，具体表现：</p>
+<p>a. 直接赋值：在C中，不能直接将一个数组赋值给另一个数组，<code>int a[5] = &#123;1, 2, 3, 4, 5&#125;; int b[5]; b = a;</code>是非法的，<code>array&lt;int, 5&gt; a = &#123;1, 2, 3, 4, 5&#125;; array&lt;int, 5&gt; b; b = a;</code>是合法的</p>
+<p>b. 函数传参：数组作为函数参数，实际上传递的是指向数组的指针，而不是整个数组的拷贝</p>
+</li>
+<li><p>作为参数有退化行为，被调用函数不能获得C数组的长度</p>
+</li>
+</ul>
+</li>
+<li><p>支持 <code>==</code> <code>&lt;</code>等比较运算（原生数组不能直接使用比较运算符，此时比较的是两个数组的地址，<code>array</code>、<code>vector</code>会自动逐元素比较数组）</p>
+</li>
+</ol>
+<h4 id="vector"><a href="#vector" class="headerlink" title="vector"></a><code>vector</code></h4><ul>
+<li>最常用的序列容器</li>
+<li>大小可变的动态数组</li>
+<li>为尾部增删元素而优化</li>
+</ul>
+<p><strong>vector的内存布局</strong></p>
+<p><img src="/../assets/C-%E5%AE%B9%E5%99%A8%E5%92%8C%E7%B1%BB%E5%AE%B9%E5%99%A8/image-20240814142205726.png" alt="image-20240814142205726"></p>
+<ul>
+<li>begin、end：指针、迭代器</li>
+<li>front、back：引用</li>
+</ul>
+<p><strong>异常安全要求</strong></p>
+<p>当 <code>vector</code> 空间不够时，扩容时希望在内存重分配时使用元素的移动构造函数的话，必须声明为 <code>noexcept</code></p>
+<p>否则容器会使用拷贝构造函数</p>
+<p>原因：保证强异常安全性，在 <code>vector</code>的 <code>insert、push_back</code>等操作中保证强异常安全性，怎么实现：如果插入的时候空间不够会扩容，在新的内存块中相应的位置构造要求插入的成员，如果失败的话，抛异常并释放内存，如果成功的话，将原先的内存拷贝或者移动过去。如果在移动过程中出现异常，新的内存块没构造完成，旧的内存块被移走，就没办法保证强安全性。 <code>vector</code>保证强异常安全性是指：如果操作失败，能够保证完整的回退到当前插入操作之前的状态。</p>
+<p>示例程序：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Obj1</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">Obj1</span>()</span><br><span class="line">    &#123;</span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;Obj1()&quot;</span> &lt;&lt; endl;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">Obj1</span>(<span class="type">const</span> Obj1 &amp;)</span><br><span class="line">    &#123;</span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;Obj1(const Obj1&amp;)&quot;</span> &lt;&lt; endl;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">Obj1</span>(Obj1 &amp;&amp;)</span><br><span class="line">    &#123;</span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;Obj1(Obj1&amp;&amp;)&quot;</span> &lt;&lt; endl;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Obj2</span></span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="built_in">Obj2</span>()</span><br><span class="line">    &#123;</span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;Obj2()&quot;</span> &lt;&lt; endl;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">Obj2</span>(<span class="type">const</span> Obj2 &amp;)</span><br><span class="line">    &#123;</span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;Obj2(const Obj2&amp;)&quot;</span> &lt;&lt; endl;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">Obj2</span>(Obj2 &amp;&amp;) <span class="keyword">noexcept</span></span><br><span class="line">    &#123;</span><br><span class="line">        cout &lt;&lt; <span class="string">&quot;Obj2(Obj2&amp;&amp;)&quot;</span> &lt;&lt; endl;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">// 区别：Obj2的移动构造函数声明为noexcept</span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    vector&lt;Obj1&gt; v1;</span><br><span class="line">    v1.<span class="built_in">reserve</span>(<span class="number">2</span>);</span><br><span class="line">    v1.<span class="built_in">emplace_back</span>();</span><br><span class="line">    v1.<span class="built_in">emplace_back</span>();</span><br><span class="line">    v1.<span class="built_in">emplace_back</span>();</span><br><span class="line"></span><br><span class="line">    vector&lt;Obj2&gt; v2;</span><br><span class="line">    v2.<span class="built_in">reserve</span>(<span class="number">2</span>);</span><br><span class="line">    v2.<span class="built_in">emplace_back</span>();</span><br><span class="line">    v2.<span class="built_in">emplace_back</span>();</span><br><span class="line">    v2.<span class="built_in">emplace_back</span>();</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Obj1()</span><br><span class="line">Obj1()</span><br><span class="line">Obj1()</span><br><span class="line">Obj1(const Obj1&amp;)</span><br><span class="line">Obj1(const Obj1&amp;)</span><br><span class="line">Obj2()</span><br><span class="line">Obj2()</span><br><span class="line">Obj2()</span><br><span class="line">Obj2(Obj2&amp;&amp;)</span><br><span class="line">Obj2(Obj2&amp;&amp;)</span><br></pre></td></tr></table></figure>
+
+<p>运行结果：Obj1扩容使用拷贝构造，Obj2扩容使用移动构造</p>
+<h4 id="deque"><a href="#deque" class="headerlink" title="deque"></a><code>deque</code></h4><ul>
+<li>双端队列</li>
+<li>为头尾高效增删元素而优化</li>
+</ul>
+<p><strong>deque的内存布局</strong></p>
+<p><img src="/../assets/C-%E5%AE%B9%E5%99%A8%E5%92%8C%E7%B1%BB%E5%AE%B9%E5%99%A8/image-20240814144709712.png" alt="image-20240814144709712"></p>
+<p>跟 <code>vector</code> 相比的优点：头尾插入的时候不会涉及额外的移动操作，只需要创建一个新的内存块，只有当索引存储不够时才需要移动索引存储，所以当需要在头尾频繁插入数据时，<code>deque</code>是一个性能很高的选择</p>
+<p><strong>deque的特点</strong></p>
+<ol>
+<li>只从头尾进行增删时，容器里的对象永远不需要移动</li>
+<li>容器里的元素只是部分连续</li>
+<li>元素的存储大部分仍然连续，遍历性能较高</li>
+<li>支持使用<strong>下标</strong>访问容器元素，仍能保持O(1)</li>
+</ol>
+<h4 id="list"><a href="#list" class="headerlink" title="list"></a><code>list</code></h4><ul>
+<li>双向链表</li>
+<li>为任意位置插入和删除优化</li>
+</ul>
+<p><strong>list内存布局</strong>：同理，begin和front指向首，back指向尾，end指向尾+1</p>
+<p><strong>list的特点</strong></p>
+<ol>
+<li>提供高效的、O(1)复杂度的任意位置的插入和删除操作</li>
+<li>不支持使用下标访问元素</li>
+<li>不支持 <code>sort</code> 算法，但能使用其成员函数 <code>sort</code>，例：<code>sort(list.begin(),list.end())</code>错误，正确：<code>list.sort()</code></li>
+</ol>
+<h4 id="forward-list"><a href="#forward-list" class="headerlink" title="forward_list"></a><code>forward_list</code></h4><ul>
+<li>单向链表</li>
+<li>比 <code>list</code>少了前继结点，比 <code>list</code> 内存占用少</li>
+</ul>
+<h3 id="容器适配器"><a href="#容器适配器" class="headerlink" title="容器适配器"></a>容器适配器</h3><h4 id="queue"><a href="#queue" class="headerlink" title="queue"></a><code>queue</code></h4><ul>
+<li>先进先出的容器适配器</li>
+<li>底层默认使用 <code>deque</code>，也可以是 <code>list</code></li>
+<li>不能按下标访问，只能从首部弹出，尾部添加</li>
+</ul>
+<h4 id="stack"><a href="#stack" class="headerlink" title="stack"></a><code>stack</code></h4><ul>
+<li>后进先出的容器适配器</li>
+<li>底层默认使用 <code>deque</code>，也可以是 <code>list</code>、<code>vector</code></li>
+</ul>
+<h4 id="priority-queue"><a href="#priority-queue" class="headerlink" title="priority_queue"></a><code>priority_queue</code></h4><ul>
+<li><p>优先级队列（部分排序的队列），排序的部分在顶部</p>
+</li>
+<li><p>默认使用 <code>less</code> 排序</p>
+</li>
+<li><p>排序的末项在顶部，默认是大根堆</p>
+</li>
+<li><pre><code class="C++">模板参数:
+_Tp – Type of element.
+_Sequence – Type of underlying sequence, defaults to vector&lt;_Tp&gt;.
+_Compare – Comparison function object type, defaults to less&lt;_Sequence::value_type&gt;.
+
+priority_queue&lt;int,vector&lt;int&gt;,my_greater&gt; que; // 函数 &quot;my_greater&quot; 不是类型名C/C++(757)
+// 所以这里的参数也只能是函数对象
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">------</span><br><span class="line"></span><br><span class="line">**函数对象 `less`**</span><br><span class="line"></span><br><span class="line">```c++</span><br><span class="line">template &lt;class T&gt;</span><br><span class="line">struct less:binary_function&lt;T,T,bool&gt;&#123;</span><br><span class="line">    bool operator()(const T&amp; x,const T&amp; y)&#123;</span><br><span class="line">        return x&lt;y;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</code></pre>
+</li>
+</ul>
+<p>函数对象：在<code>class</code>或<code>struct</code>中实现 <code>operator()</code> 的对象，生成这样一个对象之后，可以使用 <code>()</code> 来调用函数，行为跟普通函数有点区别</p>
+<p>注意：<code>sort</code>可以接受函数指针作为参数，但是 <code>map</code> <code>set</code>只能接受函数对象</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">bool</span> <span class="title">my_greater</span><span class="params">(<span class="type">int</span> x, <span class="type">int</span> y)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> x &gt; y;</span><br><span class="line">&#125;</span><br><span class="line">vector&lt;<span class="type">int</span>&gt; vec = &#123;<span class="number">4</span>, <span class="number">5</span>, <span class="number">2</span>, <span class="number">3</span>&#125;;</span><br><span class="line"><span class="built_in">sort</span>(vec.<span class="built_in">begin</span>(), vec.<span class="built_in">end</span>(), my_greater);</span><br><span class="line"><span class="comment">// 5 4 3 2 </span></span><br><span class="line"><span class="built_in">sort</span>(vec.<span class="built_in">begin</span>(), vec.<span class="built_in">end</span>(), <span class="built_in">less</span>&lt;<span class="type">int</span>&gt;());</span><br><span class="line"><span class="comment">// 2 3 4 5</span></span><br><span class="line"></span><br><span class="line">set&lt;<span class="type">int</span>, less&lt;<span class="type">int</span>&gt;&gt; set&#123;<span class="number">5</span>, <span class="number">3</span>, <span class="number">2</span>, <span class="number">4</span>&#125;;</span><br><span class="line"><span class="comment">// 2 3 4 5 </span></span><br><span class="line">set&lt;<span class="type">int</span>, my_greater&gt; set&#123;<span class="number">5</span>, <span class="number">3</span>, <span class="number">2</span>, <span class="number">4</span>&#125;;</span><br><span class="line"><span class="comment">// 报错：函数 &quot;my_greater&quot; 不是类型名C/C++(757)</span></span><br><span class="line">模板参数:</span><br><span class="line">_Key – Type of key objects.</span><br><span class="line">_Compare – Comparison function object type, defaults to less&lt;_Key&gt;.</span><br><span class="line">_Alloc – Allocator type, defaults to allocator&lt;_Key&gt;.</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="关联容器"><a href="#关联容器" class="headerlink" title="关联容器"></a>关联容器</h3><ul>
+<li>有序的容器，默认使用 <code>less</code></li>
+<li><code>set、map、multiset、multimap</code>：key是否可重复</li>
+<li>查找、插入和删除的时间复杂度都是 <code>O(log N)</code></li>
+</ul>
+<h3 id="无序关联容器"><a href="#无序关联容器" class="headerlink" title="无序关联容器"></a>无序关联容器</h3><ul>
+<li><p>容器元素间没有顺序关系</p>
+</li>
+<li><p>默认使用 <code>hash</code>，也可以使用自定义的函数对象</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">hash</span>&lt;complex&lt;T&gt;&gt;&#123;</span><br><span class="line">    <span class="function"><span class="type">size_t</span> <span class="title">operator</span><span class="params">()</span><span class="params">(<span class="type">const</span> complex&lt;T&gt; &amp;v)</span><span class="type">const</span> <span class="keyword">noexcept</span></span>&#123;</span><br><span class="line">        hash&lt;T&gt; h;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">h</span>(v.<span class="built_in">real</span>())+<span class="built_in">h</span>(v.<span class="built_in">imag</span>());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><code>unordered_set、unordered_map、unordered_multiset、unordered_multimap</code>：key是否可重复</p>
+</li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://example.com/2024/08/13/%E5%9B%BE/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1552,318 +1787,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/08/12/leetcode%E5%88%B7%E9%A2%98%E7%AC%94%E8%AE%B0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="yhcs">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hexo">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2024/08/12/leetcode%E5%88%B7%E9%A2%98%E7%AC%94%E8%AE%B0/" class="post-title-link" itemprop="url">leetcode刷题笔记</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2024-08-12 15:45:42 / 修改时间：15:48:25" itemprop="dateCreated datePublished" datetime="2024-08-12T15:45:42+08:00">2024-08-12</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E7%AE%97%E6%B3%95%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">算法学习</span></a>
-                </span>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="leetcode刷题笔记"><a href="#leetcode刷题笔记" class="headerlink" title="leetcode刷题笔记"></a>leetcode刷题笔记</h1><h2 id="数组"><a href="#数组" class="headerlink" title="数组"></a>数组</h2><h3 id="二分查找"><a href="#二分查找" class="headerlink" title="二分查找"></a>二分查找</h3><p>关键：循环条件，先想好题目所求元素所在区间是左闭右开还是全闭<br>比如说:</p>
-<ol>
-<li>target在[left,right]里，则当left&#x3D;right时，[left,right]有效，所以循环条件为left&lt;&#x3D;right</li>
-<li>target在[left,right)里，则当left&#x3D;right时，[left,right)无效，所以循环条件为left&lt;right</li>
-</ol>
-<h3 id="移除元素"><a href="#移除元素" class="headerlink" title="移除元素"></a>移除元素</h3><p><strong>双指针法</strong></p>
-<ol>
-<li>移除、移动元素，返回前n位，两个指针cur和end</li>
-<li>有序数组的平方：从两边开始找当前最大值</li>
-</ol>
-<h3 id="区间和"><a href="#区间和" class="headerlink" title="区间和"></a>区间和</h3><p><strong>前缀和</strong>：涉及计算区间和的问题</p>
-<p>——<code>p[i]</code> 表示 下标 0 到 i 的 <code>vec[i]</code> 累加 之和</p>
-<p>求2~5的区间和 &#x3D;<code>p[5] - p[1]</code></p>
-<h2 id="链表"><a href="#链表" class="headerlink" title="链表"></a>链表</h2><h3 id="链表设计"><a href="#链表设计" class="headerlink" title="链表设计"></a>链表设计</h3><p><code>struct ListNode</code><br><code>dummy</code>：做题也常用</p>
-<h3 id="链表相交"><a href="#链表相交" class="headerlink" title="链表相交"></a>链表相交</h3><ol>
-<li>求两链长度</li>
-<li>长链和断链末尾对齐后遍历</li>
-<li>相遇处即为相交点</li>
-</ol>
-<h3 id="环形链表"><a href="#环形链表" class="headerlink" title="环形链表"></a>环形链表</h3><ol>
-<li>快慢指针从头出发，快指针走两步，慢指针走一步，相遇则有环</li>
-<li>ptr1从头出发，ptr2从相遇点出发，一次走一步</li>
-<li>再次相遇点——环入口</li>
-</ol>
-<h2 id="哈希表"><a href="#哈希表" class="headerlink" title="哈希表"></a>哈希表</h2><h3 id="哈希表理论基础"><a href="#哈希表理论基础" class="headerlink" title="哈希表理论基础"></a>哈希表理论基础</h3><p>解决问题：快速查询</p>
-<p><strong>哈希碰撞</strong></p>
-<ol>
-<li>拉链法：发生冲突的元素存储在链表里<ul>
-<li>选择适当的哈希表的大小，不会因为数组空值浪费大量内存，也不会因为链表太长在查找上浪费时间</li>
-</ul>
-</li>
-<li>线性探测法：遇到冲突向下找一个空位存放冲突元素<ul>
-<li>保证tableSize&gt;dataSize</li>
-</ul>
-</li>
-</ol>
-<p><strong>常见的三种哈希结构</strong></p>
-<ol>
-<li><p>数组</p>
-</li>
-<li><p>set</p>
-<ul>
-<li><p>set：红黑树，增删查改：O(log n)</p>
-</li>
-<li><p>multiset：红黑树，增删查改：O(log n)</p>
-<blockquote>
-<p>key不可以修改，只能增加和删除</p>
-</blockquote>
-</li>
-<li><p>unordered_set：哈希表，增删查改：O(1)</p>
-</li>
-</ul>
-</li>
-<li><p>map</p>
-</li>
-</ol>
-<p><strong>总结：</strong>当需要快速判断一个元素是否出现在集合里，考虑哈希法</p>
-<p>——牺牲空间换取时间</p>
-<h3 id="有效的字母异位词"><a href="#有效的字母异位词" class="headerlink" title="有效的字母异位词"></a>有效的字母异位词</h3><ul>
-<li><p>数组是简单的哈希表，当遇到元素范围固定，可以考虑用数组作为哈希表，比如26个字母——使用数组来做哈希的题目，都<strong>限制了数值的大小</strong></p>
-</li>
-<li><p>如果数据分散、跨度比较大，使用数组容易造成空间的浪费</p>
-</li>
-<li><p>直接使用set 不仅占用空间比数组大，而且速度要比数组慢，set把数值映射到key上都要做hash计算的——如果数值范围固定，优先考虑用数组</p>
-</li>
-</ul>
-<h3 id="快乐数"><a href="#快乐数" class="headerlink" title="快乐数"></a>快乐数</h3><ul>
-<li><p>取位数</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">int</span> <span class="title">getSum</span><span class="params">(<span class="type">int</span> num)</span></span>&#123;</span><br><span class="line">    <span class="type">int</span> sum;</span><br><span class="line">    <span class="keyword">while</span>(num!=<span class="number">0</span>)&#123;</span><br><span class="line">        <span class="type">int</span> bit=num%<span class="number">10</span>;</span><br><span class="line">        num/=<span class="number">10</span>;</span><br><span class="line">        sum+=bit;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>循环&#x2F;成环问题</p>
-<ul>
-<li>使用哈希判断是否存在重复元素</li>
-<li>使用快慢指针：快指针一次走两步，慢指针一次走一步，快慢指针相遇——快指针比慢指针多走了一个循环周期</li>
-</ul>
-</li>
-</ul>
-<blockquote>
-<p><strong>总结：<code>map</code> vs <code>set</code> vs 数组</strong></p>
-<ol>
-<li>数组：大小受限，数据分散会浪费内存空间</li>
-<li>set：只能存放key，同等情况下性能不如数组，因为取哈希值也要耗时</li>
-<li>map：需要存放两个值，什么作为key取决于需要查询什么</li>
-</ol>
-<p>不要求key有序的时候，使用<code>unordered_map/set</code></p>
-</blockquote>
-<h3 id="四数之和II"><a href="#四数之和II" class="headerlink" title="四数之和II"></a>四数之和II</h3><p>给出四个数组，求四个数和为0，不要求去重</p>
-<p>使用<code>hashmap</code>，两数之和：两数之和出现的次数，再去遍历另外两个数组</p>
-<h3 id="三数之和"><a href="#三数之和" class="headerlink" title="三数之和"></a>三数之和</h3><p>可以使用双指针法</p>
-<ul>
-<li>将数组排序</li>
-</ul>
-<p>当返回值是具体数值，可以使用双指针法，如果要求返回的是下标，不能对数组排序，也就不能使用双指针法</p>
-<h3 id="四数之和"><a href="#四数之和" class="headerlink" title="四数之和"></a>四数之和</h3><p>当求几个数之和时，要求返回的元组不能重复，使用双指针法</p>
-<p>不管是求几个数之和，以前<code>i-2</code>个数作为标准，剩下两个数用双指针确定</p>
-<p>时间复杂度从<code>O(n^i)</code>降为<code>O(n^(i-1))</code></p>
-<h2 id="字符串"><a href="#字符串" class="headerlink" title="字符串"></a>字符串</h2><h3 id="翻转字符串里的单词"><a href="#翻转字符串里的单词" class="headerlink" title="翻转字符串里的单词"></a>翻转字符串里的单词</h3><ul>
-<li>移除不必要的空格 &#x3D; 移除元素 ——&gt;双指针法</li>
-<li>翻转：先整体翻转后局部翻转——先翻转整个字符串，再翻转单词</li>
-</ul>
-<h3 id="右旋转字符串"><a href="#右旋转字符串" class="headerlink" title="右旋转字符串"></a>右旋转字符串</h3><p>字符串尾部的若干个字符转移到字符串的前面</p>
-<p>解决方法：先整体翻转后局部翻转——先翻转整个字符串，再分别翻转左部和右部</p>
-<h3 id="KMP算法"><a href="#KMP算法" class="headerlink" title="KMP算法"></a>KMP算法</h3><p>解决问题：字符串匹配</p>
-<p>eg：文本串：aabaabaaf	模式串：aabaaf</p>
-<ul>
-<li><p>暴力解法：O(M*N)</p>
-</li>
-<li><p>KMP</p>
-<ol>
-<li><p>第一次匹配</p>
-<table>
-<thead>
-<tr>
-<th>a</th>
-<th>a</th>
-<th>b</th>
-<th>a</th>
-<th>a</th>
-<th>b</th>
-<th>a</th>
-<th>a</th>
-<th>f</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>a</td>
-<td>a</td>
-<td>b</td>
-<td>a</td>
-<td>a</td>
-<td>f</td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-</tbody></table>
-</li>
-<li><p>第二次匹配</p>
-<table>
-<thead>
-<tr>
-<th>a</th>
-<th>a</th>
-<th>b</th>
-<th>a</th>
-<th>a</th>
-<th>b</th>
-<th>a</th>
-<th>a</th>
-<th>f</th>
-</tr>
-</thead>
-<tbody><tr>
-<td></td>
-<td></td>
-<td></td>
-<td>a</td>
-<td>a</td>
-<td>b</td>
-<td>a</td>
-<td>a</td>
-<td>f</td>
-</tr>
-</tbody></table>
-<p>   思路：文本串指针不变，模式串指针回转</p>
-</li>
-</ol>
-</li>
-<li><p>next数组构造思路</p>
-<ol>
-<li>初始化next数组</li>
-<li>处理不相等情况</li>
-<li>处理相等情况</li>
-<li>更新next的值</li>
-</ol>
-</li>
-</ul>
-<h3 id="重复的子字符串"><a href="#重复的子字符串" class="headerlink" title="重复的子字符串"></a>重复的子字符串</h3><ol>
-<li><p>暴力解法</p>
-<p>分别以1~n&#x2F;2的字符结尾，判断能否构成字符串</p>
-</li>
-<li><p>移除匹配</p>
-<p>如果 s 是重复字符串，则 s+s 去除首尾仍能检测出中间含 s</p>
-</li>
-<li><p>KMP算法</p>
-<p>如果字符串str能用子字符串substr重复组成，则 </p>
-<p> <code>len(str)=m*len(substr)</code></p>
-<p> <code>len(presuf)=(m-1)*len(substr)</code></p>
-<p> → <code>len(substr)=len(str)-len(presuf)</code></p>
-<p> → <code>len(str)%[len(str)-len(presuf)]=0</code></p>
-</li>
-</ol>
-<h2 id="栈和队列"><a href="#栈和队列" class="headerlink" title="栈和队列"></a>栈和队列</h2><h3 id="栈与队列的理论基础"><a href="#栈与队列的理论基础" class="headerlink" title="栈与队列的理论基础"></a>栈与队列的理论基础</h3><ul>
-<li>栈提供<code>push</code> 和 <code>pop</code> 等等接口，所有元素必须符合先进后出规则，所以栈不提供<strong>走访功能</strong>，也不提供**迭代器(iterator)**。 不像是set 或者map 提供迭代器iterator来遍历所有元素</li>
-<li>栈是以底层容器完成其所有的工作，对外提供统一的接口，<strong>底层容器是可插拔</strong>的（也就是说我们可以控制使用哪种容器来实现栈的功能）</li>
-<li>STL中栈往往不被归类为容器，而被归类为<code>container adapter</code>（容器适配器）</li>
-<li>栈的内部结构，栈的底层实现可以是<code>vector，deque，list</code><ul>
-<li>SGI STL，如果没有指定底层实现的话，默认是以<code>deque</code>为缺省情况下栈的底层结构：<code>deque</code>是一个双向队列，只要封住一段，只开通另一端就可以实现栈的逻辑了。</li>
-<li>指定vector为栈的底层实现： <code>stack&lt;int,vector&lt;int&gt;&gt; stack</code>;</li>
-</ul>
-</li>
-<li>队列是先进先出的数据结构，同样不允许有遍历行为，不提供迭代器</li>
-<li>可以使用<code>deque</code>和<code>list</code>对<code>queue</code>初始化，而<code>vector</code>因其缺少<code>pop_front()</code>，不能用于queue<ul>
-<li><strong>SGI STL中队列一样是以<code>deque</code>为缺省情况下的底部结构</strong></li>
-<li>指定list 为队列的底层实现：<code>queue&lt;int,list&lt;int&gt;&gt; queue</code></li>
-</ul>
-</li>
-</ul>
-<h3 id="用栈实现队列"><a href="#用栈实现队列" class="headerlink" title="用栈实现队列"></a>用栈实现队列</h3><ul>
-<li>双栈</li>
-<li>进队：进栈in</li>
-<li>出队：栈in全部弹出到栈out，从栈out弹出</li>
-</ul>
-<h3 id="用队列实现栈"><a href="#用队列实现栈" class="headerlink" title="用队列实现栈"></a>用队列实现栈</h3><ul>
-<li>一个队列</li>
-<li>进栈：进队</li>
-<li>出栈：队列头部不断出队移到队尾，直到最后一个元素到队头 → 出队</li>
-</ul>
-<h3 id="有效的括号"><a href="#有效的括号" class="headerlink" title="有效的括号"></a>有效的括号</h3><ul>
-<li>括号匹配问题，使用栈实现</li>
-</ul>
-<h3 id="删除字符串中的所有相邻重复项"><a href="#删除字符串中的所有相邻重复项" class="headerlink" title="删除字符串中的所有相邻重复项"></a>删除字符串中的所有相邻重复项</h3><ul>
-<li>删除重复项也可以用栈实现</li>
-<li>输出的时候记得翻转</li>
-</ul>
-<h3 id="逆波兰表达式求值"><a href="#逆波兰表达式求值" class="headerlink" title="逆波兰表达式求值"></a>逆波兰表达式求值</h3><ul>
-<li>逆波兰表达式：一种后缀表达式，运算符放在后面</li>
-<li>适合用栈操作运算：遇到数字则入栈；遇到运算符则取出栈顶两个数字进行计算，并将结果压入栈中</li>
-</ul>
-<h3 id="滑动窗口最大值"><a href="#滑动窗口最大值" class="headerlink" title="滑动窗口最大值"></a>滑动窗口最大值</h3><ul>
-<li>单调队列：使用容器 <code>deque</code>   出口→入口</li>
-<li>实现接口：<ul>
-<li><code>front</code>：队头——最大值</li>
-<li><code>pop(int val)</code>：离开窗口的值 <code>val</code>如果比队头小，本来就不在队列里，不用处理；而队头已经是窗口内最大值了，所以 <code>val</code>也不可能比队头大。所以只有队列不为空并且弹出 <code>val==队头</code>，才弹出</li>
-<li><code>push(int val)</code>: 如果<code>push</code>的值比队尾大，那么单调性被破坏，弹出直到队列为空或者队尾比<code>push</code>的值大→ 维护单调性</li>
-</ul>
-</li>
-</ul>
-<h3 id="前k个高频元素"><a href="#前k个高频元素" class="headerlink" title="前k个高频元素"></a>前k个高频元素</h3><ul>
-<li>容器适配器：优先级队列<ul>
-<li>披着队列外衣的堆，缺省情况下是大根堆——以<code>vector</code>为表现形式的完全二叉树</li>
-<li>要统计最大前k个元素，只有<strong>小顶堆</strong>每次将<strong>最小的元素弹出</strong>，最后小顶堆里积累的才是前k个最大元素</li>
-</ul>
-</li>
-</ul>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1933,7 +1856,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">56</span>
+          <span class="site-state-item-count">57</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
